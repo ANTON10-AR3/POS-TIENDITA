@@ -2,19 +2,49 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
-  <title>POS Tiendita - Login</title>
+  <title>POS Tiendita</title>
   <style>
-    body { font-family: Arial, sans-serif; background: #f5f5f5; padding: 40px; }
-    .login-box { max-width: 400px; margin: auto; padding: 20px; background: white; border-radius: 8px; box-shadow: 0 2px 6px rgba(0,0,0,0.2);}
-    h2 { text-align: center; }
-    input { width: 100%; padding: 10px; margin: 8px 0; border: 1px solid #ccc; border-radius: 4px; }
-    button { width: 100%; padding: 10px; background: #4CAF50; color: white; border: none; border-radius: 4px; cursor: pointer; }
-    button:hover { background: #45a049; }
-    #resultado { margin-top: 20px; padding: 10px; background: #eef; border-radius: 4px; min-height: 40px; }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: "Segoe UI", Arial, sans-serif; }
+    body { background: linear-gradient(135deg, #4CAF50, #2e7d32); height: 100vh; display: flex; justify-content: center; align-items: center; color: #333; }
+    .card, .dashboard {
+      background: white; padding: 30px; border-radius: 12px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.25); width: 100%; max-width: 600px;
+      animation: fadeIn 0.7s ease;
+    }
+    .card { text-align: center; }
+    .card h2 { margin-bottom: 20px; color: #2e7d32; }
+    .card input, .card button {
+      width: 100%; padding: 12px; margin: 10px 0; border-radius: 6px;
+      font-size: 15px;
+    }
+    .card input { border: 1px solid #ccc; }
+    .card button {
+      background: #4CAF50; color: white; font-weight: bold; font-size: 16px;
+      border: none; cursor: pointer; transition: 0.3s;
+    }
+    .card button:hover { background: #388e3c; }
+    #resultado { margin-top: 15px; font-size: 14px; padding: 10px; border-radius: 6px; background: #f1f8e9; color: #2e7d32; min-height: 20px; }
+    .dashboard { display: none; }
+    .dashboard h3 { margin-bottom: 20px; color: #2e7d32; text-align: center; }
+    .menu { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; margin-bottom: 20px; }
+    .menu button {
+      padding: 12px 18px; font-size: 15px; font-weight: bold; background: #2196F3;
+      border: none; border-radius: 8px; color: white; cursor: pointer; transition: 0.3s;
+    }
+    .menu button:hover { background: #1976D2; }
+    .logout { background: #f44336 !important; }
+    .hidden { display: none; }
+    .section { margin-top: 20px; padding: 15px; border: 1px solid #ddd; border-radius: 8px; background: #fafafa; }
+    .section h4 { margin-bottom: 10px; color: #444; }
+    table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+    table, th, td { border: 1px solid #ccc; }
+    th, td { padding: 8px; text-align: center; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
   </style>
 </head>
 <body>
-  <div class="login-box">
+  <!-- Pantalla de Login -->
+  <div class="card" id="loginBox">
     <h2>POS Tiendita</h2>
     <input type="email" id="email" placeholder="Correo">
     <input type="password" id="password" placeholder="Contraseña">
@@ -22,13 +52,20 @@
     <div id="resultado">Esperando acción...</div>
   </div>
 
+  <!-- Dashboard -->
+  <div class="dashboard" id="dashboard">
+    <h3 id="userInfo"></h3>
+    <div class="menu" id="menuOpciones"></div>
+    <div id="contenido"></div>
+    <button class="logout" onclick="logout()">Cerrar sesión</button>
+  </div>
+
   <script type="module">
     import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
 
-    // 🔹 Configuración Supabase (tus claves nuevas)
+    // Configuración Supabase
     const SUPABASE_URL = "https://jmawangtuojrogjwhqwu.supabase.co";
     const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImptYXdhbmd0dW9qcm9nandocXd1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTk3MTA0ODYsImV4cCI6MjA3NTI4NjQ4Nn0.trwTULFQZRcsD0yWP45Aw2g2qsnAx409_5BoX3bomlA";
-
     const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
     document.getElementById("btnLogin").addEventListener("click", login);
@@ -36,32 +73,17 @@
     async function login() {
       const resultado = document.getElementById("resultado");
       resultado.innerHTML = "🔄 Intentando login...";
-      console.log("🔹 login() ejecutado");
-
       const email = document.getElementById("email").value.trim();
       const password = document.getElementById("password").value.trim();
-
-      if (!email || !password) {
-        resultado.innerHTML = "⚠️ Ingresa correo y contraseña";
-        return;
-      }
+      if (!email || !password) { resultado.innerHTML = "⚠️ Ingresa correo y contraseña"; return; }
 
       const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+      if (error) { resultado.innerHTML = "❌ Error: " + error.message; return; }
 
-      if (error) {
-        resultado.innerHTML = "❌ Error en login: " + error.message;
-        console.error("Login error:", error);
-        return;
-      }
-
-      resultado.innerHTML = `✅ Login correcto: ${data.user.email}<br>Buscando perfil...`;
-      console.log("Usuario logueado:", data.user);
-
-      obtenerPerfil(data.user.id);
+      obtenerPerfil(data.user.id, data.user.email);
     }
 
-    async function obtenerPerfil(userId) {
-      const resultado = document.getElementById("resultado");
+    async function obtenerPerfil(userId, email) {
       const { data, error } = await supabase
         .from("profiles")
         .select("nombre, rol_id, rol:rol_id(nombre)")
@@ -69,16 +91,100 @@
         .single();
 
       if (error || !data) {
-        resultado.innerHTML += "<br>⚠️ No se encontró perfil en la tabla.";
-        console.error("Perfil error:", error);
+        document.getElementById("resultado").innerHTML = "⚠️ No se encontró perfil.";
         return;
       }
 
-      resultado.innerHTML = `
-        👤 Usuario: ${data.nombre}<br>
-        🎭 Rol: ${data.rol.nombre}
-      `;
-      console.log("Perfil cargado:", data);
+      document.getElementById("loginBox").style.display = "none";
+      document.getElementById("dashboard").style.display = "block";
+      document.getElementById("userInfo").innerHTML = `👤 ${data.nombre} — 🎭 ${data.rol.nombre}`;
+
+      const menu = document.getElementById("menuOpciones");
+      menu.innerHTML = "";
+      if (data.rol.nombre === "admin") {
+        menu.innerHTML += "<button onclick='mostrarProductos()'>📦 Productos</button>";
+        menu.innerHTML += "<button onclick='mostrarInventario()'>📊 Inventario</button>";
+        menu.innerHTML += "<button onclick='mostrarReportes()'>📝 Reportes</button>";
+      } else {
+        menu.innerHTML += "<button onclick='mostrarVentas()'>💰 Ventas</button>";
+        menu.innerHTML += "<button onclick='mostrarCaja()'>💵 Caja</button>";
+      }
+    }
+
+    // ============ Módulos ============
+    window.mostrarProductos = async function() {
+      document.getElementById("contenido").innerHTML = `
+        <div class="section">
+          <h4>Gestión de Productos</h4>
+          <input id="nuevoProd" placeholder="Nombre producto">
+          <input id="precioProd" type="number" placeholder="Precio">
+          <button onclick="agregarProducto()">Agregar</button>
+          <table><thead><tr><th>ID</th><th>Nombre</th><th>Precio</th></tr></thead><tbody id="tablaProd"></tbody></table>
+        </div>`;
+      cargarProductos();
+    }
+
+    window.agregarProducto = async function() {
+      const nombre = document.getElementById("nuevoProd").value;
+      const precio = parseFloat(document.getElementById("precioProd").value);
+      await supabase.from("productos").insert([{ nombre, precio }]);
+      cargarProductos();
+    }
+
+    async function cargarProductos() {
+      const { data } = await supabase.from("productos").select("*");
+      const tabla = document.getElementById("tablaProd");
+      tabla.innerHTML = data.map(p => `<tr><td>${p.id}</td><td>${p.nombre}</td><td>$${p.precio}</td></tr>`).join("");
+    }
+
+    window.mostrarInventario = async function() {
+      document.getElementById("contenido").innerHTML = `
+        <div class="section">
+          <h4>Inventario</h4>
+          <table><thead><tr><th>ID</th><th>Producto</th><th>Stock</th></tr></thead><tbody id="tablaInv"></tbody></table>
+        </div>`;
+      const { data } = await supabase.from("productos").select("id,nombre,stock");
+      document.getElementById("tablaInv").innerHTML = data.map(p => `<tr><td>${p.id}</td><td>${p.nombre}</td><td>${p.stock}</td></tr>`).join("");
+    }
+
+    window.mostrarVentas = async function() {
+      document.getElementById("contenido").innerHTML = `
+        <div class="section">
+          <h4>Registrar Venta</h4>
+          <input id="prodVenta" type="number" placeholder="ID producto">
+          <input id="cantVenta" type="number" placeholder="Cantidad">
+          <button onclick="hacerVenta()">Vender</button>
+        </div>`;
+    }
+
+    window.hacerVenta = async function() {
+      const idProd = parseInt(document.getElementById("prodVenta").value);
+      const cant = parseInt(document.getElementById("cantVenta").value);
+      await supabase.from("ventas").insert([{ producto_id: idProd, cantidad: cant }]);
+      alert("✅ Venta registrada");
+    }
+
+    window.mostrarCaja = function() {
+      document.getElementById("contenido").innerHTML = `
+        <div class="section"><h4>Caja</h4><p>Abrir y cerrar caja (pendiente implementación completa).</p></div>`;
+    }
+
+    window.mostrarReportes = async function() {
+      document.getElementById("contenido").innerHTML = `
+        <div class="section">
+          <h4>Reporte Diario</h4>
+          <table><thead><tr><th>Producto</th><th>Cantidad</th></tr></thead><tbody id="tablaRep"></tbody></table>
+        </div>`;
+      const { data } = await supabase.rpc("reporte_diario"); // suponiendo que existe función en tu schema
+      document.getElementById("tablaRep").innerHTML = data.map(r => `<tr><td>${r.producto}</td><td>${r.total}</td></tr>`).join("");
+    }
+
+    // ============ Logout ============
+    async function logout() {
+      await supabase.auth.signOut();
+      document.getElementById("dashboard").style.display = "none";
+      document.getElementById("loginBox").style.display = "block";
+      document.getElementById("resultado").innerHTML = "Sesión cerrada.";
     }
   </script>
 </body>
