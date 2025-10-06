@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
-  <title>Tiendita - Inicio</title>
+  <title>POS Tiendita - Login</title>
   <style>
     body { font-family: Arial, sans-serif; background: #f5f5f5; padding: 40px; }
     .login-box { max-width: 400px; margin: auto; padding: 20px; background: white; border-radius: 8px; box-shadow: 0 2px 6px rgba(0,0,0,0.2);}
@@ -10,56 +10,67 @@
     input { width: 100%; padding: 10px; margin: 8px 0; border: 1px solid #ccc; border-radius: 4px; }
     button { width: 100%; padding: 10px; background: #4CAF50; color: white; border: none; border-radius: 4px; cursor: pointer; }
     button:hover { background: #45a049; }
-    #resultado { margin-top: 20px; padding: 10px; background: #eef; border-radius: 4px; }
+    #resultado { margin-top: 20px; padding: 10px; background: #eef; border-radius: 4px; min-height: 40px; }
   </style>
 </head>
 <body>
   <div class="login-box">
-    <h2>Tiendita</h2>
+    <h2>POS Tiendita</h2>
     <input type="email" id="email" placeholder="Correo">
     <input type="password" id="password" placeholder="Contraseña">
-    <button onclick="login()">Iniciar sesión</button>
-    <div id="resultado"></div>
+    <button id="btnLogin">Iniciar sesión</button>
+    <div id="resultado">Esperando acción...</div>
   </div>
 
   <script type="module">
-    import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
+    import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
 
-    // Configuración Supabase (nuevo proyecto)
+    // 🔹 Configuración Supabase (tus claves nuevas)
     const SUPABASE_URL = "https://jmawangtuojrogjwhqwu.supabase.co";
     const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImptYXdhbmd0dW9qcm9nandocXd1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTk3MTA0ODYsImV4cCI6MjA3NTI4NjQ4Nn0.trwTULFQZRcsD0yWP45Aw2g2qsnAx409_5BoX3bomlA";
 
     const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-    // Función de login
+    document.getElementById("btnLogin").addEventListener("click", login);
+
     async function login() {
-      const email = document.getElementById("email").value;
-      const password = document.getElementById("password").value;
-
-      const { data, error } = await supabase.auth.signInWithPassword({ email, password });
       const resultado = document.getElementById("resultado");
+      resultado.innerHTML = "🔄 Intentando login...";
+      console.log("🔹 login() ejecutado");
 
-      if (error) {
-        resultado.innerHTML = "❌ Error en login: " + error.message;
+      const email = document.getElementById("email").value.trim();
+      const password = document.getElementById("password").value.trim();
+
+      if (!email || !password) {
+        resultado.innerHTML = "⚠️ Ingresa correo y contraseña";
         return;
       }
 
-      resultado.innerHTML = "✅ Login correcto, buscando perfil...";
+      const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+
+      if (error) {
+        resultado.innerHTML = "❌ Error en login: " + error.message;
+        console.error("Login error:", error);
+        return;
+      }
+
+      resultado.innerHTML = `✅ Login correcto: ${data.user.email}<br>Buscando perfil...`;
+      console.log("Usuario logueado:", data.user);
+
       obtenerPerfil(data.user.id);
     }
 
-    // Obtener perfil del usuario logueado
     async function obtenerPerfil(userId) {
+      const resultado = document.getElementById("resultado");
       const { data, error } = await supabase
         .from("profiles")
         .select("nombre, rol_id, rol:rol_id(nombre)")
         .eq("user_id", userId)
         .single();
 
-      const resultado = document.getElementById("resultado");
       if (error || !data) {
-        resultado.innerHTML = "⚠️ No se encontró perfil en la tabla.";
-        console.error(error);
+        resultado.innerHTML += "<br>⚠️ No se encontró perfil en la tabla.";
+        console.error("Perfil error:", error);
         return;
       }
 
@@ -67,7 +78,6 @@
         👤 Usuario: ${data.nombre}<br>
         🎭 Rol: ${data.rol.nombre}
       `;
-
       console.log("Perfil cargado:", data);
     }
   </script>
