@@ -1,346 +1,130 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8">
   <title>POS Tiendita</title>
   <style>
-    body { font-family: Arial, sans-serif; background: linear-gradient(135deg,#4caf50,#2e7d32); margin:0; height:100vh; display:flex; justify-content:center; align-items:center; }
-    .card { background:#fff; border-radius:10px; padding:30px; box-shadow:0 4px 10px rgba(0,0,0,0.3); width:500px; text-align:center; animation: fadeIn .7s ease; }
-    h2 { margin-bottom:20px; }
-    input, select { width:100%; padding:10px; margin:8px 0; border:1px solid #ccc; border-radius:5px; }
-    button { padding:10px 15px; margin:5px; border:none; border-radius:5px; cursor:pointer; background:#4CAF50; color:#fff; font-weight:bold; }
-    button:hover { background:#45a049; }
-    .logout { background:#f44336 !important; }
-    .menu { margin:15px 0; }
-    .menu button { background:#2196F3; }
-    table { width:100%; border-collapse:collapse; margin-top:10px; }
-    th, td { border:1px solid #ccc; padding:8px; text-align:center; }
-    #resultado { margin-top:15px; font-size:14px; color:#333; min-height:20px; }
-    @keyframes fadeIn { from { opacity:0; transform:translateY(-20px);} to {opacity:1; transform:translateY(0);} }
-    .hidden { display:none; }
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #4caf50;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+    .card {
+      background: white;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+      text-align: center;
+      width: 350px;
+    }
+    input {
+      width: 90%;
+      padding: 10px;
+      margin: 8px 0;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+    button {
+      background-color: #4caf50;
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+    #mensaje {
+      margin-top: 10px;
+      color: red;
+    }
   </style>
 </head>
 <body>
-  <!-- Login -->
-  <div class="card" id="loginBox">
+  <div class="card" id="loginCard">
     <h2>POS Tiendita</h2>
-    <input type="email" id="email" placeholder="Correo" autocomplete="username">
-    <input type="password" id="password" placeholder="Contraseña" autocomplete="current-password">
-    <button id="btnLogin">Iniciar sesión</button>
-    <div id="resultado">Listo para iniciar sesión…</div>
+    <input type="email" id="email" placeholder="Correo" />
+    <input type="password" id="password" placeholder="Contraseña" />
+    <button id="loginBtn">Iniciar sesión</button>
+    <p id="mensaje"></p>
   </div>
 
-  <!-- Dashboard -->
-  <div class="card hidden" id="dashboard">
-    <h2 id="userTitle"></h2>
-    <p id="userRole"></p>
-    <div class="menu" id="menuOpciones"></div>
-    <div id="vistas">
-      <!-- Productos -->
-      <div id="vistaProductos" class="hidden">
-        <h3>📦 Gestión de Productos</h3>
-        <form id="formProducto">
-          <input type="text" id="prodNombre" placeholder="Nombre" required>
-          <input type="number" id="prodPrecio" placeholder="Precio" required>
-          <input type="number" id="prodStock" placeholder="Stock inicial" required>
-          <button type="submit">Agregar Producto</button>
-        </form>
-        <table>
-          <thead><tr><th>Nombre</th><th>Precio</th><th>Stock</th></tr></thead>
-          <tbody id="tablaProductos"></tbody>
-        </table>
-      </div>
-
-      <!-- Inventario -->
-      <div id="vistaInventario" class="hidden">
-        <h3>📊 Movimientos de Inventario</h3>
-        <form id="formEntrada">
-          <input type="text" id="invProducto" placeholder="Producto ID" required>
-          <input type="number" id="invCantidad" placeholder="Cantidad" required>
-          <button type="submit">Registrar Entrada</button>
-        </form>
-        <table>
-          <thead><tr><th>Producto</th><th>Cantidad</th><th>Fecha</th></tr></thead>
-          <tbody id="tablaInventario"></tbody>
-        </table>
-      </div>
-
-      <!-- Reportes -->
-      <div id="vistaReportes" class="hidden">
-        <h3>📑 Reporte Diario</h3>
-        <button id="btnCargarReporte">Cargar Reporte</button>
-        <div id="reporteContenido"></div>
-      </div>
-
-      <!-- Ventas -->
-      <div id="vistaVentas" class="hidden">
-        <h3>🛒 Registrar Venta</h3>
-        <form id="formVenta">
-          <select id="ventaProducto"></select>
-          <input type="number" id="ventaCantidad" placeholder="Cantidad" required>
-          <button type="submit">Agregar al Carrito</button>
-        </form>
-        <h4>Carrito</h4>
-        <ul id="carrito"></ul>
-        <button id="btnFinalizarVenta">Finalizar Venta</button>
-      </div>
-
-      <!-- Caja -->
-      <div id="vistaCaja" class="hidden">
-        <h3>💵 Caja</h3>
-        <form id="formCaja">
-          <input type="number" id="cajaMonto" placeholder="Monto" required>
-          <select id="cajaTipo">
-            <option value="ingreso">Ingreso</option>
-            <option value="egreso">Egreso</option>
-          </select>
-          <button type="submit">Registrar Movimiento</button>
-        </form>
-        <table>
-          <thead><tr><th>Tipo</th><th>Monto</th><th>Fecha</th></tr></thead>
-          <tbody id="tablaCaja"></tbody>
-        </table>
-      </div>
-    </div>
-    <button class="logout" id="btnLogout">Cerrar sesión</button>
+  <div class="card" id="dashboard" style="display:none;">
+    <h2>Bienvenido</h2>
+    <p id="perfilInfo"></p>
+    <button id="logoutBtn">Cerrar sesión</button>
   </div>
 
   <script type="module">
     import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
 
-    // ---------- CONFIG ----------
-    // ⚠️ Asegúrate de que estas constantes tengan valores reales.
-    const SUPABASE_URL = "https://jmawangtuojrogjwhqwu.supabase.co";
-    const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImptYXdhbmd0dW9qcm9nandocXd1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTk3MTA0ODYsImV4cCI6MjA3NTI4NjQ4Nn0.trwTULFQZRcsD0yWP45Aw2g2qsnAx409_5BoX3bomlA";
+    // 👇 Reemplaza con TU URL y ANON KEY
+    const SUPABASE_URL = "https://piryuilemsfithcpkqtt.supabase.co";
+    const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBpcnl1aWxlbXNmaXRoY3BrcXR0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTk1MzU4OTUsImV4cCI6MjA3NTExMTg5NX0.r_Co8vX4gsWZjFCmkO804InIkmXY7GJs4vRiIvoyvy4";
+    const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
 
-    const resultado = document.getElementById("resultado");
+    const loginCard = document.getElementById("loginCard");
+    const dashboard = document.getElementById("dashboard");
+    const perfilInfo = document.getElementById("perfilInfo");
+    const mensaje = document.getElementById("mensaje");
 
-    if (!SUPABASE_URL || !SUPABASE_ANON_KEY) {
-      resultado.textContent = "❌ Falta SUPABASE_URL o SUPABASE_ANON_KEY. Revísalo.";
-      throw new Error("Missing Supabase config");
-    }
-
-    const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-    console.log("✅ Supabase client inicializado");
-
-    // Estado global
-    let carrito = [];
-
-    // Espera a que el DOM esté listo para enganchar eventos
-    window.addEventListener('DOMContentLoaded', () => {
-      console.log("🌐 DOM listo; enganchando eventos…");
-      document.getElementById("btnLogin").addEventListener("click", login);
-      document.getElementById("btnLogout").addEventListener("click", logout);
-      document.getElementById("btnCargarReporte").addEventListener("click", cargarReporte);
-      document.getElementById("btnFinalizarVenta").addEventListener("click", finalizarVenta);
-
-      // Formularios
-      document.getElementById("formProducto").addEventListener("submit", onAgregarProducto);
-      document.getElementById("formEntrada").addEventListener("submit", onRegistrarEntrada);
-      document.getElementById("formVenta").addEventListener("submit", onAgregarAlCarrito);
-      document.getElementById("formCaja").addEventListener("submit", onMovimientoCaja);
-    });
-
-    // ---------- LOGIN ----------
-    async function login() {
-      try {
-        resultado.textContent = "🔄 Intentando iniciar sesión…";
-        const email = document.getElementById("email").value.trim();
-        const password = document.getElementById("password").value.trim();
-        if (!email || !password) {
-          resultado.textContent = "⚠️ Ingresa correo y contraseña";
-          return;
-        }
-
-        const { data, error } = await supabase.auth.signInWithPassword({ email, password });
-        if (error) {
-          console.error("Login error:", error);
-          resultado.textContent = "❌ " + error.message;
-          return;
-        }
-        console.log("✅ Login OK:", data.user);
-        resultado.textContent = "✅ Login correcto. Cargando perfil…";
-        await cargarPerfil(data.user.id);
-      } catch (e) {
-        console.error(e);
-        resultado.textContent = "❌ Error inesperado en login.";
-      }
-    }
-
-    // ---------- PERFIL & MENÚ ----------
+    // 👇 Nueva función robusta
     async function cargarPerfil(userId) {
-      const { data, error } = await supabase
-        .from("profiles")
-        .select("nombre, rol_id, rol:rol_id(nombre)")
-        .eq("user_id", userId)
-        .single();
+      try {
+        console.log("Buscando perfil para UID:", userId);
 
-      if (error || !data) {
-        console.error("Perfil error:", error);
-        resultado.textContent = "⚠️ No se encontró perfil. Verifica tabla 'profiles'.";
-        return;
+        const { data, error } = await supabase
+          .from("profiles")
+          .select("user_id, email, role")
+          .eq("user_id", userId)
+          .single();
+
+        if (error || !data) {
+          console.error("Perfil no encontrado:", error);
+          mensaje.innerHTML = `⚠️ No se encontró perfil para UID: ${userId}`;
+          return;
+        }
+
+        console.log("Perfil encontrado:", data);
+        perfilInfo.innerHTML = `
+          <b>Email:</b> ${data.email}<br>
+          <b>Rol:</b> ${data.role}
+        `;
+        loginCard.style.display = "none";
+        dashboard.style.display = "block";
+        mensaje.innerHTML = "";
+      } catch (err) {
+        console.error("Error cargarPerfil:", err);
+        mensaje.innerHTML = "⚠️ Error al cargar perfil.";
       }
-
-      document.getElementById("loginBox").classList.add("hidden");
-      document.getElementById("dashboard").classList.remove("hidden");
-      document.getElementById("userTitle").innerText = "👤 " + data.nombre;
-      document.getElementById("userRole").innerText = "Rol: " + data.rol.nombre;
-
-      const menu = document.getElementById("menuOpciones");
-      menu.innerHTML = "";
-      if (data.rol.nombre === "admin") {
-        menu.innerHTML += `<button data-v="vistaProductos">📦 Productos</button>`;
-        menu.innerHTML += `<button data-v="vistaInventario">📊 Inventario</button>`;
-        menu.innerHTML += `<button data-v="vistaReportes">📑 Reportes</button>`;
-      } else {
-        menu.innerHTML += `<button data-v="vistaVentas">🛒 Ventas</button>`;
-        menu.innerHTML += `<button data-v="vistaCaja">💵 Caja</button>`;
-      }
-
-      // Navegación de vistas
-      menu.querySelectorAll("button").forEach(btn => {
-        btn.addEventListener("click", () => abrirVista(btn.dataset.v));
-      });
     }
 
-    // ---------- LOGOUT ----------
+    async function login() {
+      mensaje.innerHTML = "Iniciando sesión...";
+      const email = document.getElementById("email").value;
+      const password = document.getElementById("password").value;
+
+      const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+
+      if (error) {
+        console.error("Error login:", error);
+        mensaje.innerHTML = "❌ " + error.message;
+      } else {
+        const userId = data.user.id;
+        await cargarPerfil(userId);
+      }
+    }
+
     async function logout() {
       await supabase.auth.signOut();
-      document.getElementById("dashboard").classList.add("hidden");
-      document.getElementById("loginBox").classList.remove("hidden");
-      resultado.textContent = "👋 Sesión cerrada.";
-      console.log("🔒 Logout realizado");
+      dashboard.style.display = "none";
+      loginCard.style.display = "block";
     }
 
-    // ---------- VISTAS ----------
-    function abrirVista(idVista) {
-      document.querySelectorAll("#vistas > div").forEach(div => div.classList.add("hidden"));
-      const vista = document.getElementById(idVista);
-      if (!vista) return;
-      vista.classList.remove("hidden");
-
-      if (idVista === "vistaProductos") cargarProductos();
-      if (idVista === "vistaInventario") cargarInventario();
-      if (idVista === "vistaVentas") cargarProductosVenta();
-      if (idVista === "vistaCaja") cargarCaja();
-    }
-
-    // ---------- PRODUCTOS ----------
-    async function cargarProductos() {
-      const { data, error } = await supabase.from("productos").select("*").order("id", { ascending: true });
-      if (error) { console.error(error); return; }
-      const tabla = document.getElementById("tablaProductos");
-      tabla.innerHTML = (data || []).map(p => `
-        <tr><td>${p.nombre}</td><td>$${Number(p.precio).toFixed(2)}</td><td>${p.stock}</td></tr>
-      `).join("");
-    }
-
-    async function onAgregarProducto(e) {
-      e.preventDefault();
-      const nombre = document.getElementById("prodNombre").value.trim();
-      const precio = parseFloat(document.getElementById("prodPrecio").value);
-      const stock = parseInt(document.getElementById("prodStock").value, 10);
-      if (!nombre || isNaN(precio) || isNaN(stock)) return;
-
-      const { error } = await supabase.from("productos").insert([{ nombre, precio, stock }]);
-      if (error) { alert("Error: " + error.message); return; }
-      e.target.reset();
-      await cargarProductos();
-    }
-
-    // ---------- INVENTARIO ----------
-    async function cargarInventario() {
-      const { data, error } = await supabase.from("inventario_movimientos").select("*").order("fecha", { ascending: false });
-      if (error) { console.error(error); return; }
-      const tabla = document.getElementById("tablaInventario");
-      tabla.innerHTML = (data || []).map(m => `
-        <tr><td>${m.producto_id}</td><td>${m.cantidad}</td><td>${new Date(m.fecha).toLocaleString()}</td></tr>
-      `).join("");
-    }
-
-    async function onRegistrarEntrada(e) {
-      e.preventDefault();
-      const producto = parseInt(document.getElementById("invProducto").value, 10);
-      const cantidad = parseInt(document.getElementById("invCantidad").value, 10);
-      const { error } = await supabase.from("inventario_movimientos").insert([{ producto_id: producto, cantidad }]);
-      if (error) { alert("Error: " + error.message); return; }
-      e.target.reset();
-      await cargarInventario();
-    }
-
-    // ---------- REPORTES ----------
-    async function cargarReporte() {
-      const cont = document.getElementById("reporteContenido");
-      cont.textContent = "Cargando…";
-      const { data, error } = await supabase.rpc("reporte_diario");
-      if (error) { cont.textContent = "Error: " + error.message; return; }
-      cont.textContent = JSON.stringify(data, null, 2);
-    }
-
-    // ---------- VENTAS ----------
-    async function cargarProductosVenta() {
-      const { data, error } = await supabase.from("productos").select("*").order("nombre");
-      if (error) { console.error(error); return; }
-      const select = document.getElementById("ventaProducto");
-      select.innerHTML = (data || []).map(p => `<option value="${p.id}">${p.nombre} ($${Number(p.precio).toFixed(2)})</option>`).join("");
-      carrito = [];
-      renderCarrito();
-    }
-
-    function onAgregarAlCarrito(e) {
-      e.preventDefault();
-      const prodId = parseInt(document.getElementById("ventaProducto").value, 10);
-      const cantidad = parseInt(document.getElementById("ventaCantidad").value, 10);
-      if (!prodId || !cantidad || cantidad <= 0) return;
-      carrito.push({ id: prodId, cantidad });
-      renderCarrito();
-      e.target.reset();
-    }
-
-    function renderCarrito() {
-      const ul = document.getElementById("carrito");
-      ul.innerHTML = carrito.map((c, i) => `<li>#${c.id} × ${c.cantidad}</li>`).join("");
-    }
-
-    async function finalizarVenta() {
-      if (carrito.length === 0) return alert("Carrito vacío");
-
-      // Ejemplo mínimo: crea venta y descuenta stock vía trigger (si existe)
-      const { data: venta, error: errVenta } = await supabase.from("ventas").insert([{ fecha: new Date() }]).select("id").single();
-      if (errVenta) { alert("Error creando venta: " + errVenta.message); return; }
-
-      // Normalmente aquí insertarías en ventas_items cada línea del carrito
-      // y tus triggers se encargarían de descontar stock.
-      // Este ejemplo se deja mínimo intencionalmente.
-
-      carrito = [];
-      renderCarrito();
-      alert("✅ Venta registrada (id " + venta.id + ")");
-    }
-
-    // Exponer funciones usadas por onclick (por si las usas en atributos)
-    window.finalizarVenta = finalizarVenta;
-    window.abrirVista = abrirVista;
-
-    // ---------- CAJA ----------
-    async function cargarCaja() {
-      const { data, error } = await supabase.from("caja_movimientos").select("*").order("fecha", { ascending: false });
-      if (error) { console.error(error); return; }
-      const tabla = document.getElementById("tablaCaja");
-      tabla.innerHTML = (data || []).map(m => `
-        <tr><td>${m.tipo}</td><td>${Number(m.monto).toFixed(2)}</td><td>${new Date(m.fecha).toLocaleString()}</td></tr>
-      `).join("");
-    }
-
-    async function onMovimientoCaja(e) {
-      e.preventDefault();
-      const monto = parseFloat(document.getElementById("cajaMonto").value);
-      const tipo = document.getElementById("cajaTipo").value;
-      const { error } = await supabase.from("caja_movimientos").insert([{ monto, tipo }]);
-      if (error) { alert("Error: " + error.message); return; }
-      e.target.reset();
-      await cargarCaja();
-    }
+    document.getElementById("loginBtn").addEventListener("click", login);
+    document.getElementById("logoutBtn").addEventListener("click", logout);
   </script>
 </body>
 </html>
