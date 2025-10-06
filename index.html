@@ -3,30 +3,40 @@
 <head>
   <meta charset="UTF-8" />
   <title>POS Tiendita</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <style>
-    body { font-family: Arial, sans-serif; background: linear-gradient(135deg,#4caf50,#2e7d32); margin:0; height:100vh; display:flex; justify-content:center; align-items:center; }
-    .card { background:#fff; border-radius:12px; padding:30px; box-shadow:0 6px 18px rgba(0,0,0,.25); width:520px; text-align:center; animation: fadeIn .6s ease; }
-    h2 { margin-bottom:20px; }
-    input, select { width:100%; padding:12px; margin:8px 0; border:1px solid #ccd; border-radius:8px; font-size:15px; }
-    button { padding:12px 16px; margin:8px 4px 0; border:none; border-radius:8px; cursor:pointer; background:#4CAF50; color:#fff; font-weight:700; }
-    button:hover { background:#3fa34a; }
-    .logout { background:#f44336 !important; }
-    .menu button { background:#2196F3; }
-    table { width:100%; border-collapse:collapse; margin-top:10px; }
-    th, td { border:1px solid #e6e6e6; padding:8px; text-align:center; }
-    #resultado { margin-top:12px; font-size:14px; color:#333; min-height:22px; }
-    .warn { color:#b00020; font-weight:700; }
-    .ok { color:#2e7d32; font-weight:700; }
-    .hidden { display:none; }
-    @keyframes fadeIn { from { opacity:0; transform:translateY(-8px);} to {opacity:1; transform:translateY(0);} }
+    :root { --green:#4caf50; --greenD:#2e7d32; --blue:#2196F3; --red:#b00020; }
+    body { font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+           background: linear-gradient(135deg,var(--green),var(--greenD)); margin:0; min-height:100vh;
+           display:flex; align-items:center; justify-content:center; padding:24px; }
+    .card { width:100%; max-width:560px; background:#fff; border-radius:14px; padding:28px;
+            box-shadow:0 12px 28px rgba(0,0,0,.25); animation:fade .45s ease; }
+    h2 { margin:0 0 18px; font-size:28px; text-align:center; }
+    h3 { margin:10px 0 12px; }
+    input, select { width:100%; padding:12px; margin:8px 0; border:1px solid #d9d9df;
+                    border-radius:10px; font-size:15px; }
+    button { padding:12px 16px; border:0; border-radius:10px; cursor:pointer; font-weight:700;
+             background:var(--green); color:#fff; }
+    button:hover { filter:brightness(0.95); }
+    .secondary { background:var(--blue) }
+    .logout { background:#f44336 }
+    .menu { display:flex; flex-wrap:wrap; gap:10px; margin:12px 0 4px }
+    .menu button { background:var(--blue) }
+    table { width:100%; border-collapse:collapse; margin-top:10px; font-size:14px }
+    th, td { border:1px solid #ececf1; padding:8px; text-align:center }
+    .hidden { display:none }
+    #resultado { margin-top:10px; min-height:22px; font-size:14px }
+    .ok { color:var(--greenD); font-weight:700 }
+    .warn { color:var(--red); font-weight:700 }
+    @keyframes fade { from { opacity:0; transform:translateY(-6px) } to { opacity:1; transform:translateY(0) } }
   </style>
 </head>
 <body>
   <!-- Login -->
   <div class="card" id="loginBox">
     <h2>POS Tiendita</h2>
-    <input type="email" id="email" placeholder="Correo" autocomplete="username">
-    <input type="password" id="password" placeholder="Contraseña" autocomplete="current-password">
+    <input type="email" id="email" placeholder="Correo" autocomplete="username" />
+    <input type="password" id="password" placeholder="Contraseña" autocomplete="current-password" />
     <button id="btnLogin">Iniciar sesión</button>
     <div id="resultado">Listo para iniciar sesión…</div>
   </div>
@@ -36,27 +46,30 @@
     <h2 id="userTitle"></h2>
     <p id="userRole"></p>
     <div class="menu" id="menuOpciones"></div>
+
     <div id="vistas">
+      <!-- Productos -->
       <div id="vistaProductos" class="hidden">
         <h3>📦 Gestión de Productos</h3>
         <form id="formProducto">
-          <input type="text" id="prodNombre" placeholder="Nombre" required>
-          <input type="number" id="prodPrecio" placeholder="Precio" required>
-          <input type="number" id="prodStock" placeholder="Stock inicial" required>
-          <button type="submit">Agregar Producto</button>
+          <input type="text" id="prodNombre" placeholder="Nombre" required />
+          <input type="number" id="prodPrecio" placeholder="Precio" step="0.01" required />
+          <input type="number" id="prodStock" placeholder="Stock inicial" required />
+          <button type="submit" class="secondary">Agregar Producto</button>
         </form>
         <table>
-          <thead><tr><th>Nombre</th><th>Precio</th><th>Stock</th></tr></thead>
+          <thead><tr><th>ID</th><th>Nombre</th><th>Precio</th><th>Stock</th></tr></thead>
           <tbody id="tablaProductos"></tbody>
         </table>
       </div>
 
+      <!-- Inventario -->
       <div id="vistaInventario" class="hidden">
         <h3>📊 Movimientos de Inventario</h3>
         <form id="formEntrada">
-          <input type="text" id="invProducto" placeholder="Producto ID" required>
-          <input type="number" id="invCantidad" placeholder="Cantidad" required>
-          <button type="submit">Registrar Entrada</button>
+          <input type="number" id="invProducto" placeholder="Producto ID" required />
+          <input type="number" id="invCantidad" placeholder="Cantidad" required />
+          <button type="submit" class="secondary">Registrar Entrada</button>
         </form>
         <table>
           <thead><tr><th>Producto</th><th>Cantidad</th><th>Fecha</th></tr></thead>
@@ -64,33 +77,36 @@
         </table>
       </div>
 
+      <!-- Reportes -->
       <div id="vistaReportes" class="hidden">
         <h3>📑 Reporte Diario</h3>
-        <button id="btnCargarReporte">Cargar Reporte</button>
-        <div id="reporteContenido"></div>
+        <button id="btnCargarReporte" class="secondary">Cargar Reporte</button>
+        <pre id="reporteContenido" style="background:#fafafa;border:1px solid #eee;border-radius:10px;padding:12px;overflow:auto"></pre>
       </div>
 
+      <!-- Ventas -->
       <div id="vistaVentas" class="hidden">
         <h3>🛒 Registrar Venta</h3>
         <form id="formVenta">
           <select id="ventaProducto"></select>
-          <input type="number" id="ventaCantidad" placeholder="Cantidad" required>
-          <button type="submit">Agregar al Carrito</button>
+          <input type="number" id="ventaCantidad" placeholder="Cantidad" required />
+          <button type="submit" class="secondary">Agregar al Carrito</button>
         </form>
         <h4>Carrito</h4>
-        <ul id="carrito"></ul>
+        <ul id="carrito" style="margin:6px 0 12px"></ul>
         <button id="btnFinalizarVenta">Finalizar Venta</button>
       </div>
 
+      <!-- Caja -->
       <div id="vistaCaja" class="hidden">
         <h3>💵 Caja</h3>
         <form id="formCaja">
-          <input type="number" id="cajaMonto" placeholder="Monto" required>
+          <input type="number" id="cajaMonto" placeholder="Monto" step="0.01" required />
           <select id="cajaTipo">
             <option value="ingreso">Ingreso</option>
             <option value="egreso">Egreso</option>
           </select>
-          <button type="submit">Registrar Movimiento</button>
+          <button type="submit" class="secondary">Registrar Movimiento</button>
         </form>
         <table>
           <thead><tr><th>Tipo</th><th>Monto</th><th>Fecha</th></tr></thead>
@@ -98,233 +114,202 @@
         </table>
       </div>
     </div>
+
     <button class="logout" id="btnLogout">Cerrar sesión</button>
   </div>
 
   <script type="module">
     import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
 
-    // ========== CONFIG ==========
-    // ⚠️ Pega aquí, SIN espacios al final/ni saltos extras, los valores del MISMO proyecto.
-    const SUPABASE_URL_RAW = "https://jmawangtuojrogjwhqwu.supabase.co";
-    const SUPABASE_ANON_KEY_RAW = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImptYXdhbmd0dW9qcm9nandocXd1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTk3MTA0ODYsImV4cCI6MjA3NTI4NjQ4Nn0.trwTULFQZRcsD0yWP45Aw2g2qsnAx409_5BoX3bomlA";
-
-    // Normaliza: quita espacios invisibles y saltos (sin alterar los puntos del JWT)
-    const SUPABASE_URL = SUPABASE_URL_RAW.trim();
-    const SUPABASE_ANON_KEY = SUPABASE_ANON_KEY_RAW.trim();
+    /************* CONFIG: usa los del proyecto que probaste OK *************/
+    const SUPABASE_URL = "https://jmawangtuojrogjwhqwu.supabase.co".trim();
+    const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImptYXdhbmd0dW9qcm9nandocXd1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTk3MTA0ODYsImV4cCI6MjA3NTI4NjQ4Nn0.trwTULFQZRcsD0yWP45Aw2g2qsnAx409_5BoX3bomlA".trim();
+    /*************************************************************************/
 
     const resultado = document.getElementById("resultado");
 
-    // --- Diagnóstico de coincidencia URL <-> KEY ---
-    function getRefFromKey(k){
-      try { return JSON.parse(atob(k.split('.')[1])).ref; } catch { return null; }
-    }
-    function getRoleFromKey(k){
-      try { return JSON.parse(atob(k.split('.')[1])).role; } catch { return null; }
-    }
+    // ---------- Autodiagnóstico de URL/KEY ----------
+    function getJWT(k){ try { return JSON.parse(atob(k.split('.')[1])) } catch { return null } }
+    const jwt = getJWT(SUPABASE_ANON_KEY);
     const urlRef = (SUPABASE_URL.match(/^https:\/\/([^.]+)\.supabase\.co\/?$/)||[])[1];
-    const keyRef = getRefFromKey(SUPABASE_ANON_KEY);
-    const keyRole = getRoleFromKey(SUPABASE_ANON_KEY);
 
-    if (!SUPABASE_URL || !SUPABASE_ANON_KEY) {
-      resultado.innerHTML = '<span class="warn">❌ Falta SUPABASE_URL o SUPABASE_ANON_KEY.</span>';
-      throw new Error("Missing Supabase config");
-    }
-    if (!urlRef) {
-      resultado.innerHTML = '<span class="warn">❌ URL de Supabase inválida.</span>';
-      throw new Error("Bad Supabase URL");
-    }
-    if (!keyRef) {
-      resultado.innerHTML = '<span class="warn">❌ API key inválida (no se pudo leer el JWT).</span>';
-      throw new Error("Bad Supabase key");
-    }
-    if (urlRef !== keyRef) {
-      resultado.innerHTML = `<span class="warn">❌ URL y API key son de proyectos distintos.<br>URL ref: <b>${urlRef}</b> | KEY ref: <b>${keyRef}</b></span>`;
-      throw new Error("Project mismatch");
-    }
-    if (keyRole !== 'anon') {
-      resultado.innerHTML = `<span class="warn">❌ Estás usando una key que no es <b>anon</b> (role = ${keyRole}). Copia la <b>anon public</b> de Settings → API.</span>`;
-      throw new Error("Wrong key role");
-    }
+    if (!jwt) { resultado.innerHTML = '<span class="warn">❌ API key inválida (no es JWT).</span>'; throw new Error('bad key'); }
+    if (jwt.role !== 'anon') { resultado.innerHTML = `<span class="warn">❌ Key no es <b>anon</b> (role=${jwt.role}).</span>`; throw new Error('wrong role'); }
+    if (urlRef !== jwt.ref) { resultado.innerHTML = `<span class="warn">❌ URL y KEY son de proyectos distintos.<br>URL ref: <b>${urlRef}</b> | KEY ref: <b>${jwt.ref}</b></span>`; throw new Error('mismatch'); }
 
-    // Si todo está OK, inicializa
     const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-    resultado.innerHTML = '<span class="ok">✅ Conexión configurada.</span>';
-    console.log("✅ Supabase listo. Ref:", urlRef);
+    resultado.innerHTML = '<span class="ok">✅ Conexión a Supabase lista.</span>';
 
-    // ====== APP ======
+    // ---------- Estado y eventos ----------
     let carrito = [];
-
     window.addEventListener('DOMContentLoaded', () => {
-      document.getElementById("btnLogin").addEventListener("click", login);
-      document.getElementById("btnLogout").addEventListener("click", logout);
-      document.getElementById("btnCargarReporte").addEventListener("click", cargarReporte);
-      document.getElementById("btnFinalizarVenta").addEventListener("click", finalizarVenta);
+      byId("btnLogin").addEventListener("click", login);
+      byId("btnLogout").addEventListener("click", logout);
+      byId("btnCargarReporte").addEventListener("click", cargarReporte);
+      byId("btnFinalizarVenta").addEventListener("click", finalizarVenta);
 
-      document.getElementById("formProducto").addEventListener("submit", onAgregarProducto);
-      document.getElementById("formEntrada").addEventListener("submit", onRegistrarEntrada);
-      document.getElementById("formVenta").addEventListener("submit", onAgregarAlCarrito);
-      document.getElementById("formCaja").addEventListener("submit", onMovimientoCaja);
+      byId("formProducto").addEventListener("submit", onAgregarProducto);
+      byId("formEntrada").addEventListener("submit", onRegistrarEntrada);
+      byId("formVenta").addEventListener("submit", onAgregarAlCarrito);
+      byId("formCaja").addEventListener("submit", onMovimientoCaja);
     });
 
+    function byId(id){ return document.getElementById(id); }
+
+    // ---------- Login ----------
     async function login() {
       try {
-        resultado.textContent = "🔄 Intentando iniciar sesión…";
-        const email = document.getElementById("email").value.trim();
-        const password = document.getElementById("password").value.trim();
-        if (!email || !password) { resultado.textContent = "⚠️ Ingresa correo y contraseña"; return; }
+        resultado.textContent = "🔄 Iniciando…";
+        const email = byId("email").value.trim();
+        const password = byId("password").value.trim();
+        if (!email || !password) { resultado.innerHTML = '<span class="warn">⚠️ Ingresa correo y contraseña.</span>'; return; }
 
         const { data, error } = await supabase.auth.signInWithPassword({ email, password });
-        if (error) {
-          console.error(error);
-          resultado.innerHTML = `<span class="warn">❌ Error: ${error.message}</span>`;
-          return;
-        }
-        resultado.textContent = "✅ Login correcto. Cargando perfil…";
+        if (error) { resultado.innerHTML = `<span class="warn">❌ ${error.message}</span>`; return; }
+
+        resultado.textContent = "✅ Login OK. Cargando perfil…";
         await cargarPerfil(data.user.id);
       } catch (e) {
         console.error(e);
-        resultado.innerHTML = `<span class="warn">❌ Error inesperado.</span>`;
+        resultado.innerHTML = `<span class="warn">❌ Error inesperado en login.</span>`;
       }
     }
 
+    // ---------- Perfil / Menú ----------
     async function cargarPerfil(userId) {
       const { data, error } = await supabase
         .from("profiles")
         .select("nombre, rol_id, rol:rol_id(nombre)")
-        .eq("user_id", userId).single();
+        .eq("user_id", userId)
+        .single();
 
       if (error || !data) {
-        console.error("Perfil error:", error);
-        resultado.innerHTML = `<span class="warn">⚠️ No se encontró perfil. Revisa tabla <b>profiles</b> para UID: ${userId}</span>`;
+        console.error(error);
+        resultado.innerHTML = `<span class="warn">⚠️ No se encontró perfil para UID <b>${userId}</b>. Revisa la tabla <b>profiles</b>.</span>`;
         return;
       }
 
-      document.getElementById("loginBox").classList.add("hidden");
-      document.getElementById("dashboard").classList.remove("hidden");
-      document.getElementById("userTitle").innerText = "👤 " + data.nombre;
-      document.getElementById("userRole").innerText = "Rol: " + (data.rol?.nombre ?? "—");
+      byId("loginBox").classList.add("hidden");
+      byId("dashboard").classList.remove("hidden");
+      byId("userTitle").textContent = "👤 " + data.nombre;
+      byId("userRole").textContent  = "Rol: " + (data.rol?.nombre ?? "—");
 
-      const menu = document.getElementById("menuOpciones");
+      const menu = byId("menuOpciones");
       menu.innerHTML = "";
       if (data.rol?.nombre === "admin") {
-        menu.innerHTML += `<button data-v="vistaProductos">📦 Productos</button>`;
-        menu.innerHTML += `<button data-v="vistaInventario">📊 Inventario</button>`;
-        menu.innerHTML += `<button data-v="vistaReportes">📑 Reportes</button>`;
+        menu.innerHTML += `<button data-v="vistaProductos" class="secondary">📦 Productos</button>`;
+        menu.innerHTML += `<button data-v="vistaInventario" class="secondary">📊 Inventario</button>`;
+        menu.innerHTML += `<button data-v="vistaReportes" class="secondary">📑 Reportes</button>`;
       } else {
-        menu.innerHTML += `<button data-v="vistaVentas">🛒 Ventas</button>`;
-        menu.innerHTML += `<button data-v="vistaCaja">💵 Caja</button>`;
+        menu.innerHTML += `<button data-v="vistaVentas" class="secondary">🛒 Ventas</button>`;
+        menu.innerHTML += `<button data-v="vistaCaja" class="secondary">💵 Caja</button>`;
       }
-      menu.querySelectorAll("button").forEach(btn => btn.addEventListener("click", () => abrirVista(btn.dataset.v)));
+      menu.querySelectorAll("button").forEach(b => b.addEventListener("click", () => abrirVista(b.dataset.v)));
     }
 
     async function logout() {
       await supabase.auth.signOut();
-      document.getElementById("dashboard").classList.add("hidden");
-      document.getElementById("loginBox").classList.remove("hidden");
+      byId("dashboard").classList.add("hidden");
+      byId("loginBox").classList.remove("hidden");
       resultado.textContent = "👋 Sesión cerrada.";
     }
 
-    function abrirVista(idVista) {
-      document.querySelectorAll("#vistas > div").forEach(div => div.classList.add("hidden"));
-      const vista = document.getElementById(idVista);
-      if (!vista) return;
-      vista.classList.remove("hidden");
-      if (idVista === "vistaProductos") cargarProductos();
-      if (idVista === "vistaInventario") cargarInventario();
-      if (idVista === "vistaVentas") cargarProductosVenta();
-      if (idVista === "vistaCaja") cargarCaja();
+    function abrirVista(id) {
+      document.querySelectorAll("#vistas > div").forEach(d => d.classList.add("hidden"));
+      const v = byId(id); if (!v) return;
+      v.classList.remove("hidden");
+      if (id === "vistaProductos") cargarProductos();
+      if (id === "vistaInventario") cargarInventario();
+      if (id === "vistaVentas")     cargarProductosVenta();
+      if (id === "vistaCaja")       cargarCaja();
     }
 
+    // ---------- Productos ----------
     async function cargarProductos() {
-      const { data, error } = await supabase.from("productos").select("*").order("id", { ascending: true });
+      const { data, error } = await supabase.from("productos").select("*").order("id", { ascending:true });
       if (error) { console.error(error); return; }
-      document.getElementById("tablaProductos").innerHTML =
-        (data || []).map(p => `<tr><td>${p.nombre}</td><td>$${Number(p.precio).toFixed(2)}</td><td>${p.stock}</td></tr>`).join("");
+      byId("tablaProductos").innerHTML = (data||[]).map(p =>
+        `<tr><td>${p.id}</td><td>${p.nombre}</td><td>$${Number(p.precio).toFixed(2)}</td><td>${p.stock}</td></tr>`
+      ).join("");
     }
-
-    async function onAgregarProducto(e) {
+    async function onAgregarProducto(e){
       e.preventDefault();
-      const nombre = document.getElementById("prodNombre").value.trim();
-      const precio = parseFloat(document.getElementById("prodPrecio").value);
-      const stock = parseInt(document.getElementById("prodStock").value, 10);
-      if (!nombre || isNaN(precio) || isNaN(stock)) return;
+      const nombre = byId("prodNombre").value.trim();
+      const precio = parseFloat(byId("prodPrecio").value);
+      const stock  = parseInt(byId("prodStock").value, 10);
       const { error } = await supabase.from("productos").insert([{ nombre, precio, stock }]);
       if (error) { alert("Error: " + error.message); return; }
-      e.target.reset();
-      await cargarProductos();
+      e.target.reset(); cargarProductos();
     }
 
+    // ---------- Inventario ----------
     async function cargarInventario() {
-      const { data, error } = await supabase.from("inventario_movimientos").select("*").order("fecha", { ascending: false });
+      const { data, error } = await supabase.from("inventario_movimientos").select("*").order("fecha", { ascending:false });
       if (error) { console.error(error); return; }
-      document.getElementById("tablaInventario").innerHTML =
-        (data || []).map(m => `<tr><td>${m.producto_id}</td><td>${m.cantidad}</td><td>${new Date(m.fecha).toLocaleString()}</td></tr>`).join("");
+      byId("tablaInventario").innerHTML = (data||[]).map(m =>
+        `<tr><td>${m.producto_id}</td><td>${m.cantidad}</td><td>${new Date(m.fecha).toLocaleString()}</td></tr>`
+      ).join("");
     }
-
-    async function onRegistrarEntrada(e) {
+    async function onRegistrarEntrada(e){
       e.preventDefault();
-      const producto = parseInt(document.getElementById("invProducto").value, 10);
-      const cantidad = parseInt(document.getElementById("invCantidad").value, 10);
+      const producto = parseInt(byId("invProducto").value, 10);
+      const cantidad = parseInt(byId("invCantidad").value, 10);
       const { error } = await supabase.from("inventario_movimientos").insert([{ producto_id: producto, cantidad }]);
       if (error) { alert("Error: " + error.message); return; }
-      e.target.reset();
-      await cargarInventario();
+      e.target.reset(); cargarInventario();
     }
 
-    async function cargarReporte() {
-      const cont = document.getElementById("reporteContenido");
-      cont.textContent = "Cargando…";
+    // ---------- Reportes ----------
+    async function cargarReporte(){
+      const pre = byId("reporteContenido");
+      pre.textContent = "Cargando…";
       const { data, error } = await supabase.rpc("reporte_diario");
-      if (error) { cont.textContent = "Error: " + error.message; return; }
-      cont.textContent = JSON.stringify(data, null, 2);
+      if (error) { pre.textContent = "Error: " + error.message; return; }
+      pre.textContent = JSON.stringify(data, null, 2);
     }
 
-    async function cargarProductosVenta() {
+    // ---------- Ventas ----------
+    async function cargarProductosVenta(){
       const { data, error } = await supabase.from("productos").select("*").order("nombre");
       if (error) { console.error(error); return; }
-      const select = document.getElementById("ventaProducto");
-      select.innerHTML = (data || []).map(p => `<option value="${p.id}">${p.nombre} ($${Number(p.precio).toFixed(2)})</option>`).join("");
+      const sel = byId("ventaProducto");
+      sel.innerHTML = (data||[]).map(p => `<option value="${p.id}">${p.nombre} ($${Number(p.precio).toFixed(2)})</option>`).join("");
       carrito = []; renderCarrito();
     }
-
-    function onAgregarAlCarrito(e) {
+    function onAgregarAlCarrito(e){
       e.preventDefault();
-      const id = parseInt(document.getElementById("ventaProducto").value, 10);
-      const cantidad = parseInt(document.getElementById("ventaCantidad").value, 10);
-      if (!id || !cantidad || cantidad <= 0) return;
+      const id = parseInt(byId("ventaProducto").value,10);
+      const cantidad = parseInt(byId("ventaCantidad").value,10);
+      if (!id || !cantidad || cantidad<=0) return;
       carrito.push({ id, cantidad }); renderCarrito(); e.target.reset();
     }
-
-    function renderCarrito() {
-      document.getElementById("carrito").innerHTML =
-        carrito.map(c => `<li>#${c.id} × ${c.cantidad}</li>`).join("");
+    function renderCarrito(){
+      byId("carrito").innerHTML = carrito.map(c => `<li>#${c.id} × ${c.cantidad}</li>`).join("");
     }
-
-    async function finalizarVenta() {
-      if (carrito.length === 0) return alert("Carrito vacío");
-      const { data: venta, error } = await supabase.from("ventas").insert([{ fecha: new Date() }]).select("id").single();
+    async function finalizarVenta(){
+      if (carrito.length===0) return alert("Carrito vacío");
+      const { data, error } = await supabase.from("ventas").insert([{ fecha:new Date() }]).select("id").single();
       if (error) { alert("Error creando venta: " + error.message); return; }
-      carrito = []; renderCarrito(); alert("✅ Venta registrada (id " + venta.id + ")");
+      carrito = []; renderCarrito(); alert("✅ Venta registrada (id " + data.id + ")");
     }
-
-    window.finalizarVenta = finalizarVenta;
     window.abrirVista = abrirVista;
+    window.finalizarVenta = finalizarVenta;
 
-    async function cargarCaja() {
-      const { data, error } = await supabase.from("caja_movimientos").select("*").order("fecha", { ascending: false });
+    // ---------- Caja ----------
+    async function cargarCaja(){
+      const { data, error } = await supabase.from("caja_movimientos").select("*").order("fecha",{ascending:false});
       if (error) { console.error(error); return; }
-      document.getElementById("tablaCaja").innerHTML =
-        (data || []).map(m => `<tr><td>${m.tipo}</td><td>${Number(m.monto).toFixed(2)}</td><td>${new Date(m.fecha).toLocaleString()}</td></tr>`).join("");
+      byId("tablaCaja").innerHTML = (data||[]).map(m =>
+        `<tr><td>${m.tipo}</td><td>${Number(m.monto).toFixed(2)}</td><td>${new Date(m.fecha).toLocaleString()}</td></tr>`
+      ).join("");
     }
-
-    async function onMovimientoCaja(e) {
+    async function onMovimientoCaja(e){
       e.preventDefault();
-      const monto = parseFloat(document.getElementById("cajaMonto").value);
-      const tipo = document.getElementById("cajaTipo").value;
+      const monto = parseFloat(byId("cajaMonto").value);
+      const tipo  = byId("cajaTipo").value;
       const { error } = await supabase.from("caja_movimientos").insert([{ monto, tipo }]);
       if (error) { alert("Error: " + error.message); return; }
-      e.target.reset(); await cargarCaja();
+      e.target.reset(); cargarCaja();
     }
   </script>
 </body>
