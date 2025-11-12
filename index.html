@@ -197,398 +197,163 @@
   </div>
 
   <!-- Quagga fallback se cargará dinámicamente cuando haga falta -->
-  <script type="module">
-    import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
+<script type="module">
+  import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
 
-    /*************** CONFIG: PON AQUÍ TUS CREDENCIALES ***************/
-    const SUPABASE_URL = 'https://gnguvdqdhqrupkkrtdmp.supabase.co';
-    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImduZ3V2ZHFkaHFydXBra3J0ZG1wIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTk3NjEwNTIsImV4cCI6MjA3NTMzNzA1Mn0.a5XbjmM5eyREKI1j0HrZe36Gz52SAz0_3_jzjW8bYo0';
-    /*****************************************************************/
+  const SUPABASE_URL = 'https://gnguvdqdhqrupkkrtdmp.supabase.co';
+  const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImduZ3V2ZHFkaHFydXBra3J0ZG1wIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTk3NjEwNTIsImV4cCI6MjA3NTMzNzA1Mn0.a5XbjmM5eyREKI1j0HrZe36Gz52SAz0_3_jzjW8bYo0';
+  const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-    const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+  let carrito = [];
+  let productosCache = new Map();
 
-    // ------------ Estado ------------
-    let carrito = [];
-    let productosCache = new Map(); // id -> {nombre, precio, stock, stock_minimo, codigo_barras}
+  const $ = (id)=>document.getElementById(id);
+  const beep = ()=> new Audio('https://actions.google.com/sounds/v1/cartoon/wood_plank_flicks.ogg').play();
+  const peso = (n)=> Number(n).toFixed(2);
 
-    // ------------ Utilidades UI ------------
-    const $ = (id)=>document.getElementById(id);
-    const beep = ()=> new Audio('https://actions.google.com/sounds/v1/cartoon/wood_plank_flicks.ogg').play();
-    const peso = (n)=> Number(n).toFixed(2);
+  // ---------- LOGIN ----------
+  $('btnLogin').addEventListener('click', async ()=>{
+    const email = $('email').value.trim();
+    const password = $('password').value.trim();
+    const out = $('resultado');
+    out.textContent = 'Iniciando…';
+    const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+    if (error) { out.innerHTML = `<span class="warn">${error.message}</span>`; return; }
+    out.innerHTML = '<span class="ok">Login OK</span>';
+    await cargarPerfil(data.user.id);
+  });
 
-    // ------------ Login ------------
-    $('btnLogin').addEventListener('click', async ()=>{
-      const email = $('email').value.trim();
-      const password = $('password').value.trim();
-      const out = $('resultado');
-      out.textContent = 'Iniciando…';
-      const { data, error } = await supabase.auth.signInWithPassword({ email, password });
-      if (error) { out.innerHTML = '<span class=\"warn\">'+error.message+'</span>'; return; }
-      out.innerHTML = '<span class=\"ok\">Login OK</span>';
-      await cargarPerfil(data.user.id);
-    });
+  $('btnLogout').addEventListener('click', async ()=>{
+    await supabase.auth.signOut();
+    $('dashboard').classList.add('hidden');
+    $('loginBox').classList.remove('hidden');
+    $('resultado').textContent = '👋 Sesión cerrada.';
+  });
 
-    $('btnLogout').addEventListener('click', async ()=>{
-      await supabase.auth.signOut();
-      $('dashboard').classList.add('hidden');
-      $('loginBox').classList.remove('hidden');
-      $('resultado').textContent = '👋 Sesión cerrada.';
-    });
+  async function cargarPerfil(uid){
+    const { data, error } = await supabase
+      .from('profiles')
+      .select('nombre, rol_id, rol:rol_id(nombre)')
+      .eq('user_id', uid).single();
 
-    async function cargarPerfil(uid){
-      const { data, error } = await supabase
-        .from('profiles')
-        .select('nombre, rol_id, rol:rol_id(nombre)')
-        .eq('user_id', uid).single();
+    if (error || !data) { $('resultado').innerHTML = '<span class="warn">No se encontró perfil (profiles)</span>'; return; }
 
-      if (error || !data) { $('resultado').innerHTML = '<span class=\"warn\">No se encontró perfil (profiles)</span>'; return; }
+    $('loginBox').classList.add('hidden');
+    $('dashboard').classList.remove('hidden');
+    $('userTitle').textContent = '👤 ' + data.nombre;
+    $('userRole').textContent  = 'Rol: ' + (data.rol?.nombre ?? '—');
 
-      $('loginBox').classList.add('hidden');
-      $('dashboard').classList.remove('hidden');
-      $('userTitle').textContent = '👤 ' + data.nombre;
-      $('userRole').textContent  = 'Rol: ' + (data.rol?.nombre ?? '—');
-
-      const menu = $('menuOpciones'); menu.innerHTML = '';
-      if (data.rol?.nombre === 'admin') {
-        menu.innerHTML += <button class="secondary" data-v="vistaProductos">📦 Productos</button>;
-        menu.innerHTML += <button class="secondary" data-v="vistaInventario">📊 Inventario</button>;
-        menu.innerHTML += <button class="secondary" data-v="vistaReportes">📑 Reportes</button>;
-        menu.innerHTML += <button class="secondary" data-v="vistaVentas">🛒 Ventas</button>;
-        menu.innerHTML += <button class="secondary" data-v="vistaCaja">💵 Caja</button>;
-        menu.innerHTML += <button class="secondary" data-v="vistaHistorial">🧾 Historial</button>;
-      } else {
-        menu.innerHTML += <button class="secondary" data-v="vistaVentas">🛒 Ventas</button>;
-        menu.innerHTML += <button class="secondary" data-v="vistaCaja">💵 Caja</button>;
-        menu.innerHTML += <button class="secondary" data-v="vistaHistorial">🧾 Historial</button>;
-      }
-      menu.querySelectorAll('button').forEach(b=> b.addEventListener('click', ()=> abrirVista(b.dataset.v)));
-      abrirVista('vistaVentas'); // abre ventas de inicio
+    const menu = $('menuOpciones'); menu.innerHTML = '';
+    if (data.rol?.nombre === 'admin') {
+      menu.innerHTML += `<button class="secondary" data-v="vistaProductos">📦 Productos</button>`;
+      menu.innerHTML += `<button class="secondary" data-v="vistaInventario">📊 Inventario</button>`;
+      menu.innerHTML += `<button class="secondary" data-v="vistaReportes">📑 Reportes</button>`;
+      menu.innerHTML += `<button class="secondary" data-v="vistaVentas">🛒 Ventas</button>`;
+      menu.innerHTML += `<button class="secondary" data-v="vistaCaja">💵 Caja</button>`;
+      menu.innerHTML += `<button class="secondary" data-v="vistaHistorial">🧾 Historial</button>`;
+    } else {
+      menu.innerHTML += `<button class="secondary" data-v="vistaVentas">🛒 Ventas</button>`;
+      menu.innerHTML += `<button class="secondary" data-v="vistaCaja">💵 Caja</button>`;
+      menu.innerHTML += `<button class="secondary" data-v="vistaHistorial">🧾 Historial</button>`;
     }
+    menu.querySelectorAll('button').forEach(b=> b.addEventListener('click', ()=> abrirVista(b.dataset.v)));
+    abrirVista('vistaVentas');
+  }
 
-    function abrirVista(id){
-      document.querySelectorAll('#vistas > div').forEach(d=>d.classList.add('hidden'));
-      const el = $(id); if (!el) return;
-      el.classList.remove('hidden');
-      if (id==='vistaProductos') cargarProductos();
-      if (id==='vistaInventario') cargarInventario();
-      if (id==='vistaVentas') cargarProductosVenta();
-      if (id==='vistaCaja') cargarCaja();
-      if (id==='vistaHistorial') cargarHistorial();
+  function abrirVista(id){
+    document.querySelectorAll('#vistas > div').forEach(d=>d.classList.add('hidden'));
+    const el = $(id); if (!el) return;
+    el.classList.remove('hidden');
+    if (id==='vistaProductos') cargarProductos();
+    if (id==='vistaInventario') cargarInventario();
+    if (id==='vistaVentas') cargarProductosVenta();
+    if (id==='vistaCaja') cargarCaja();
+    if (id==='vistaHistorial') cargarHistorial();
+  }
+
+  // ============ PRODUCTOS ============
+  async function cargarProductos(){
+    const { data, error } = await supabase.from('productos').select('*').order('id');
+    if (error) { console.error(error); return; }
+    productosCache.clear();
+    $('tablaProductos').innerHTML = (data||[]).map(p=>{
+      productosCache.set(p.id, p);
+      const low = (p.stock < (p.stock_minimo ?? 5)) ? 'low' : '';
+      return `<tr class="${low}"><td>${p.id}</td><td>${p.nombre}</td><td>$${peso(p.precio)}</td><td>${p.stock}</td><td>${p.stock_minimo??5}</td><td>${p.codigo_barras||''}</td></tr>`;
+    }).join('');
+  }
+
+  // ============ VENTAS ============
+  async function cargarProductosVenta(){
+    const { data, error } = await supabase.from('productos').select('*').order('nombre');
+    if (error) { console.error(error); return; }
+    const sel = $('ventaProducto'); sel.innerHTML='';
+    productosCache.clear();
+    for (const p of (data||[])) {
+      productosCache.set(p.id, p);
+      sel.innerHTML += `<option value="${p.id}">${p.nombre} ($${peso(p.precio)})</option>`;
     }
+    carrito=[]; renderCarrito();
+  }
 
-    // ============ Productos ============
-    async function cargarProductos(){
-      const { data, error } = await supabase.from('productos').select('*').order('id');
-      if (error) { console.error(error); return; }
-      productosCache.clear();
-      $('tablaProductos').innerHTML = (data||[]).map(p=>{
-        productosCache.set(p.id, p);
-        const low = (p.stock < (p.stock_minimo ?? 5)) ? 'low' : '';
-        return <tr class="${low}"><td>${p.id}</td><td>${p.nombre}</td><td>$${peso(p.precio)}</td><td>${p.stock}</td><td>${p.stock_minimo??5}</td><td>${p.codigo_barras||''}</td></tr>;
-      }).join('');
+  $('btnBuscarCodigo').addEventListener('click', async ()=>{
+    const code = $('codigoBarras').value.trim(); if (!code) return;
+    await buscarYAgregarPorCodigo(code); $('codigoBarras').value='';
+  });
+
+  async function buscarYAgregarPorCodigo(code){
+    let found=null;
+    const rpc = await supabase.rpc('buscar_producto_por_codigo', { p_codigo: code });
+    if (!rpc.error && rpc.data?.length) found = rpc.data[0];
+    if (!found) {
+      const { data } = await supabase.from('productos').select('id,nombre,precio,stock,stock_minimo').eq('codigo_barras', code).maybeSingle();
+      found = data || null;
     }
+    if (!found) { alert('No se encontró el producto'); return; }
+    addToCart(found.id, 1, found.precio, found.nombre);
+    beep();
+  }
 
-    // Guardar producto: si trae código → RPC upsert (admin)
-    $('formProducto').addEventListener('submit', async (e)=>{
-      e.preventDefault();
-      const nombre = $('prodNombre').value.trim();
-      const precio = parseFloat($('prodPrecio').value);
-      const stock = parseInt($('prodStock').value||'0',10);
-      const codigo = $('prodCodigo').value.trim();
+  $('formVenta').addEventListener('submit', (e)=>{
+    e.preventDefault();
+    const id = parseInt($('ventaProducto').value,10);
+    const cant = parseInt($('ventaCantidad').value,10);
+    const p = productosCache.get(id);
+    addToCart(id, cant, p?.precio, p?.nombre);
+    e.target.reset();
+  });
 
-      try {
-        if (codigo) {
-          const { error } = await supabase.rpc('upsert_producto_por_codigo', {
-            p_nombre: nombre, p_precio: precio, p_codigo: codigo, p_stock_inicial: stock
-          });
-          if (error) throw error;
-        } else {
-          const { error } = await supabase.from('productos').insert([{ nombre, precio, stock }]);
-          if (error) throw error;
-        }
-        e.target.reset();
-        await cargarProductos();
-        alert('✅ Producto guardado');
-      } catch(err){ alert('❌ '+err.message) }
-    });
+  function addToCart(id, cantidad=1, precio, nombre){
+    if (!id || !cantidad || cantidad<=0) return;
+    const i = carrito.findIndex(x=>x.id===id);
+    if (i>=0) carrito[i].cantidad += cantidad;
+    else carrito.push({ id, nombre: nombre ?? `#${id}`, cantidad, precio: Number(precio ?? 0) });
+    renderCarrito();
+  }
 
-    // CSV: nombre,precio,stock,codigo_barras
-    $('btnImport').addEventListener('click', ()=>{
-      const f = $('csvFile').files?.[0];
-      if (!f) return alert('Selecciona un CSV');
-      const r = new FileReader();
-      r.onload = async ()=>{
-        const rows = r.result.split(/\r?\n/).map(l=>l.trim()).filter(Boolean);
-        for (const line of rows) {
-          const [nombre,precio,stock,codigo] = line.split(',').map(s=>s?.trim());
-          if (!nombre || !precio || !stock) continue;
-          try {
-            if (codigo) {
-              await supabase.rpc('upsert_producto_por_codigo', {
-                p_nombre: nombre, p_precio: parseFloat(precio), p_codigo: codigo, p_stock_inicial: parseInt(stock,10)
-              });
-            } else {
-              await supabase.from('productos').insert([{ nombre, precio: parseFloat(precio), stock: parseInt(stock,10) }]);
-            }
-          } catch {}
-        }
-        await cargarProductos();
-        alert('✅ Importación completada');
-      };
-      r.readAsText(f);
-    });
+  function renderCarrito(){
+    $('tablaCarrito').innerHTML = carrito.map(c=>
+      `<tr><td>${c.nombre}</td><td>${c.cantidad}</td><td>$${peso(c.precio)}</td><td>$${peso(c.cantidad*c.precio)}</td></tr>`
+    ).join('');
+    $('totalVenta').textContent = peso( carrito.reduce((s,c)=>s+c.cantidad*c.precio,0) );
+  }
 
-    // Escáner para el campo de producto (rellena #prodCodigo)
-    let prodStream=null, prodDetector=null, prodScanning=false;
-    $('btnScanProducto').addEventListener('click', async ()=>{
-      if (prodScanning) return stopScanProd();
-      await startScanProd();
-    });
-    async function startScanProd(){
-      const video = $('previewProd');
-      video.classList.remove('hidden');
-      prodStream = await navigator.mediaDevices.getUserMedia({ video:{ facingMode: { ideal:'environment' } }, audio:false });
-      video.srcObject = prodStream;
-      if ('BarcodeDetector' in window) {
-        try { prodDetector = new window.BarcodeDetector({ formats:['ean_13','ean_8','upc_a','code_128','qr_code'] }); }
-        catch { prodDetector = new window.BarcodeDetector(); }
-        prodScanning = true;
-        tickProd(video);
-      } else { alert('Tu navegador no soporta el escáner nativo aquí. Usa Chrome Android.'); }
-    }
-    function stopScanProd(){
-      prodScanning=false;
-      if (prodStream) { prodStream.getTracks().forEach(t=>t.stop()); prodStream=null; }
-      $('previewProd').classList.add('hidden');
-    }
-    async function tickProd(video){
-      while (prodScanning && prodDetector) {
-        try {
-          const canvas = document.createElement('canvas');
-          canvas.width = video.videoWidth; canvas.height = video.videoHeight;
-          canvas.getContext('2d').drawImage(video,0,0,canvas.width,canvas.height);
-          const bmp = await createImageBitmap(canvas);
-          const codes = await prodDetector.detect(bmp);
-          if (codes?.length) {
-            const code = String(codes[0].rawValue||'');
-            if (code) {
-              stopScanProd(); $('prodCodigo').value = code; beep();
-              break;
-            }
-          }
-        } catch {}
-        await new Promise(r=>setTimeout(r,200));
-      }
-    }
+  $('btnFinalizarVenta').addEventListener('click', async ()=>{
+    if (!carrito.length) return alert('Carrito vacío');
+    const { data:venta, error:errV } = await supabase.from('ventas').insert({}).select('id').single();
+    if (errV) { alert('Error creando venta: '+errV.message); return; }
 
-    // ============ Ventas ============
-    // cargar productos al select (y cachearlos para precios)
-    async function cargarProductosVenta(){
-      const { data, error } = await supabase.from('productos').select('*').order('nombre');
-      if (error) { console.error(error); return; }
-      const sel = $('ventaProducto'); sel.innerHTML='';
-      productosCache.clear();
-      for (const p of (data||[])) {
-        productosCache.set(p.id, p);
-        sel.innerHTML += <option value="${p.id}">${p.nombre} ($${peso(p.precio)})</option>;
-      }
-      carrito=[]; renderCarrito();
-    }
-
-    // buscar por código + agregar al carrito
-    $('btnBuscarCodigo').addEventListener('click', async ()=>{
-      const code = $('codigoBarras').value.trim(); if (!code) return;
-      await buscarYAgregarPorCodigo(code); $('codigoBarras').value='';
-    });
-
-    async function buscarYAgregarPorCodigo(code){
-      // intenta usar RPC (más rápido); si falla, select directo
-      let found=null;
-      const rpc = await supabase.rpc('buscar_producto_por_codigo', { p_codigo: code });
-      if (!rpc.error && rpc.data?.length) found = rpc.data[0];
-      if (!found) {
-        const { data } = await supabase.from('productos').select('id,nombre,precio,stock,stock_minimo').eq('codigo_barras', code).maybeSingle();
-        found = data || null;
-      }
-      if (!found) { alert('No se encontró el producto'); return; }
-      addToCart(found.id, 1, found.precio, found.nombre);
-      // highlight fila en carrito
-      const lastRow = $('tablaCarrito').lastElementChild; if (lastRow) lastRow.classList.add('scan-flash');
-      beep();
-    }
-
-    // escáner con cámara para ventas (BarcodeDetector → Quagga)
-    let stream=null, scanning=false, detector=null, quaggaLoaded=false;
-    $('btnStartScanner').addEventListener('click', async ()=>{
-      if (scanning) return stopScanner();
-      await startScanner();
-    });
-
-    async function startScanner(){
-      const video = $('preview');
-      video.classList.remove('hidden');
-      stream = await navigator.mediaDevices.getUserMedia({ video:{ facingMode:{ ideal:'environment' } }, audio:false });
-      video.srcObject = stream;
-
-      if ('BarcodeDetector' in window) {
-        try { detector = new window.BarcodeDetector({ formats:['ean_13','ean_8','upc_a','code_128','qr_code'] }); }
-        catch { detector = new window.BarcodeDetector(); }
-        scanning = true; tick(video);
-      } else {
-        await loadQuagga(); startQuagga(video);
-      }
-    }
-    function stopScanner(){
-      scanning=false;
-      if (stream) { stream.getTracks().forEach(t=>t.stop()); stream=null; }
-      $('preview').classList.add('hidden');
-      if (window.Quagga) { try { window.Quagga.stop(); } catch {} }
-    }
-    async function tick(video){
-      while (scanning && detector) {
-        try {
-          const canvas = document.createElement('canvas');
-          canvas.width = video.videoWidth; canvas.height = video.videoHeight;
-          canvas.getContext('2d').drawImage(video,0,0,canvas.width,canvas.height);
-          const bmp = await createImageBitmap(canvas);
-          const codes = await detector.detect(bmp);
-          if (codes?.length) {
-            const code = String(codes[0].rawValue||'');
-            if (code) {
-              stopScanner(); await buscarYAgregarPorCodigo(code); break;
-            }
-          }
-        } catch {}
-        await new Promise(r=>setTimeout(r,180));
-      }
-    }
-    async function loadQuagga(){
-      if (quaggaLoaded) return;
-      await new Promise((res,rej)=>{
-        const s=document.createElement('script');
-        s.src='https://cdn.jsdelivr.net/npm/quagga@0.12.1/dist/quagga.min.js';
-        s.onload=()=>{ quaggaLoaded=true; res(); };
-        s.onerror=rej; document.body.appendChild(s);
+    for (const c of carrito) {
+      const precioUnit = Number(c.precio ?? productosCache.get(c.id)?.precio ?? 0);
+      const { error } = await supabase.from('ventas_items').insert({
+        venta_id: venta.id, producto_id: c.id, cantidad: c.cantidad, precio_unitario: precioUnit
       });
+      if (error) { alert('Error agregando item: '+error.message); return; }
     }
-    function startQuagga(video){
-      window.Quagga.init({
-        inputStream:{ type:'LiveStream', target: video, constraints:{ facingMode:'environment' } },
-        decoder:{ readers:['ean_reader','ean_8_reader','upc_reader','upc_e_reader','code_128_reader'] },
-        locate:true
-      }, (err)=>{
-        if (err) { console.error(err); alert('No se pudo iniciar el escáner'); return; }
-        scanning=true; window.Quagga.start();
-        window.Quagga.onDetected(async r=>{
-          const code = r?.codeResult?.code; if (!code) return;
-          window.Quagga.offDetected(); stopScanner(); await buscarYAgregarPorCodigo(code);
-        });
-      });
-    }
-
-    // carrito
-    $('formVenta').addEventListener('submit', (e)=>{
-      e.preventDefault();
-      const id = parseInt($('ventaProducto').value,10);
-      const cant = parseInt($('ventaCantidad').value,10);
-      const p = productosCache.get(id);
-      addToCart(id, cant, p?.precio, p?.nombre);
-      e.target.reset();
-    });
-
-    function addToCart(id, cantidad=1, precio, nombre){
-      if (!id || !cantidad || cantidad<=0) return;
-      const i = carrito.findIndex(x=>x.id===id);
-      if (i>=0) carrito[i].cantidad += cantidad;
-      else carrito.push({ id, nombre: nombre??(#${id}), cantidad, precio: Number(precio??0) });
-      renderCarrito();
-    }
-    function renderCarrito(){
-      $('tablaCarrito').innerHTML = carrito.map(c=>
-        <tr><td>${c.nombre}</td><td>${c.cantidad}</td><td>$${peso(c.precio)}</td><td>$${peso(c.cantidad*c.precio)}</td></tr>
-      ).join('');
-      $('totalVenta').textContent = peso( carrito.reduce((s,c)=>s+c.cantidad*c.precio,0) );
-    }
-
-    // finalizar venta: crea venta + ventas_items; trigger descuenta stock
-    $('btnFinalizarVenta').addEventListener('click', async ()=>{
-      if (!carrito.length) return alert('Carrito vacío');
-      const { data:venta, error:errV } = await supabase.from('ventas').insert({}).select('id').single();
-      if (errV) { alert('Error creando venta: '+errV.message); return; }
-
-      for (const c of carrito) {
-        const precioUnit = Number(c.precio ?? productosCache.get(c.id)?.precio ?? 0);
-        const { error } = await supabase.from('ventas_items').insert({
-          venta_id: venta.id, producto_id: c.id, cantidad: c.cantidad, precio_unitario: precioUnit
-        });
-        if (error) { alert('Error agregando item: '+error.message); return; }
-      }
-      alert('✅ Venta registrada (#'+venta.id+')');
-      carrito=[]; renderCarrito();
-      await Promise.all([cargarProductosVenta(), cargarProductos(), cargarHistorial()]);
-    });
-
-    // imprimir ticket
-    $('btnImprimir').addEventListener('click', ()=>{
-      const lines = carrito.map(c=>${c.nombre} x${c.cantidad} = $${peso(c.cantidad*c.precio)}).join('<br>');
-      const total = $('totalVenta').textContent;
-      const html = 
-        <div style="font-family:monospace; padding:12px">
-          <h3>POS Tiendita</h3>
-          <div>${new Date().toLocaleString()}</div>
-          <hr>
-          <div>${lines || '(sin items)'}</div>
-          <hr>
-          <h3>Total: $${total}</h3>
-        </div>;
-      const w = window.open('', 'ticket'); w.document.write(html); w.print(); w.close();
-    });
-
-    // ============ Inventario ============
-    async function cargarInventario(){
-      const { data, error } = await supabase.from('inventario_movimientos').select('*').order('fecha', { ascending:false });
-      if (error) { console.error(error); return; }
-      $('tablaInventario').innerHTML = (data||[]).map(m=>
-        <tr><td>${m.producto_id}</td><td>${m.cantidad}</td><td>${new Date(m.fecha).toLocaleString()}</td><td>${m.motivo||''}</td></tr>
-      ).join('');
-    }
-    $('formEntrada').addEventListener('submit', async (e)=>{
-      e.preventDefault();
-      const producto_id = parseInt($('invProducto').value,10);
-      const cantidad = parseInt($('invCantidad').value,10);
-      const { error } = await supabase.from('inventario_movimientos').insert({ producto_id, cantidad, motivo:'Entrada manual' });
-      if (error) alert(error.message); else { e.target.reset(); cargarInventario(); cargarProductos(); }
-    });
-
-    // ============ Caja ============
-    async function cargarCaja(){
-      const { data, error } = await supabase.from('caja_movimientos').select('*').order('fecha', { ascending:false });
-      if (error) { console.error(error); return; }
-      $('tablaCaja').innerHTML = (data||[]).map(c=>
-        <tr><td>${c.tipo}</td><td>$${peso(c.monto)}</td><td>${new Date(c.fecha).toLocaleString()}</td></tr>
-      ).join('');
-    }
-    $('formCaja').addEventListener('submit', async (e)=>{
-      e.preventDefault();
-      const monto = parseFloat($('cajaMonto').value), tipo = $('cajaTipo').value;
-      const { error } = await supabase.from('caja_movimientos').insert({ monto, tipo });
-      if (error) alert(error.message); else { e.target.reset(); cargarCaja(); }
-    });
-
-    // ============ Historial ============
-    async function cargarHistorial(){
-      // Requiere PK/FK para que PostgREST exponga relación productos <- ventas_items
-      const { data, error } = await supabase
-        .from('ventas')
-        .select('id,fecha,ventas_items(cantidad,precio_unitario,productos(nombre))')
-        .order('id', { ascending:false })
-        .limit(50);
-      if (error) { console.error(error); return; }
-      $('tablaHistorial').innerHTML = (data||[]).map(v=>{
-        const detalle = (v.ventas_items||[]).map(i=>${i.productos?.nombre || '#?'} x${i.cantidad}).join(', ');
-        return <tr><td>${v.id}</td><td>${new Date(v.fecha).toLocaleString()}</td><td>${detalle}</td></tr>;
-      }).join('');
-    }
-  </script>
+    alert('✅ Venta registrada (#'+venta.id+')');
+    carrito=[]; renderCarrito();
+    await Promise.all([cargarProductosVenta(), cargarProductos(), cargarHistorial()]);
+  });
+</script>
 </body>
 </html>
