@@ -116,13 +116,14 @@
         <!-- INVENTARIO -->
         <div id="vistaInventario" class="hidden section">
           <h3>📊 Movimientos de Inventario</h3>
+          <!-- AHORA POR CÓDIGO DE BARRAS, NO POR ID -->
           <form id="formEntrada" class="grid col3">
-            <input id="invProducto" type="number" placeholder="Producto ID" required />
+            <input id="invCodigo" type="text" placeholder="Código de barras" required />
             <input id="invCantidad" type="number" placeholder="Cantidad" required />
             <button type="submit" class="secondary">Registrar Entrada</button>
           </form>
           <table>
-            <thead><tr><th>Producto</th><th>Tipo</th><th>Cantidad</th><th>Fecha</th><th>Motivo</th></tr></thead>
+            <thead><tr><th>Producto ID</th><th>Tipo</th><th>Cantidad</th><th>Fecha</th><th>Motivo</th></tr></thead>
             <tbody id="tablaInventario"></tbody>
           </table>
         </div>
@@ -210,12 +211,10 @@
     const $  = (id)=>document.getElementById(id);
     const peso = (n)=> Number(n ?? 0).toFixed(2);
     const beep = ()=> {
-      try {
-        new Audio('https://actions.google.com/sounds/v1/cartoon/wood_plank_flicks.ogg').play();
-      } catch {}
+      try { new Audio('https://actions.google.com/sounds/v1/cartoon/wood_plank_flicks.ogg').play(); } catch {}
     };
 
-    // ---------- LOGIN ----------
+    // ==================== LOGIN ====================
     $('btnLogin').addEventListener('click', async ()=>{
       const email = $('email').value.trim();
       const password = $('password').value.trim();
@@ -304,7 +303,6 @@
       }).join('');
     }
 
-    // alta / edición rápida (usa precio y código de barras)
     $('formProducto').addEventListener('submit', async (e)=>{
       e.preventDefault();
       const nombre = $('prodNombre').value.trim();
@@ -315,7 +313,6 @@
 
       try {
         if (codigo) {
-          // usa RPC si la tienes creada
           const { error } = await supabase.rpc('upsert_producto_por_codigo', {
             p_nombre: nombre,
             p_precio: precio,
@@ -339,7 +336,6 @@
       }
     });
 
-    // importación CSV sencilla
     $('btnImport').addEventListener('click', ()=>{
       const f = $('csvFile').files?.[0];
       if (!f) return alert('Selecciona un archivo CSV');
@@ -372,7 +368,7 @@
       r.readAsText(f);
     });
 
-    // ----- escáner para dar de alta código de barras -----
+    // Escáner para alta de producto (rellena prodCodigo)
     let prodStream = null;
     let prodDetector = null;
     let prodScanning = false;
@@ -380,7 +376,7 @@
     $('btnScanProducto').addEventListener('click', async ()=>{
       if (prodScanning) { stopScanProd(); return; }
       if (!('BarcodeDetector' in window)) {
-        alert('Tu navegador no soporta escaneo nativo. Usa el lector USB como teclado.');
+        alert('Tu navegador no soporta escaneo nativo. Usa Chrome Android o un lector USB.');
         return;
       }
       const video = $('previewProd');
@@ -450,16 +446,15 @@
 
     async function buscarYAgregarPorCodigo(code){
       let found = null;
-
-      // 1) intentar RPC si existe
+      // 1) RPC si existe
       try {
         const rpc = await supabase.rpc('buscar_producto_por_codigo', { p_codigo: code });
         if (!rpc.error && rpc.data && rpc.data.length) {
-          found = rpc.data[0];  // debe traer id, nombre, precio, stock, codigo_barras
+          found = rpc.data[0];
         }
       } catch(e) { console.error(e); }
 
-      // 2) fallback: select directo
+      // 2) Fallback select directo
       if (!found) {
         const { data } = await supabase
           .from('productos')
@@ -520,7 +515,7 @@
       $('totalVenta').textContent = peso(total);
     }
 
-    // escáner para ventas
+    // Escáner para ventas
     let ventaStream = null;
     let ventaDetector = null;
     let ventaScanning = false;
@@ -571,7 +566,7 @@
       }
     }
 
-    // finalizar venta
+    // Finalizar venta
     $('btnFinalizarVenta').addEventListener('click', async ()=>{
       if (!carrito.length) return alert('Carrito vacío');
       try {
@@ -602,7 +597,7 @@
       }
     });
 
-    // imprimir ticket simple
+    // Ticket
     $('btnImprimir').addEventListener('click', ()=>{
       const lines = carrito.map(c =>
         `${c.nombre} x${c.cantidad} = $${peso(c.cantidad * c.precio)}`
@@ -641,19 +636,30 @@
       `).join('');
     }
 
+    // AHORA REGISTRA ENTRADA POR CÓDIGO DE BARRAS
     $('formEntrada').addEventListener('submit', async (e)=>{
       e.preventDefault();
-      const producto_id = parseInt($('invProducto').value,10);
-      const cantidad   = parseInt($('invCantidad').value,10);
-      if (!producto_id || !cantidad) { alert('Completa producto y cantidad'); return; }
+      const codigo = $('invCodigo').value.trim();
+      const cantidad = parseInt($('invCantidad').value,10);
+      if (!codigo || !cantidad) { alert('Completa código y cantidad'); return; }
+
       try {
+        const { data:prod, error:errP } = await supabase
+          .from('productos')
+          .select('id')
+          .eq('codigo_barras', codigo)
+          .maybeSingle();
+        if (errP) throw errP;
+        if (!prod) { alert('No se encontró producto con ese código'); return; }
+
         const { error } = await supabase.from('inventario_movimientos').insert({
-          producto_id,
+          producto_id: prod.id,
           tipo: 'ENTRADA',
           cantidad,
-          motivo: 'Entrada manual'
+          motivo: 'Entrada manual por código'
         });
         if (error) throw error;
+
         e.target.reset();
         await Promise.all([cargarInventario(), cargarProductos()]);
       } catch(err) {
@@ -699,7 +705,6 @@
     $('btnCargarReporte').addEventListener('click', cargarReporte);
 
     async function cargarReporte(){
-      // si creaste la función reporte_diario úsala, si no, obtiene un resumen simple
       try {
         let texto = '';
         const { data, error } = await supabase.rpc('reporte_diario');
@@ -717,7 +722,6 @@
     }
 
     async function cargarHistorial(){
-      // historial sencillo: ventas + total calculado desde ventas_items
       const { data:ventas, error } = await supabase
         .from('ventas')
         .select('id,fecha')
@@ -734,11 +738,7 @@
         if (!items.error && items.data) {
           total = items.data.reduce((s,i)=> s + i.cantidad * i.precio_unitario, 0);
         }
-        filas.push({
-          id: v.id,
-          fecha: v.fecha,
-          total
-        });
+        filas.push({ id: v.id, fecha: v.fecha, total });
       }
       $('tablaHistorial').innerHTML = filas.map(f=>`
         <tr>
