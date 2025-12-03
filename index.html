@@ -11,186 +11,82 @@
       --blue:#1e88e5;
       --red:#c62828;
       --bg:#f5f7fb;
-      --grey:#e1e4ea;
     }
-    * { box-sizing:border-box; }
-    body {
-      font-family: system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+    *{box-sizing:border-box}
+    body{
+      font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
       background:linear-gradient(135deg,var(--green),var(--greenD));
-      min-height:100vh;
-      margin:0;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      padding:24px;
+      min-height:100vh;margin:0;display:flex;align-items:center;justify-content:center;padding:24px;
     }
-    .card {
-      width:100%;
-      max-width:980px;
-      background:#fff;
-      border-radius:16px;
-      padding:24px;
-      box-shadow:0 20px 48px rgba(0,0,0,.25);
-      animation:fade .35s ease;
+    .card{
+      width:100%;max-width:980px;background:#fff;border-radius:16px;padding:24px;
+      box-shadow:0 20px 48px rgba(0,0,0,.25);animation:fade .35s ease;
     }
-    h2 { margin:0 0 10px; text-align:center; }
-    h3 { margin:16px 0 12px; }
-    input,select,button { font-size:15px; }
-    input,select {
-      width:100%;
-      padding:12px;
-      margin:6px 0;
-      border:1px solid var(--grey);
-      border-radius:10px;
-      background:#fff;
+    h2{margin:0 0 10px;text-align:center}
+    h3{margin:16px 0 12px}
+    input,select,button{font-size:15px}
+    input,select{
+      width:100%;padding:12px;margin:6px 0;border:1px solid #e1e4ea;
+      border-radius:10px;background:#fff;
     }
-    button {
-      padding:12px 14px;
-      border:0;
-      border-radius:10px;
-      font-weight:700;
-      cursor:pointer;
-      background:var(--green);
-      color:#fff;
+    button{
+      padding:12px 14px;border:0;border-radius:10px;font-weight:700;
+      cursor:pointer;background:var(--green);color:#fff;
     }
-    button.secondary { background:var(--blue); }
-    button.destructive { background:var(--red); }
-    button.ghost { background:#e9eef8; color:#1a2a42; }
-    button:hover { filter:brightness(.95); }
-    .menu {
-      display:flex;
-      flex-wrap:wrap;
-      gap:10px;
-      margin:12px 0 0;
+    button.secondary{background:var(--blue)}
+    button.destructive{background:var(--red)}
+    button.ghost{background:#e9eef8;color:#1a2a42}
+    button:hover{filter:brightness(.95)}
+    .menu{display:flex;flex-wrap:wrap;gap:10px;margin:12px 0 0}
+    .menu button{background:var(--blue)}
+    .grid{display:grid;gap:12px}
+    .col2{grid-template-columns:1fr 1fr}
+    .col3{grid-template-columns:1fr 1fr 1fr}
+    table{width:100%;border-collapse:collapse;margin-top:10px;background:#fff}
+    th,td{border:1px solid #eef1f6;padding:8px;text-align:center}
+    th{background:#f7f9fe}
+    .muted{color:#5f6b7a;font-size:13px}
+    .hidden{display:none}
+    #resultado{min-height:22px;margin-top:8px}
+    .ok{color:var(--greenD);font-weight:700}
+    .warn{color:var(--red);font-weight:700}
+    .low{background:#fff1f1}
+    .pill{
+      display:inline-block;padding:2px 8px;border-radius:999px;
+      font-size:12px;background:#ecf3ff;color:#0c3a94;
     }
-    .menu button { background:var(--blue); }
-    .grid { display:grid; gap:12px; }
-    .col2 { grid-template-columns:1fr 1fr; }
-    .col3 { grid-template-columns:1fr 1fr 1fr; }
-    table {
-      width:100%;
-      border-collapse:collapse;
-      margin-top:10px;
-      background:#fff;
+    .scan-flash{animation:flash .25s ease-in-out}
+    @keyframes flash{from{background:#fff59d}to{background:transparent}}
+    @keyframes fade{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:none}}
+    .section{background:var(--bg);border-radius:12px;padding:12px}
+    video{width:100%;max-height:240px;border-radius:10px;background:#000}
+    pre.json{
+      background:#0b1020;color:#c4d0ff;padding:12px;border-radius:10px;
+      overflow:auto;white-space:pre-wrap;
     }
-    th,td {
-      border:1px solid #eef1f6;
-      padding:8px;
-      text-align:center;
-      font-size:14px;
+
+    /* Modal ticket */
+    .overlay{
+      position:fixed;inset:0;background:rgba(0,0,0,.45);
+      display:none;align-items:center;justify-content:center;z-index:999;
     }
-    th { background:#f7f9fe; }
-    .muted { color:#5f6b7a; font-size:13px; }
-    .hidden { display:none; }
-    #resultado { min-height:22px; margin-top:8px; }
-    .ok { color:var(--greenD); font-weight:700; }
-    .warn { color:var(--red); font-weight:700; }
-    .low { background:#fff1f1; }
-    .pill {
-      display:inline-block;
-      padding:2px 8px;
-      border-radius:999px;
-      font-size:12px;
-      background:#ecf3ff;
-      color:#0c3a94;
+    .overlay.show{display:flex}
+    .ticket-modal{
+      background:#fff;border-radius:16px;padding:18px 20px;
+      width:min(460px,92vw);box-shadow:0 16px 40px rgba(0,0,0,.32);
     }
-    .scan-flash { animation:flash .25s ease-in-out; }
-    @keyframes flash {
-      from { background:#fff59d; }
-      to   { background:transparent; }
+    .ticket-header{
+      display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;
     }
-    @keyframes fade {
-      from { opacity:0; transform:translateY(-6px); }
-      to   { opacity:1; transform:none; }
+    .ticket-header h4{margin:0;font-size:16px}
+    .ticket-folio{font-size:13px;color:#6b7280}
+    .ticket-slip{
+      font-family:ui-monospace,Menlo,Consolas,monospace;
+      font-size:13px;padding:10px;border-radius:10px;
+      border:1px dashed #d1d5db;background:#f9fafb;max-height:360px;overflow:auto;
     }
-    .section {
-      background:var(--bg);
-      border-radius:12px;
-      padding:12px;
-    }
-    video {
-      width:100%;
-      max-height:240px;
-      border-radius:10px;
-      background:#000;
-    }
-    pre.json {
-      background:#0b1020;
-      color:#c4d0ff;
-      padding:12px;
-      border-radius:10px;
-      overflow:auto;
-      white-space:pre-wrap;
-      font-size:12px;
-    }
-    .ticket-box {
-      font-family: "Courier New",monospace;
-      font-size:12px;
-      background:#fff;
-      border-radius:8px;
-      padding:12px;
-      border:1px dashed #999;
-      max-height:320px;
-      overflow:auto;
-    }
-    .ticket-box h4 {
-      margin:0 0 4px;
-      text-align:center;
-      font-size:13px;
-      text-transform:uppercase;
-    }
-    .ticket-line {
-      display:flex;
-      justify-content:space-between;
-    }
-    .badge {
-      display:inline-block;
-      padding:2px 6px;
-      border-radius:999px;
-      background:#e3f2fd;
-      font-size:11px;
-      margin-left:4px;
-    }
-    /* Modal de ticket */
-    .modal-backdrop {
-      position:fixed;
-      inset:0;
-      background:rgba(0,0,0,.45);
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      z-index:999;
-    }
-    .modal {
-      background:#fff;
-      padding:16px;
-      border-radius:14px;
-      width:100%;
-      max-width:420px;
-      box-shadow:0 18px 40px rgba(0,0,0,.35);
-    }
-    .modal-header {
-      display:flex;
-      justify-content:space-between;
-      align-items:center;
-      margin-bottom:8px;
-    }
-    .modal-header h3 {
-      margin:0;
-      font-size:16px;
-    }
-    .modal-actions {
-      margin-top:10px;
-      text-align:right;
-      display:flex;
-      justify-content:flex-end;
-      gap:8px;
-    }
-    .tag-small {
-      font-size:11px;
-      padding:1px 6px;
-      border-radius:999px;
-      background:#f1f3f4;
+    .ticket-slip hr{
+      border:0;border-top:1px dashed #d1d5db;margin:6px 0;
     }
   </style>
 </head>
@@ -230,7 +126,7 @@
             <input id="prodNombre" type="text" placeholder="Nombre" required />
             <input id="prodPrecio" type="number" step="0.01" placeholder="Precio" required />
             <input id="prodStock" type="number" placeholder="Stock inicial" required />
-            <div class="grid col3" style="grid-column:1 / -1; gap:8px;">
+            <div class="grid col3" style="grid-column:1 / -1;gap:8px">
               <input id="prodCodigo" type="text" placeholder="Código de barras (opcional)" />
               <button type="button" id="btnScanProducto" class="ghost">📷 Escanear</button>
               <button type="submit" class="secondary">Guardar</button>
@@ -275,10 +171,10 @@
 
         <!-- REPORTES -->
         <div id="vistaReportes" class="hidden section">
-          <h3>📑 Reporte Diario</h3>
+          <h3>📑 Corte y Reporte Diario</h3>
           <div class="grid col2">
             <button id="btnCargarReporte" class="secondary">Actualizar reporte de hoy</button>
-            <button id="btnCerrarDia" class="ghost">Cerrar día</button>
+            <button id="btnCorteDia" class="ghost">Simular cierre de día</button>
           </div>
           <pre id="reporteContenido" class="json" style="margin-top:10px"></pre>
         </div>
@@ -290,8 +186,8 @@
           <!-- Buscar por código + escanear -->
           <div class="grid col3">
             <input id="codigoBarras" type="text" placeholder="Código de barras" />
-            <button id="btnBuscarCodigo" class="ghost">Buscar / agregar</button>
-            <button id="btnStartScanner" class="ghost">📷 Escanear con cámara</button>
+            <button id="btnBuscarCodigo" class="ghost">Buscar</button>
+            <button id="btnStartScanner" class="ghost">📷 Escanear</button>
           </div>
           <video id="preview" autoplay muted playsinline class="hidden" style="margin-top:8px"></video>
 
@@ -304,23 +200,25 @@
 
           <h4 style="margin:12px 0 6px">Carrito</h4>
           <table>
-            <thead><tr><th>Producto</th><th>Cant</th><th>Precio</th><th>Subtotal</th></tr></thead>
+            <thead>
+              <tr><th>Producto</th><th>Cant</th><th>Precio</th><th>Subtotal</th></tr>
+            </thead>
             <tbody id="tablaCarrito"></tbody>
           </table>
 
-          <div class="grid col2" style="margin-top:10px; align-items:center;">
+          <div class="grid col2" style="margin-top:10px;align-items:center">
             <div>
-              <div class="muted">Total:</div>
-              <div style="font-weight:800; font-size:18px">$<span id="totalVenta">0.00</span></div>
+              <div class="muted">Total venta:</div>
+              <div style="font-weight:800;font-size:18px">$<span id="totalVenta">0.00</span></div>
             </div>
             <div>
-              <label class="muted">Efectivo recibido</label>
+              <div class="muted">Efectivo recibido:</div>
               <input id="efectivoRecibido" type="number" step="0.01" placeholder="Ej. 200" />
-              <div class="muted">Cambio: $<span id="cambioTexto">0.00</span></div>
+              <div class="muted">Cambio: $<span id="cambioCalculado">0.00</span></div>
             </div>
           </div>
 
-          <div style="text-align:right; margin-top:10px;">
+          <div style="text-align:right;margin-top:8px">
             <button id="btnFinalizarVenta">Finalizar Venta</button>
           </div>
         </div>
@@ -329,7 +227,9 @@
         <div id="vistaHistorial" class="hidden section">
           <h3>🧾 Historial de Ventas</h3>
           <table>
-            <thead><tr><th>Folio</th><th>Fecha</th><th>Detalle</th><th>Total</th></tr></thead>
+            <thead>
+              <tr><th>Folio</th><th>Fecha</th><th>Detalle</th><th>Total aprox.</th></tr>
+            </thead>
             <tbody id="tablaHistorial"></tbody>
           </table>
         </div>
@@ -337,21 +237,20 @@
     </div>
   </div>
 
-  <!-- MODAL DE TICKET -->
-  <div id="ticketModal" class="modal-backdrop hidden">
-    <div class="modal">
-      <div class="modal-header">
-        <h3>Ticket de venta</h3>
-        <span class="tag-small" id="ticketFolioTag">Folio —</span>
+  <!-- MODAL TICKET -->
+  <div id="ticketOverlay" class="overlay">
+    <div class="ticket-modal">
+      <div class="ticket-header">
+        <h4>Ticket de venta</h4>
+        <span id="ticketFolio" class="ticket-folio">Folio —</span>
       </div>
-      <div id="ticketContent" class="ticket-box"></div>
-      <div class="modal-actions">
-        <button id="btnTicketCerrar" class="ghost">Cerrar</button>
+      <div id="ticketSlip" class="ticket-slip"></div>
+      <div style="text-align:right;margin-top:12px">
+        <button id="btnCerrarTicket" class="ghost">Cerrar</button>
       </div>
     </div>
   </div>
 
-  <!-- SCRIPT PRINCIPAL -->
   <script type="module">
     import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
 
@@ -364,17 +263,16 @@
     let productosCache = new Map();
     let currentUser = null;
 
-    const $  = (id)=>document.getElementById(id);
-    const peso = (n)=> Number(n ?? 0).toFixed(2);
-    const beep = ()=> {
+    const $ = id => document.getElementById(id);
+    const peso = n => Number(n ?? 0).toFixed(2);
+    const beep = () => {
       try {
-        // beep corto estilo POS
         new Audio('https://actions.google.com/sounds/v1/alarms/beep_short.ogg').play();
       } catch {}
     };
 
     // ---------- LOGIN ----------
-    $('btnLogin').addEventListener('click', async ()=>{
+    $('btnLogin').addEventListener('click', async () => {
       const email = $('email').value.trim();
       const password = $('password').value.trim();
       const out = $('resultado');
@@ -384,13 +282,16 @@
       }
       out.textContent = 'Iniciando…';
       const { data, error } = await supabase.auth.signInWithPassword({ email, password });
-      if (error) { out.innerHTML = `<span class="warn">${error.message}</span>`; return; }
+      if (error) {
+        out.innerHTML = `<span class="warn">${error.message}</span>`;
+        return;
+      }
       currentUser = data.user;
       out.innerHTML = '<span class="ok">Login OK</span>';
       await cargarPerfil(data.user.id);
     });
 
-    $('btnLogout').addEventListener('click', async ()=>{
+    $('btnLogout').addEventListener('click', async () => {
       await supabase.auth.signOut();
       currentUser = null;
       $('dashboard').classList.add('hidden');
@@ -398,11 +299,12 @@
       $('resultado').textContent = '👋 Sesión cerrada.';
     });
 
-    async function cargarPerfil(uid){
+    async function cargarPerfil(uid) {
       const { data, error } = await supabase
         .from('profiles')
         .select('nombre, rol_id, rol:rol_id(nombre)')
-        .eq('user_id', uid).single();
+        .eq('user_id', uid)
+        .single();
 
       if (error || !data) {
         $('resultado').innerHTML = '<span class="warn">No se encontró perfil en tabla profiles</span>';
@@ -412,10 +314,12 @@
       $('loginBox').classList.add('hidden');
       $('dashboard').classList.remove('hidden');
       $('userTitle').textContent = '👤 ' + data.nombre;
-      $('userRole').textContent  = 'Rol: ' + (data.rol?.nombre ?? '—');
+      $('userRole').textContent = 'Rol: ' + (data.rol?.nombre ?? '—');
 
       const menu = $('menuOpciones');
       menu.innerHTML = '';
+
+      // Para admin: todas las vistas
       if (data.rol?.nombre === 'admin') {
         menu.innerHTML += `<button class="secondary" data-v="vistaVentas">🛒 Ventas</button>`;
         menu.innerHTML += `<button class="secondary" data-v="vistaHistorial">🧾 Historial</button>`;
@@ -423,30 +327,37 @@
         menu.innerHTML += `<button class="secondary" data-v="vistaInventario">📊 Inventario</button>`;
         menu.innerHTML += `<button class="secondary" data-v="vistaReportes">📑 Reportes</button>`;
       } else {
+        // Cajero: ventas + historial
         menu.innerHTML += `<button class="secondary" data-v="vistaVentas">🛒 Ventas</button>`;
         menu.innerHTML += `<button class="secondary" data-v="vistaHistorial">🧾 Historial</button>`;
       }
+
       menu.querySelectorAll('button')
-        .forEach(b=> b.addEventListener('click', ()=> abrirVista(b.dataset.v)));
+        .forEach(b => b.addEventListener('click', () => abrirVista(b.dataset.v)));
+
       abrirVista('vistaVentas');
     }
 
-    function abrirVista(id){
-      document.querySelectorAll('#vistas > div').forEach(d=>d.classList.add('hidden'));
-      const el = $(id); if (!el) return;
+    function abrirVista(id) {
+      document.querySelectorAll('#vistas > div').forEach(d => d.classList.add('hidden'));
+      const el = $(id);
+      if (!el) return;
       el.classList.remove('hidden');
-      if (id==='vistaProductos')  cargarProductos();
-      if (id==='vistaInventario') cargarInventario();
-      if (id==='vistaVentas')     cargarProductosVenta();
-      if (id==='vistaHistorial')  cargarHistorial();
+      if (id === 'vistaProductos') cargarProductos();
+      if (id === 'vistaInventario') cargarInventario();
+      if (id === 'vistaVentas') cargarProductosVenta();
+      if (id === 'vistaHistorial') cargarHistorial();
     }
 
     // ==================== PRODUCTOS ====================
-    async function cargarProductos(){
+    async function cargarProductos() {
       const { data, error } = await supabase.from('productos').select('*').order('id');
-      if (error) { console.error(error); return; }
+      if (error) {
+        console.error(error);
+        return;
+      }
       productosCache.clear();
-      $('tablaProductos').innerHTML = (data || []).map(p=>{
+      $('tablaProductos').innerHTML = (data || []).map(p => {
         productosCache.set(p.id, p);
         const low = (p.stock < (p.stock_minimo ?? 5)) ? 'low' : '';
         return `<tr class="${low}">
@@ -460,15 +371,16 @@
       }).join('');
     }
 
-    // alta / edición rápida
-    $('formProducto').addEventListener('submit', async (e)=>{
+    $('formProducto').addEventListener('submit', async e => {
       e.preventDefault();
       const nombre = $('prodNombre').value.trim();
       const precio = parseFloat($('prodPrecio').value);
-      const stock  = parseInt($('prodStock').value || '0', 10);
+      const stock = parseInt($('prodStock').value || '0', 10);
       const codigo = $('prodCodigo').value.trim() || null;
-      if (!nombre || isNaN(precio)) { alert('Completa nombre y precio'); return; }
-
+      if (!nombre || isNaN(precio)) {
+        alert('Completa nombre y precio');
+        return;
+      }
       try {
         if (codigo) {
           const { error } = await supabase.rpc('upsert_producto_por_codigo', {
@@ -480,44 +392,47 @@
           if (error) throw error;
         } else {
           const { error } = await supabase.from('productos').insert({
-            nombre, precio, stock
+            nombre,
+            precio,
+            stock
           });
           if (error) throw error;
         }
         e.target.reset();
         await cargarProductos();
         alert('✅ Producto guardado');
-      } catch(err) {
+      } catch (err) {
         alert('Error guardando producto: ' + err.message);
       }
     });
 
-    // importación CSV
-    $('btnImport').addEventListener('click', ()=>{
+    $('btnImport').addEventListener('click', () => {
       const f = $('csvFile').files?.[0];
       if (!f) return alert('Selecciona un archivo CSV');
       const r = new FileReader();
-      r.onload = async ()=>{
-        const rows = String(r.result).split(/\r?\n/).map(l=>l.trim()).filter(Boolean);
+      r.onload = async () => {
+        const rows = String(r.result).split(/\r?\n/).map(l => l.trim()).filter(Boolean);
         for (const line of rows) {
-          const [nombre,precio,stock,codigo] = line.split(',').map(x=>x?.trim());
+          const [nombre, precio, stock, codigo] = line.split(',').map(x => x?.trim());
           if (!nombre || !precio) continue;
           try {
             if (codigo) {
               await supabase.rpc('upsert_producto_por_codigo', {
-                p_nombre:nombre,
-                p_precio:parseFloat(precio),
-                p_codigo:codigo,
-                p_stock_inicial:parseInt(stock || '0',10)
+                p_nombre: nombre,
+                p_precio: parseFloat(precio),
+                p_codigo: codigo,
+                p_stock_inicial: parseInt(stock || '0', 10)
               });
             } else {
               await supabase.from('productos').insert({
                 nombre,
-                precio:parseFloat(precio),
-                stock:parseInt(stock || '0',10)
+                precio: parseFloat(precio),
+                stock: parseInt(stock || '0', 10)
               });
             }
-          } catch(e) { console.error(e); }
+          } catch (e) {
+            console.error(e);
+          }
         }
         await cargarProductos();
         alert('✅ Importación terminada');
@@ -525,42 +440,51 @@
       r.readAsText(f);
     });
 
-    // escáner para alta/código producto
+    // Escáner para producto (capturar código de barras)
     let prodStream = null;
     let prodDetector = null;
     let prodScanning = false;
 
-    $('btnScanProducto').addEventListener('click', async ()=>{
-      if (prodScanning) { stopScanProd(); return; }
+    $('btnScanProducto').addEventListener('click', async () => {
+      if (prodScanning) {
+        stopScanProd();
+        return;
+      }
       if (!('BarcodeDetector' in window)) {
-        alert('Tu navegador no soporta escaneo nativo. Usa lector USB como teclado.');
+        alert('Tu navegador no soporta escaneo nativo. Usa un lector USB tipo teclado.');
         return;
       }
       const video = $('previewProd');
       video.classList.remove('hidden');
       prodStream = await navigator.mediaDevices.getUserMedia({
-        video:{ facingMode:{ ideal:'environment' } }, audio:false
+        video: { facingMode: { ideal: 'environment' } }, audio: false
       });
       video.srcObject = prodStream;
-      prodDetector = new window.BarcodeDetector({ formats:['ean_13','ean_8','upc_a','code_128'] });
+      prodDetector = new window.BarcodeDetector({ formats: ['ean_13', 'ean_8', 'upc_a', 'code_128'] });
       prodScanning = true;
       scanProdLoop(video);
     });
 
-    function stopScanProd(){
+    function stopScanProd() {
       prodScanning = false;
-      if (prodStream) { prodStream.getTracks().forEach(t=>t.stop()); prodStream = null; }
+      if (prodStream) {
+        prodStream.getTracks().forEach(t => t.stop());
+        prodStream = null;
+      }
       $('previewProd').classList.add('hidden');
     }
 
-    async function scanProdLoop(video){
+    async function scanProdLoop(video) {
       while (prodScanning && prodDetector) {
         try {
-          if (!video.videoWidth) { await new Promise(r=>setTimeout(r,150)); continue; }
+          if (!video.videoWidth) {
+            await new Promise(r => setTimeout(r, 150));
+            continue;
+          }
           const canvas = document.createElement('canvas');
           canvas.width = video.videoWidth;
           canvas.height = video.videoHeight;
-          canvas.getContext('2d').drawImage(video,0,0,canvas.width,canvas.height);
+          canvas.getContext('2d').drawImage(video, 0, 0, canvas.width, canvas.height);
           const bmp = await createImageBitmap(canvas);
           const codes = await prodDetector.detect(bmp);
           if (codes && codes.length) {
@@ -572,18 +496,23 @@
               break;
             }
           }
-        } catch(e) { console.error(e); }
-        await new Promise(r=>setTimeout(r,200));
+        } catch (e) {
+          console.error(e);
+        }
+        await new Promise(r => setTimeout(r, 200));
       }
     }
 
     // ==================== VENTAS ====================
-    async function cargarProductosVenta(){
+    async function cargarProductosVenta() {
       const { data, error } = await supabase
         .from('productos')
         .select('id,nombre,precio,stock,codigo_barras')
         .order('nombre');
-      if (error) { console.error(error); return; }
+      if (error) {
+        console.error(error);
+        return;
+      }
       const sel = $('ventaProducto');
       sel.innerHTML = '';
       productosCache.clear();
@@ -595,21 +524,23 @@
       renderCarrito();
     }
 
-    $('btnBuscarCodigo').addEventListener('click', async ()=>{
+    $('btnBuscarCodigo').addEventListener('click', async () => {
       const code = $('codigoBarras').value.trim();
       if (!code) return;
       await buscarYAgregarPorCodigo(code);
       $('codigoBarras').value = '';
     });
 
-    async function buscarYAgregarPorCodigo(code){
+    async function buscarYAgregarPorCodigo(code) {
       let found = null;
       try {
         const rpc = await supabase.rpc('buscar_producto_por_codigo', { p_codigo: code });
         if (!rpc.error && rpc.data && rpc.data.length) {
           found = rpc.data[0];
         }
-      } catch(e) { console.error(e); }
+      } catch (e) {
+        console.error(e);
+      }
       if (!found) {
         const { data } = await supabase
           .from('productos')
@@ -628,31 +559,39 @@
       beep();
     }
 
-    $('formVenta').addEventListener('submit', (e)=>{
+    $('formVenta').addEventListener('submit', e => {
       e.preventDefault();
-      const id = parseInt($('ventaProducto').value,10);
-      const cant = parseInt($('ventaCantidad').value,10);
+      const id = parseInt($('ventaProducto').value, 10);
+      const cant = parseInt($('ventaCantidad').value, 10);
       const p = productosCache.get(id);
-      if (!p) { alert('Producto inexistente'); return; }
+      if (!p) {
+        alert('Producto inexistente');
+        return;
+      }
       addToCartFromProduct(p, cant);
       e.target.reset();
     });
 
-    function addToCartFromProduct(p, cantidad){
+    function addToCartFromProduct(p, cantidad) {
       if (!p || !cantidad || cantidad <= 0) return;
-      const ya = carrito.find(x=>x.id === p.id);
+      const ya = carrito.find(x => x.id === p.id);
       const enCarrito = ya ? ya.cantidad : 0;
       if (p.stock != null && (cantidad + enCarrito) > p.stock) {
         alert(`Solo hay ${p.stock} unidades de "${p.nombre}" en stock`);
         return;
       }
       if (ya) ya.cantidad += cantidad;
-      else carrito.push({ id:p.id, nombre:p.nombre, cantidad, precio:Number(p.precio ?? 0) });
+      else carrito.push({
+        id: p.id,
+        nombre: p.nombre,
+        cantidad,
+        precio: Number(p.precio ?? 0)
+      });
       renderCarrito();
     }
 
-    function renderCarrito(){
-      $('tablaCarrito').innerHTML = carrito.map(c=>`
+    function renderCarrito() {
+      $('tablaCarrito').innerHTML = carrito.map(c => `
         <tr>
           <td>${c.nombre}</td>
           <td>${c.cantidad}</td>
@@ -660,47 +599,65 @@
           <td>$${peso(c.cantidad * c.precio)}</td>
         </tr>
       `).join('');
-      const total = carrito.reduce((s,c)=> s + c.cantidad * c.precio, 0);
+      const total = carrito.reduce((s, c) => s + c.cantidad * c.precio, 0);
       $('totalVenta').textContent = peso(total);
       actualizarCambio();
     }
 
-    // escáner para ventas
+    $('efectivoRecibido').addEventListener('input', actualizarCambio);
+
+    function actualizarCambio() {
+      const total = parseFloat($('totalVenta').textContent || '0');
+      const efectivo = parseFloat($('efectivoRecibido').value || '0');
+      const cambio = Math.max(0, efectivo - total);
+      $('cambioCalculado').textContent = peso(cambio);
+    }
+
+    // Escáner en ventas
     let ventaStream = null;
     let ventaDetector = null;
     let ventaScanning = false;
 
-    $('btnStartScanner').addEventListener('click', async ()=>{
-      if (ventaScanning) { stopScannerVentas(); return; }
+    $('btnStartScanner').addEventListener('click', async () => {
+      if (ventaScanning) {
+        stopScannerVentas();
+        return;
+      }
       if (!('BarcodeDetector' in window)) {
-        alert('Tu navegador no soporta escaneo nativo. También puedes usar lector USB como teclado.');
+        alert('Tu navegador no soporta escaneo nativo. También puedes usar lector USB.');
         return;
       }
       const video = $('preview');
       video.classList.remove('hidden');
       ventaStream = await navigator.mediaDevices.getUserMedia({
-        video:{ facingMode:{ ideal:'environment' } }, audio:false
+        video: { facingMode: { ideal: 'environment' } }, audio: false
       });
       video.srcObject = ventaStream;
-      ventaDetector = new window.BarcodeDetector({ formats:['ean_13','ean_8','upc_a','code_128'] });
+      ventaDetector = new window.BarcodeDetector({ formats: ['ean_13', 'ean_8', 'upc_a', 'code_128'] });
       ventaScanning = true;
       scanVentasLoop(video);
     });
 
-    function stopScannerVentas(){
+    function stopScannerVentas() {
       ventaScanning = false;
-      if (ventaStream) { ventaStream.getTracks().forEach(t=>t.stop()); ventaStream = null; }
+      if (ventaStream) {
+        ventaStream.getTracks().forEach(t => t.stop());
+        ventaStream = null;
+      }
       $('preview').classList.add('hidden');
     }
 
-    async function scanVentasLoop(video){
+    async function scanVentasLoop(video) {
       while (ventaScanning && ventaDetector) {
         try {
-          if (!video.videoWidth) { await new Promise(r=>setTimeout(r,150)); continue; }
+          if (!video.videoWidth) {
+            await new Promise(r => setTimeout(r, 150));
+            continue;
+          }
           const canvas = document.createElement('canvas');
           canvas.width = video.videoWidth;
           canvas.height = video.videoHeight;
-          canvas.getContext('2d').drawImage(video,0,0,canvas.width,canvas.height);
+          canvas.getContext('2d').drawImage(video, 0, 0, canvas.width, canvas.height);
           const bmp = await createImageBitmap(canvas);
           const codes = await ventaDetector.detect(bmp);
           if (codes && codes.length) {
@@ -711,142 +668,153 @@
               break;
             }
           }
-        } catch(e) { console.error(e); }
-        await new Promise(r=>setTimeout(r,200));
+        } catch (e) {
+          console.error(e);
+        }
+        await new Promise(r => setTimeout(r, 200));
       }
     }
 
-    // efectivo / cambio
-    $('efectivoRecibido').addEventListener('input', actualizarCambio);
-    function actualizarCambio(){
-      const total = parseFloat($('totalVenta').textContent || '0');
+    // Finalizar venta (incluye caja + ticket)
+    $('btnFinalizarVenta').addEventListener('click', async () => {
+      if (!carrito.length) {
+        alert('Carrito vacío');
+        return;
+      }
+      const total = carrito.reduce((s, c) => s + c.cantidad * c.precio, 0);
       const efectivo = parseFloat($('efectivoRecibido').value || '0');
+      if (isNaN(efectivo) || efectivo <= 0 || efectivo < total) {
+        const ok = confirm(`El efectivo es menor al total ($${peso(total)}).\n¿Registrar de todos modos?`);
+        if (!ok) return;
+      }
+
       const cambio = Math.max(0, efectivo - total);
-      $('cambioTexto').textContent = peso(cambio);
-    }
 
-    // finalizar venta con caja_movimientos y ticket modal
-    $('btnFinalizarVenta').addEventListener('click', async ()=>{
-      if (!carrito.length) return alert('Carrito vacío');
-
-      const total = carrito.reduce((s,c)=> s + c.cantidad * c.precio, 0);
-      const efectivo = parseFloat($('efectivoRecibido').value || '0');
-      if (isNaN(efectivo) || efectivo <= 0) {
-        alert('Ingresa el efectivo recibido');
-        return;
-      }
-      if (efectivo < total) {
-        alert('El efectivo es menor al total de la venta');
-        return;
-      }
-      const cambio = efectivo - total;
+      const snapshotCarrito = carrito.map(c => ({ ...c })); // para ticket
 
       try {
-        const { data:venta, error:errV } = await supabase
+        const { data: venta, error: errV } = await supabase
           .from('ventas')
           .insert({})
           .select('id,fecha')
           .single();
         if (errV) throw errV;
 
-        for (const c of carrito) {
+        for (const c of snapshotCarrito) {
           const precioUnit = Number(c.precio ?? productosCache.get(c.id)?.precio ?? 0);
           const { error } = await supabase.from('ventas_items').insert({
             venta_id: venta.id,
             producto_id: c.id,
             cantidad: c.cantidad,
-            precio_unitario: precioUnit
+            precio_unitario: precioUnit,
+            subtotal: c.cantidad * precioUnit
           });
           if (error) throw error;
         }
 
-        // Caja: ingreso por el pago
-        const movimientos = [
-          { tipo:'INGRESO', monto: efectivo },
-        ];
-        if (cambio > 0.0001) {
-          movimientos.push({ tipo:'EGRESO', monto: cambio });
+        // Caja automática
+        const movs = [];
+        if (!isNaN(efectivo) && efectivo > 0) {
+          movs.push({ tipo: 'INGRESO', monto: efectivo });
         }
-        const { error:errCaja } = await supabase
-          .from('caja_movimientos')
-          .insert(movimientos);
-        if (errCaja) throw errCaja;
-
-        // Preguntar por ticket
-        const quiereTicket = confirm('Venta registrada. ¿Deseas ver/imprimir el ticket?');
-        if (quiereTicket) {
-          mostrarTicket({
-            ventaId: venta.id,
-            fecha: venta.fecha || new Date().toISOString(),
-            items: carrito.map(c=>({ ...c })),
-            total,
-            efectivo,
-            cambio
-          });
+        if (cambio > 0) {
+          movs.push({ tipo: 'EGRESO', monto: cambio });
+        }
+        if (movs.length) {
+          const { error: errCaja } = await supabase.from('caja_movimientos').insert(movs);
+          if (errCaja) console.error('Error registrando caja:', errCaja.message);
         }
 
         alert('✅ Venta registrada (#' + venta.id + ')');
+
         carrito = [];
-        $('efectivoRecibido').value = '';
         renderCarrito();
+        $('efectivoRecibido').value = '';
+        actualizarCambio();
         await Promise.all([cargarProductosVenta(), cargarProductos(), cargarHistorial()]);
-      } catch(e) {
+
+        const deseaTicket = confirm('¿Deseas ver el ticket de la venta #' + venta.id + '?');
+        if (deseaTicket) {
+          mostrarTicketModal(venta, snapshotCarrito, total, efectivo, cambio);
+        }
+      } catch (e) {
         alert('Error registrando venta: ' + e.message);
       }
     });
 
-    // ==================== TICKET MODAL ====================
-    function mostrarTicket({ ventaId, fecha, items, total, efectivo, cambio }) {
-      $('ticketFolioTag').textContent = 'Folio ' + ventaId;
-      const d = new Date(fecha);
-      const fechaStr = d.toLocaleString();
-
-      const lineas = [];
-      lineas.push('TIENDA LA ESQUINA FELIZ');
-      lineas.push('RFC: TES010203AB1');
-      lineas.push('Av. Principal 123, Col. Centro');
-      lineas.push('C.P. 06000, Ciudad de México');
-      lineas.push('--------------------------------');
-      lineas.push('Folio: ' + ventaId);
-      lineas.push('Fecha: ' + fechaStr);
-      lineas.push('--------------------------------');
-      items.forEach(it=>{
-        const sub = it.cantidad * it.precio;
-        lineas.push(
-          (it.nombre || '').slice(0,26).padEnd(26,' ') +
-          String(it.cantidad).padStart(3,' ') + ' x ' +
-          peso(it.precio).padStart(7,' ')
-        );
-        lineas.push(' '.repeat(26) + ' = $' + peso(sub));
-      });
-      lineas.push('--------------------------------');
-      lineas.push('TOTAL          : $' + peso(total));
-      lineas.push('EFECTIVO       : $' + peso(efectivo));
-      lineas.push('CAMBIO         : $' + peso(cambio));
-      lineas.push('--------------------------------');
-      lineas.push('GRACIAS POR SU COMPRA');
-      lineas.push('Vuelva pronto');
-
-      $('ticketContent').innerHTML =
-        '<h4>Tienda La Esquina Feliz</h4><pre style="margin:4px 0 0;">' +
-        lineas.join('\n') +
-        '</pre>';
-
-      $('ticketModal').classList.remove('hidden');
-    }
-
-    $('btnTicketCerrar').addEventListener('click', ()=>{
-      $('ticketModal').classList.add('hidden');
+    // ==================== MODAL TICKET ====================
+    const ticketOverlay = $('ticketOverlay');
+    const ticketSlip = $('ticketSlip');
+    const ticketFolio = $('ticketFolio');
+    $('btnCerrarTicket').addEventListener('click', () => {
+      ticketOverlay.classList.remove('show');
     });
 
+    function padFolio(id) {
+      return String(id).padStart(6, '0');
+    }
+
+    function mostrarTicketModal(venta, items, total, efectivo, cambio) {
+      const fecha = venta.fecha ? new Date(venta.fecha) : new Date();
+      ticketFolio.textContent = 'Folio ' + padFolio(venta.id);
+
+      const tienda = 'Mini Súper Las Palmas';
+      const rfc = 'MPL010203ABC';
+      const dir1 = 'Av. Reforma 123, Col. Centro';
+      const dir2 = 'Ciudad de México, C.P. 06000';
+      const cajero = currentUser ? (currentUser.email || '') : '';
+
+      const lineas = [];
+
+      lineas.push(tienda.toUpperCase());
+      lineas.push('RFC: ' + rfc);
+      lineas.push(dir1);
+      lineas.push(dir2);
+      lineas.push('');
+      lineas.push('Folio: ' + padFolio(venta.id));
+      lineas.push('Fecha: ' + fecha.toLocaleString());
+      if (cajero) lineas.push('Cajero: ' + cajero);
+      lineas.push('--------------------------------');
+      lineas.push('ARTÍCULO                 IMPORTE');
+      lineas.push('--------------------------------');
+
+      items.forEach(c => {
+        const lineaNombre = (c.nombre || '').substring(0, 22);
+        const imp = '$' + peso(c.cantidad * c.precio);
+        const cantPrecio = `${c.cantidad} x ${peso(c.precio)}`;
+        const espacios = 28 - lineaNombre.length - imp.length;
+        lineas.push(
+          lineaNombre +
+          ' '.repeat(Math.max(1, espacios)) +
+          imp
+        );
+        lineas.push('  ' + cantPrecio);
+      });
+
+      lineas.push('--------------------------------');
+      lineas.push('TOTAL:          $' + peso(total));
+      lineas.push('EFECTIVO:       $' + peso(efectivo));
+      lineas.push('CAMBIO:         $' + peso(cambio));
+      lineas.push('--------------------------------');
+      lineas.push('Gracias por su compra.');
+      lineas.push('Conserve este ticket como comprobante.');
+      lineas.push('');
+
+      ticketSlip.innerHTML = lineas.join('<br/>');
+      ticketOverlay.classList.add('show');
+    }
+
     // ==================== INVENTARIO ====================
-    async function cargarInventario(){
+    async function cargarInventario() {
       const { data, error } = await supabase
         .from('inventario_movimientos')
         .select('producto_id,tipo,cantidad,fecha,motivo')
-        .order('fecha', { ascending:false });
-      if (error) { console.error(error); return; }
-      $('tablaInventario').innerHTML = (data || []).map(m=>`
+        .order('fecha', { ascending: false });
+      if (error) {
+        console.error(error);
+        return;
+      }
+      $('tablaInventario').innerHTML = (data || []).map(m => `
         <tr>
           <td>${m.producto_id}</td>
           <td>${m.tipo || ''}</td>
@@ -857,11 +825,14 @@
       `).join('');
     }
 
-    $('formEntrada').addEventListener('submit', async (e)=>{
+    $('formEntrada').addEventListener('submit', async e => {
       e.preventDefault();
-      const producto_id = parseInt($('invProducto').value,10);
-      const cantidad   = parseInt($('invCantidad').value,10);
-      if (!producto_id || !cantidad) { alert('Completa producto y cantidad'); return; }
+      const producto_id = parseInt($('invProducto').value, 10);
+      const cantidad = parseInt($('invCantidad').value, 10);
+      if (!producto_id || !cantidad) {
+        alert('Completa producto y cantidad');
+        return;
+      }
       try {
         const { error } = await supabase.from('inventario_movimientos').insert({
           producto_id,
@@ -872,139 +843,109 @@
         if (error) throw error;
         e.target.reset();
         await Promise.all([cargarInventario(), cargarProductos()]);
-      } catch(err) {
+      } catch (err) {
         alert('Error registrando inventario: ' + err.message);
       }
     });
 
-    // ==================== REPORTES ====================
-    $('btnCargarReporte').addEventListener('click', cargarReporte);
-    $('btnCerrarDia').addEventListener('click', cerrarDia);
-
-    function rangoHoy() {
-      const hoy = new Date();
-      const inicio = new Date(hoy.getFullYear(), hoy.getMonth(), hoy.getDate());
-      const fin = new Date(hoy.getFullYear(), hoy.getMonth(), hoy.getDate()+1);
-      return {
-        inicio: inicio.toISOString(),
-        fin: fin.toISOString()
-      };
-    }
-
-    async function cargarReporte(){
-      try {
-        const { inicio, fin } = rangoHoy();
-
-        const ventasRes = await supabase
-          .from('ventas')
-          .select('id,fecha,ventas_items(cantidad,precio_unitario)')
-          .gte('fecha', inicio)
-          .lt('fecha', fin);
-        if (ventasRes.error) throw ventasRes.error;
-
-        const cajaRes = await supabase
-          .from('caja_movimientos')
-          .select('*')
-          .gte('fecha', inicio)
-          .lt('fecha', fin);
-        if (cajaRes.error) throw cajaRes.error;
-
-        const ventas = ventasRes.data || [];
-        const caja = cajaRes.data || [];
-
-        let totalVentas = 0;
-        let totalIngresos = 0;
-        let totalEgresos = 0;
-        let totalTickets = ventas.length;
-
-        ventas.forEach(v=>{
-          const items = v.ventas_items || [];
-          const suma = items.reduce((s,i)=> s + i.cantidad * i.precio_unitario, 0);
-          totalVentas += suma;
-        });
-
-        caja.forEach(m=>{
-          if (m.tipo === 'INGRESO') totalIngresos += Number(m.monto || 0);
-          else if (m.tipo === 'EGRESO') totalEgresos += Number(m.monto || 0);
-        });
-
-        const netoCaja = totalIngresos - totalEgresos;
-
-        const resumen = {
-          fecha: new Date().toLocaleDateString(),
-          tickets_emitidos: totalTickets,
-          total_ventas: totalVentas,
-          ingresos_caja: totalIngresos,
-          egresos_caja: totalEgresos,
-          saldo_caja_estimado: netoCaja
-        };
-
-        let detalleVentas = ventas.map(v=>{
-          const items = v.ventas_items || [];
-          const suma = items.reduce((s,i)=> s + i.cantidad * i.precio_unitario, 0);
-          return `#${v.id} ${new Date(v.fecha).toLocaleTimeString()} -> $${peso(suma)}`;
-        }).join('\n') || 'Sin ventas registradas hoy.';
-
-        let detalleCaja = caja.map(m=>
-          `${new Date(m.fecha).toLocaleTimeString()} ${m.tipo.padEnd(8,' ')} $${peso(m.monto)}`
-        ).join('\n') || 'Sin movimientos de caja hoy.';
-
-        const texto = [
-          '=== RESUMEN DEL DÍA ===',
-          JSON.stringify(resumen, null, 2),
-          '',
-          '=== VENTAS HOY ===',
-          detalleVentas,
-          '',
-          '=== CAJA HOY ===',
-          detalleCaja
-        ].join('\n');
-
-        $('reporteContenido').textContent = texto;
-      } catch(e) {
-        $('reporteContenido').textContent = 'Error cargando reporte: ' + e.message;
-      }
-    }
-
-    async function cerrarDia(){
-      if (!confirm('Esto registrará un cierre de día en la caja. ¿Continuar?')) return;
-      try {
-        const { error } = await supabase
-          .from('caja_movimientos')
-          .insert({ tipo:'CIERRE', monto:0 });
-        if (error) throw error;
-        await cargarReporte();
-        alert('📘 Día cerrado. Se registró el cierre en caja_movimientos.');
-      } catch(e) {
-        alert('Error al cerrar el día: ' + e.message);
-      }
-    }
-
     // ==================== HISTORIAL ====================
-    async function cargarHistorial(){
-      const { data, error } = await supabase
+    async function cargarHistorial() {
+      const { data: ventas, error } = await supabase
         .from('ventas')
         .select('id,fecha,ventas_items(cantidad,precio_unitario,productos(nombre))')
-        .order('id', { ascending:false })
+        .order('id', { ascending: false })
         .limit(50);
-      if (error) { console.error(error); return; }
-      $('tablaHistorial').innerHTML = (data || []).map(v=>{
-        const items = v.ventas_items || [];
-        const detalle = items.map(i=>{
-          const nombre = i.productos?.nombre || 'Prod.';
-          const sub = i.cantidad * i.precio_unitario;
-          return `${nombre} x${i.cantidad} ($${peso(sub)})`;
-        }).join(', ');
-        const total = items.reduce((s,i)=> s + i.cantidad * i.precio_unitario, 0);
+      if (error) {
+        console.error(error);
+        return;
+      }
+      $('tablaHistorial').innerHTML = (ventas || []).map(v => {
+        const detalle = (v.ventas_items || [])
+          .map(i => `${i.productos?.nombre || '#?'} x${i.cantidad}`)
+          .join(', ');
+        const total = (v.ventas_items || [])
+          .reduce((s, i) => s + i.cantidad * i.precio_unitario, 0);
         return `
           <tr>
             <td>${v.id}</td>
             <td>${v.fecha ? new Date(v.fecha).toLocaleString() : ''}</td>
-            <td style="text-align:left">${detalle || 'Sin detalle'}</td>
+            <td style="text-align:left">${detalle}</td>
             <td>$${peso(total)}</td>
           </tr>
         `;
       }).join('');
+    }
+
+    // ==================== REPORTES ====================
+    $('btnCargarReporte').addEventListener('click', cargarReporte);
+    $('btnCorteDia').addEventListener('click', () => {
+      alert('Cierre de día simulado.\nPuedes usar el reporte para tu corte de caja.');
+    });
+
+    async function cargarReporte() {
+      const hoy = new Date();
+      const inicio = new Date(hoy.getFullYear(), hoy.getMonth(), hoy.getDate(), 0, 0, 0).toISOString();
+      const fin = new Date(hoy.getFullYear(), hoy.getMonth(), hoy.getDate(), 23, 59, 59).toISOString();
+
+      try {
+        const { data: ventas, error: errV } = await supabase
+          .from('ventas')
+          .select('id,fecha,ventas_items(cantidad,precio_unitario)')
+          .gte('fecha', inicio)
+          .lte('fecha', fin);
+        if (errV) throw errV;
+
+        let totalVentas = 0;
+        let tickets = 0;
+        (ventas || []).forEach(v => {
+          tickets++;
+          (v.ventas_items || []).forEach(i => {
+            totalVentas += i.cantidad * i.precio_unitario;
+          });
+        });
+
+        const { data: caja, error: errC } = await supabase
+          .from('caja_movimientos')
+          .select('*')
+          .gte('fecha', inicio)
+          .lte('fecha', fin);
+        if (errC) throw errC;
+
+        let ingresos = 0, egresos = 0;
+        (caja || []).forEach(m => {
+          if ((m.tipo || '').toUpperCase() === 'INGRESO') ingresos += Number(m.monto || 0);
+          else egresos += Number(m.monto || 0);
+        });
+
+        const saldo = ingresos - egresos;
+
+        const resumen = {
+          fecha: hoy.toLocaleDateString(),
+          tickets_emitidos: tickets,
+          total_ventas: totalVentas,
+          ingresos_caja: ingresos,
+          egresos_caja: egresos,
+          saldo_esperado_en_caja: saldo
+        };
+
+        let texto = '';
+        texto += 'REPORTE DIARIO\n';
+        texto += 'Fecha: ' + resumen.fecha + '\n\n';
+        texto += 'Tickets emitidos: ' + resumen.tickets_emitidos + '\n';
+        texto += 'Total en ventas:  $' + peso(resumen.total_ventas) + '\n';
+        texto += 'Ingresos en caja: $' + peso(resumen.ingresos_caja) + '\n';
+        texto += 'Egresos en caja:  $' + peso(resumen.egresos_caja) + '\n';
+        texto += '-----------------------------\n';
+        texto += 'Saldo esperado caja: $' + peso(resumen.saldo_esperado_en_caja) + '\n\n';
+        texto += 'Detalle rápido de movimientos de caja:\n';
+        (caja || []).forEach(m => {
+          texto += `- ${new Date(m.fecha).toLocaleTimeString()}  ${m.tipo}: $${peso(m.monto)}\n`;
+        });
+
+        $('reporteContenido').textContent = texto || 'Sin información para hoy.';
+      } catch (e) {
+        $('reporteContenido').textContent = 'Error cargando reporte: ' + e.message;
+      }
     }
   </script>
 </body>
