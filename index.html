@@ -823,16 +823,17 @@
           .single();
         if (errV) throw errV;
 
-        for (const c of carrito) {
-          const precioUnit = Number(c.precio ?? productosCache.get(c.id)?.precio ?? 0);
-          const { error } = await supabase.from('ventas_items').insert({
-            venta_id: venta.id,
-            producto_id: c.id,
-            cantidad: c.cantidad,
-            precio_unitario: precioUnit,
-          });
-          if (error) throw error;
-        }
+for (const c of carrito) {
+  const precioUnit = Number(c.precio ?? productosCache.get(c.id)?.precio ?? 0);
+  const { error } = await supabase.from('ventas_items').insert({
+    venta_id: venta.id,
+    producto_id: c.id,
+    cantidad: c.cantidad,
+    precio_unitario: precioUnit
+  });
+  if (error) throw error;
+}
+
 
         // Movimiento automático en caja
         const { error:errCaja } = await supabase.from('caja_movimientos').insert({
