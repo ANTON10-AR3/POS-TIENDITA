@@ -35,7 +35,7 @@
     .col2 { grid-template-columns: 1fr 1fr }
     .col3 { grid-template-columns: 1fr 1fr 1fr }
     table { width:100%; border-collapse: collapse; margin-top: 10px; background:#fff }
-    th, td { border: 1px solid #eef1f6; padding: 8px; text-align:center }
+    th, td { border: 1px solid #eef1f6; padding: 8px; text-align:center; vertical-align: top }
     th { background:#f7f9fe }
     .muted { color:#5f6b7a; font-size: 13px }
     .hidden { display:none }
@@ -116,9 +116,8 @@
         <!-- INVENTARIO -->
         <div id="vistaInventario" class="hidden section">
           <h3>📊 Movimientos de Inventario</h3>
-          <!-- AHORA POR CÓDIGO DE BARRAS, NO POR ID -->
           <form id="formEntrada" class="grid col3">
-            <input id="invCodigo" type="text" placeholder="Código de barras" required />
+            <input id="invProducto" type="text" placeholder="Código de barras del producto" required />
             <input id="invCantidad" type="number" placeholder="Cantidad" required />
             <button type="submit" class="secondary">Registrar Entrada</button>
           </form>
@@ -131,7 +130,26 @@
         <!-- REPORTES -->
         <div id="vistaReportes" class="hidden section">
           <h3>📑 Reporte Diario</h3>
-          <button id="btnCargarReporte" class="secondary">Cargar Reporte</button>
+          <div class="grid col2" style="margin-bottom:10px">
+            <div class="section" style="background:#fff">
+              <div class="muted">Total ventas del día</div>
+              <div style="font-weight:700;font-size:18px">$<span id="repTotalVentas">0.00</span></div>
+              <div class="muted">Núm. ventas: <span id="repNumVentas">0</span></div>
+              <div class="muted">Ticket promedio: $<span id="repTicketPromedio">0.00</span></div>
+              <div class="muted">Producto más vendido: <span id="repProductoTop">—</span></div>
+            </div>
+            <div>
+              <button id="btnCargarReporte" class="secondary" style="margin-bottom:6px">Actualizar reporte de hoy</button>
+              <button id="btnCerrarDia" class="destructive">Cerrar día</button>
+              <div class="muted" style="margin-top:6px">
+                El cierre de día registra un movimiento de tipo <b>cierre</b> en caja con el total de ventas de hoy.
+              </div>
+            </div>
+          </div>
+          <table>
+            <thead><tr><th>Venta</th><th>Hora</th><th>Total aprox.</th></tr></thead>
+            <tbody id="tablaReporteVentasDia"></tbody>
+          </table>
           <pre id="reporteContenido" class="json" style="margin-top:10px"></pre>
         </div>
 
@@ -160,8 +178,14 @@
             <tbody id="tablaCarrito"></tbody>
           </table>
           <div class="grid col3" style="align-items:center; margin-top:10px">
-            <div class="muted">Total:</div>
-            <div style="font-weight:800; font-size:18px">$<span id="totalVenta">0.00</span></div>
+            <div>
+              <div class="muted">Total:</div>
+              <div style="font-weight:800; font-size:18px">$<span id="totalVenta">0.00</span></div>
+            </div>
+            <div>
+              <input id="ventaPagoCon" type="number" step="0.01" placeholder="Pago con" />
+              <div class="muted">Cambio: $<span id="ventaCambio">0.00</span></div>
+            </div>
             <div style="text-align:right">
               <button id="btnFinalizarVenta">Finalizar Venta</button>
               <button id="btnImprimir" class="ghost">🖨️ Imprimir Ticket</button>
@@ -173,10 +197,19 @@
         <div id="vistaCaja" class="hidden section">
           <h3>💵 Caja</h3>
           <form id="formCaja" class="grid col3">
-            <input id="cajaMonto" type="number" step="0.01" placeholder="Monto" required />
-            <select id="cajaTipo"><option value="ingreso">Ingreso</option><option value="egreso">Egreso</option></select>
+            <input id="cajaMonto" type="number" step="0.01" placeholder="Monto manual" required />
+            <select id="cajaTipo">
+              <option value="ingreso">Ingreso</option>
+              <option value="egreso">Egreso</option>
+              <option value="cierre">Cierre</option>
+            </select>
             <button type="submit" class="secondary">Registrar</button>
           </form>
+          <div class="grid col3" style="margin-top:10px">
+            <div class="muted">Ingresos: $<span id="cajaIngresos">0.00</span></div>
+            <div class="muted">Egresos: $<span id="cajaEgresos">0.00</span></div>
+            <div class="muted">Saldo: $<span id="cajaSaldo">0.00</span></div>
+          </div>
           <table>
             <thead><tr><th>Tipo</th><th>Monto</th><th>Fecha</th></tr></thead>
             <tbody id="tablaCaja"></tbody>
@@ -187,7 +220,7 @@
         <div id="vistaHistorial" class="hidden section">
           <h3>🧾 Historial de Ventas</h3>
           <table>
-            <thead><tr><th>ID</th><th>Fecha</th><th>Total aprox.</th></tr></thead>
+            <thead><tr><th>ID</th><th>Fecha</th><th>Detalle</th></tr></thead>
             <tbody id="tablaHistorial"></tbody>
           </table>
         </div>
@@ -211,10 +244,12 @@
     const $  = (id)=>document.getElementById(id);
     const peso = (n)=> Number(n ?? 0).toFixed(2);
     const beep = ()=> {
-      try { new Audio('https://actions.google.com/sounds/v1/cartoon/wood_plank_flicks.ogg').play(); } catch {}
+      try {
+        new Audio('https://actions.google.com/sounds/v1/buttons/beep_short.ogg').play();
+      } catch {}
     };
 
-    // ==================== LOGIN ====================
+    // ---------- LOGIN ----------
     $('btnLogin').addEventListener('click', async ()=>{
       const email = $('email').value.trim();
       const password = $('password').value.trim();
@@ -282,6 +317,7 @@
       if (id==='vistaVentas')     cargarProductosVenta();
       if (id==='vistaCaja')       cargarCaja();
       if (id==='vistaHistorial')  cargarHistorial();
+      if (id==='vistaReportes')   cargarReporteDia(false);
     }
 
     // ==================== PRODUCTOS ====================
@@ -368,7 +404,7 @@
       r.readAsText(f);
     });
 
-    // Escáner para alta de producto (rellena prodCodigo)
+    // ----- escáner alta código de barras -----
     let prodStream = null;
     let prodDetector = null;
     let prodScanning = false;
@@ -376,7 +412,7 @@
     $('btnScanProducto').addEventListener('click', async ()=>{
       if (prodScanning) { stopScanProd(); return; }
       if (!('BarcodeDetector' in window)) {
-        alert('Tu navegador no soporta escaneo nativo. Usa Chrome Android o un lector USB.');
+        alert('Tu navegador no soporta escaneo nativo. Usa el lector USB como teclado.');
         return;
       }
       const video = $('previewProd');
@@ -420,6 +456,27 @@
       }
     }
 
+    // ==================== UTIL: PRODUCTO POR CÓDIGO ====================
+    async function obtenerProductoPorCodigo(code){
+      const codigo = String(code || '').trim();
+      if (!codigo) return null;
+
+      // 1) RPC si existe
+      try {
+        const { data, error } = await supabase.rpc('buscar_producto_por_codigo', { p_codigo: codigo });
+        if (!error && data && data.length) return data[0];
+      } catch(e) { console.error(e); }
+
+      // 2) Fallback select directo
+      const { data, error } = await supabase
+        .from('productos')
+        .select('id,nombre,precio,stock,codigo_barras')
+        .eq('codigo_barras', codigo)
+        .maybeSingle();
+      if (error) { console.error(error); return null; }
+      return data || null;
+    }
+
     // ==================== VENTAS ====================
     async function cargarProductosVenta(){
       const { data, error } = await supabase.from('productos')
@@ -435,6 +492,7 @@
       }
       carrito = [];
       renderCarrito();
+      actualizarCambio();
     }
 
     $('btnBuscarCodigo').addEventListener('click', async ()=>{
@@ -445,25 +503,7 @@
     });
 
     async function buscarYAgregarPorCodigo(code){
-      let found = null;
-      // 1) RPC si existe
-      try {
-        const rpc = await supabase.rpc('buscar_producto_por_codigo', { p_codigo: code });
-        if (!rpc.error && rpc.data && rpc.data.length) {
-          found = rpc.data[0];
-        }
-      } catch(e) { console.error(e); }
-
-      // 2) Fallback select directo
-      if (!found) {
-        const { data } = await supabase
-          .from('productos')
-          .select('id,nombre,precio,stock,codigo_barras')
-          .eq('codigo_barras', code)
-          .maybeSingle();
-        if (data) found = data;
-      }
-
+      const found = await obtenerProductoPorCodigo(code);
       if (!found) {
         alert('No se encontró el producto para ese código');
         return;
@@ -513,9 +553,19 @@
       `).join('');
       const total = carrito.reduce((s,c)=> s + c.cantidad * c.precio, 0);
       $('totalVenta').textContent = peso(total);
+      actualizarCambio();
     }
 
-    // Escáner para ventas
+    function actualizarCambio(){
+      const total = parseFloat($('totalVenta').textContent || '0');
+      const pago = parseFloat($('ventaPagoCon').value || '0');
+      const cambio = (!isNaN(pago) && pago >= total) ? (pago - total) : 0;
+      $('ventaCambio').textContent = peso(cambio);
+    }
+
+    $('ventaPagoCon').addEventListener('input', actualizarCambio);
+
+    // escáner para ventas
     let ventaStream = null;
     let ventaDetector = null;
     let ventaScanning = false;
@@ -566,14 +616,27 @@
       }
     }
 
-    // Finalizar venta
+    // finalizar venta con pago/cambio, caja y ticket
     $('btnFinalizarVenta').addEventListener('click', async ()=>{
       if (!carrito.length) return alert('Carrito vacío');
+
+      const total = carrito.reduce((s,c)=> s + c.cantidad * c.precio, 0);
+      const pago = parseFloat($('ventaPagoCon').value || '0');
+      if (isNaN(pago) || pago < total) {
+        alert('El pago debe ser mayor o igual al total de la venta');
+        return;
+      }
+      const cambio = pago - total;
+      $('ventaCambio').textContent = peso(cambio);
+
+      // copia del carrito para el ticket antes de vaciar
+      const itemsTicket = carrito.map(c=>({ ...c }));
+
       try {
         const { data:venta, error:errV } = await supabase
           .from('ventas')
           .insert({})
-          .select('id')
+          .select('id,fecha')
           .single();
         if (errV) throw errV;
 
@@ -588,35 +651,79 @@
           if (error) throw error;
         }
 
-        alert('✅ Venta registrada (#'+venta.id+')');
+        // movimientos de caja: ingreso por total y egreso por cambio
+        const movimientos = [
+          { monto: total, tipo: 'ingreso' }
+        ];
+        if (cambio > 0) movimientos.push({ monto: cambio, tipo: 'egreso' });
+        await supabase.from('caja_movimientos').insert(movimientos);
+
+        // actualizar vistas
         carrito = [];
         renderCarrito();
-        await Promise.all([cargarProductosVenta(), cargarProductos(), cargarHistorial()]);
+        $('ventaPagoCon').value = '';
+        $('ventaCambio').textContent = '0.00';
+        await Promise.all([cargarProductosVenta(), cargarProductos(), cargarHistorial(), cargarCaja(), cargarReporteDia(false)]);
+
+        if (confirm('✅ Venta registrada (#'+venta.id+'). ¿Deseas imprimir ticket?')) {
+          imprimirTicket(venta, itemsTicket, total, pago, cambio);
+        }
       } catch(e) {
-        alert('Error agregando item/venta: ' + e.message);
+        alert('Error registrando venta: ' + e.message);
       }
     });
 
-    // Ticket
-    $('btnImprimir').addEventListener('click', ()=>{
-      const lines = carrito.map(c =>
-        `${c.nombre} x${c.cantidad} = $${peso(c.cantidad * c.precio)}`
+    function imprimirTicket(venta, items, total, pago, cambio){
+      const lineas = items.map(c =>
+        `${c.nombre.padEnd(16).slice(0,16)} x${String(c.cantidad).padStart(2)}  $${peso(c.cantidad*c.precio)}`
       ).join('<br>');
-      const total = $('totalVenta').textContent;
+
       const html = `
-        <div style="font-family:monospace; padding:12px">
-          <h3>POS Tiendita</h3>
-          <div>${new Date().toLocaleString()}</div>
-          <hr>
-          <div>${lines || '(sin items)'}</div>
-          <hr>
-          <h3>Total: $${total}</h3>
-        </div>`;
-      const w = window.open('', 'ticket');
+        <html>
+        <head>
+          <meta charset="utf-8">
+          <title>Ticket</title>
+          <style>
+            body { font-family: monospace; margin:0; padding:0; }
+            .ticket {
+              width: 260px;
+              padding: 12px;
+            }
+            h3, h4 { margin:0; text-align:center; }
+            hr { border:none; border-top:1px dashed #000; margin:6px 0; }
+            .tot { text-align:right; }
+          </style>
+        </head>
+        <body>
+          <div class="ticket">
+            <h3>TIENDITA MX</h3>
+            <div style="text-align:center;font-size:11px">
+              RFC: TDM010101ABC<br>
+              Av. Principal 123, CDMX
+            </div>
+            <hr>
+            <div>Folio: ${venta.id}</div>
+            <div>${venta.fecha ? new Date(venta.fecha).toLocaleString() : new Date().toLocaleString()}</div>
+            <hr>
+            <div style="font-size:12px">
+              ${lineas || '(sin items)'}
+            </div>
+            <hr>
+            <div class="tot">SUBTOTAL: $${peso(total)}</div>
+            <div class="tot">PAGO:     $${peso(pago)}</div>
+            <div class="tot">CAMBIO:   $${peso(cambio)}</div>
+            <hr>
+            <h4>¡GRACIAS POR SU COMPRA!</h4>
+          </div>
+        </body>
+        </html>
+      `;
+      const w = window.open('', 'ticket', 'width=320,height=600');
       w.document.write(html);
       w.document.close();
+      w.focus();
       w.print();
-    });
+    }
 
     // ==================== INVENTARIO ====================
     async function cargarInventario(){
@@ -636,30 +743,21 @@
       `).join('');
     }
 
-    // AHORA REGISTRA ENTRADA POR CÓDIGO DE BARRAS
     $('formEntrada').addEventListener('submit', async (e)=>{
       e.preventDefault();
-      const codigo = $('invCodigo').value.trim();
-      const cantidad = parseInt($('invCantidad').value,10);
+      const codigo = $('invProducto').value.trim();
+      const cantidad   = parseInt($('invCantidad').value,10);
       if (!codigo || !cantidad) { alert('Completa código y cantidad'); return; }
-
       try {
-        const { data:prod, error:errP } = await supabase
-          .from('productos')
-          .select('id')
-          .eq('codigo_barras', codigo)
-          .maybeSingle();
-        if (errP) throw errP;
-        if (!prod) { alert('No se encontró producto con ese código'); return; }
-
+        const prod = await obtenerProductoPorCodigo(codigo);
+        if (!prod) { alert('No se encontró el producto para ese código'); return; }
         const { error } = await supabase.from('inventario_movimientos').insert({
           producto_id: prod.id,
           tipo: 'ENTRADA',
           cantidad,
-          motivo: 'Entrada manual por código'
+          motivo: 'Entrada manual'
         });
         if (error) throw error;
-
         e.target.reset();
         await Promise.all([cargarInventario(), cargarProductos()]);
       } catch(err) {
@@ -674,6 +772,17 @@
         .select('*')
         .order('fecha', { ascending:false });
       if (error) { console.error(error); return; }
+
+      let ingresos = 0, egresos = 0;
+      (data || []).forEach(c=>{
+        if (c.tipo === 'egreso') egresos += Number(c.monto || 0);
+        else if (c.tipo === 'ingreso') ingresos += Number(c.monto || 0);
+      });
+
+      $('cajaIngresos').textContent = peso(ingresos);
+      $('cajaEgresos').textContent  = peso(egresos);
+      $('cajaSaldo').textContent    = peso(ingresos - egresos);
+
       $('tablaCaja').innerHTML = (data || []).map(c=>`
         <tr>
           <td>${c.tipo}</td>
@@ -702,20 +811,109 @@
     });
 
     // ==================== REPORTES / HISTORIAL ====================
-    $('btnCargarReporte').addEventListener('click', cargarReporte);
+    $('btnCargarReporte').addEventListener('click', ()=>cargarReporteDia(false));
+    $('btnCerrarDia').addEventListener('click', ()=>cargarReporteDia(true));
 
-    async function cargarReporte(){
+    async function cargarReporteDia(cerrar){
       try {
-        let texto = '';
-        const { data, error } = await supabase.rpc('reporte_diario');
-        if (!error && data) {
-          texto = JSON.stringify(data, null, 2);
-        } else {
-          const v = await supabase.from('ventas').select('id,fecha').order('fecha',{ascending:false}).limit(50);
-          if (v.error) throw v.error;
-          texto = (v.data || []).map(r=>`${r.id} - ${r.fecha}`).join('\n') || 'Sin ventas';
+        const hoy = new Date();
+        const start = new Date(hoy.getFullYear(), hoy.getMonth(), hoy.getDate());
+        const end   = new Date(hoy.getFullYear(), hoy.getMonth(), hoy.getDate()+1);
+        const startIso = start.toISOString();
+        const endIso   = end.toISOString();
+
+        const { data:ventas, error } = await supabase
+          .from('ventas')
+          .select('id,fecha')
+          .gte('fecha', startIso)
+          .lt('fecha', endIso)
+          .order('fecha', { ascending:true });
+        if (error) throw error;
+
+        let totalDia = 0;
+        const filas = [];
+        const conteoProductos = new Map(); // id -> uds
+
+        for (const v of (ventas || [])) {
+          const { data:items, error:errI } = await supabase
+            .from('ventas_items')
+            .select('cantidad,precio_unitario,producto_id')
+            .eq('venta_id', v.id);
+          if (errI) throw errI;
+
+          let totalVenta = 0;
+          for (const it of (items || [])) {
+            totalVenta += it.cantidad * it.precio_unitario;
+            if (it.producto_id != null) {
+              const prev = conteoProductos.get(it.producto_id) || 0;
+              conteoProductos.set(it.producto_id, prev + it.cantidad);
+            }
+          }
+          totalDia += totalVenta;
+          filas.push({ id:v.id, fecha:v.fecha, total: totalVenta });
         }
-        $('reporteContenido').textContent = texto;
+
+        const numVentas = filas.length;
+        const ticketProm = numVentas ? (totalDia / numVentas) : 0;
+
+        $('repTotalVentas').textContent     = peso(totalDia);
+        $('repNumVentas').textContent       = String(numVentas);
+        $('repTicketPromedio').textContent  = peso(ticketProm);
+
+        // producto más vendido
+        let productoTopTexto = '—';
+        if (conteoProductos.size) {
+          const ids = Array.from(conteoProductos.keys());
+          const { data:prods, error:errP } = await supabase
+            .from('productos')
+            .select('id,nombre')
+            .in('id', ids);
+          if (errP) console.error(errP);
+          else {
+            const mapNombres = new Map();
+            (prods || []).forEach(p=> mapNombres.set(p.id, p.nombre));
+            let bestId = null, bestCant = -1;
+            conteoProductos.forEach((cant,id)=>{
+              if (cant > bestCant) { bestCant = cant; bestId = id; }
+            });
+            if (bestId != null) {
+              const nom = mapNombres.get(bestId) || ('Producto '+bestId);
+              productoTopTexto = `${nom} (${bestCant} uds)`;
+            }
+          }
+        }
+        $('repProductoTop').textContent = productoTopTexto;
+
+        $('tablaReporteVentasDia').innerHTML = filas.map(f=>`
+          <tr>
+            <td>${f.id}</td>
+            <td>${f.fecha ? new Date(f.fecha).toLocaleTimeString() : ''}</td>
+            <td>$${peso(f.total)}</td>
+          </tr>
+        `).join('') || '<tr><td colspan="3">Sin ventas hoy</td></tr>';
+
+        $('reporteContenido').textContent = JSON.stringify({
+          fecha: start.toISOString().substring(0,10),
+          totalDia,
+          numVentas,
+          ticketPromedio: ticketProm,
+          productoTop: productoTopTexto
+        }, null, 2);
+
+        if (cerrar) {
+          const ok = confirm(`Total ventas del día: $${peso(totalDia)}.\n¿Registrar cierre de día en caja?`);
+          if (!ok) return;
+          const { error:errC } = await supabase.from('caja_movimientos').insert({
+            monto: totalDia,
+            tipo: 'cierre'
+          });
+          if (errC) {
+            alert('Error registrando cierre: ' + errC.message);
+          } else {
+            alert('Cierre de día registrado en caja.');
+            await cargarCaja();
+          }
+        }
       } catch(e) {
         $('reporteContenido').textContent = 'Error cargando reporte: ' + e.message;
       }
@@ -728,25 +926,40 @@
         .order('id', { ascending:false })
         .limit(50);
       if (error) { console.error(error); return; }
-      const filas = [];
+
+      const filasHTML = [];
       for (const v of (ventas || [])) {
-        const items = await supabase
-          .from('ventas_items')
-          .select('cantidad,precio_unitario')
-          .eq('venta_id', v.id);
+        let detalleHtml = '';
         let total = 0;
-        if (!items.error && items.data) {
-          total = items.data.reduce((s,i)=> s + i.cantidad * i.precio_unitario, 0);
+        try {
+          const { data:items, error:errI } = await supabase
+            .from('ventas_items')
+            .select('cantidad,precio_unitario,productos(nombre)')
+            .eq('venta_id', v.id);
+          if (!errI && items) {
+            detalleHtml = items.map(i=>{
+              const nom = i.productos?.nombre || 'Prod';
+              const sub = i.cantidad * i.precio_unitario;
+              total += sub;
+              return `${nom} x${i.cantidad} ($${peso(i.precio_unitario)}) = $${peso(sub)}`;
+            }).join('<br>');
+          } else {
+            detalleHtml = '(sin detalle)';
+          }
+        } catch(e) {
+          console.error(e);
+          detalleHtml = '(error obteniendo detalle)';
         }
-        filas.push({ id: v.id, fecha: v.fecha, total });
+        detalleHtml += `<br><strong>Total: $${peso(total)}</strong>`;
+        filasHTML.push(`
+          <tr>
+            <td>${v.id}</td>
+            <td>${v.fecha ? new Date(v.fecha).toLocaleString() : ''}</td>
+            <td>${detalleHtml}</td>
+          </tr>
+        `);
       }
-      $('tablaHistorial').innerHTML = filas.map(f=>`
-        <tr>
-          <td>${f.id}</td>
-          <td>${f.fecha ? new Date(f.fecha).toLocaleString() : ''}</td>
-          <td>$${peso(f.total)}</td>
-        </tr>
-      `).join('');
+      $('tablaHistorial').innerHTML = filasHTML.join('') || '<tr><td colspan="3">Sin ventas registradas</td></tr>';
     }
   </script>
 </body>
