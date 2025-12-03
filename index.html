@@ -9,394 +9,327 @@
       --green:#4caf50;
       --greenD:#2e7d32;
       --blue:#1e88e5;
-      --blueD:#155fa5;
       --red:#c62828;
       --bg:#f5f7fb;
-      --card:#ffffff;
-      --border:#e1e4ea;
-      --text:#1c2533;
-      --muted:#5f6b7a;
+      --grey:#e1e4ea;
     }
     * { box-sizing:border-box; }
-    body{
-      margin:0;
+    body {
+      font-family: system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+      background:linear-gradient(135deg,var(--green),var(--greenD));
       min-height:100vh;
+      margin:0;
       display:flex;
       align-items:center;
       justify-content:center;
       padding:24px;
-      font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
-      background:radial-gradient(circle at top,var(--green),var(--greenD));
-      color:var(--text);
     }
-    .card{
+    .card {
       width:100%;
-      max-width:1100px;
-      background:var(--card);
-      border-radius:18px;
-      padding:24px 24px 20px;
-      box-shadow:0 24px 60px rgba(0,0,0,.30);
+      max-width:980px;
+      background:#fff;
+      border-radius:16px;
+      padding:24px;
+      box-shadow:0 20px 48px rgba(0,0,0,.25);
       animation:fade .35s ease;
     }
-    h2{margin:0 0 4px;text-align:center}
-    h3{margin:12px 0 10px;}
-    h4{margin:10px 0 6px;}
-    input,select,button{font-size:15px;}
-    input,select{
+    h2 { margin:0 0 10px; text-align:center; }
+    h3 { margin:16px 0 12px; }
+    input,select,button { font-size:15px; }
+    input,select {
       width:100%;
-      padding:10px 12px;
-      margin:4px 0;
+      padding:12px;
+      margin:6px 0;
+      border:1px solid var(--grey);
       border-radius:10px;
-      border:1px solid var(--border);
       background:#fff;
     }
-    input:focus,select:focus{
-      outline:none;
-      border-color:var(--blue);
-      box-shadow:0 0 0 1px rgba(30,136,229,.25);
-    }
-    button{
-      padding:10px 14px;
-      border-radius:999px;
+    button {
+      padding:12px 14px;
       border:0;
+      border-radius:10px;
       font-weight:700;
       cursor:pointer;
       background:var(--green);
       color:#fff;
-      display:inline-flex;
-      align-items:center;
-      justify-content:center;
-      gap:6px;
-      white-space:nowrap;
     }
-    button.secondary{background:var(--blue);}
-    button.secondary:hover{background:var(--blueD);}
-    button.destructive{background:var(--red);}
-    button.ghost{
-      background:#e9eef8;
-      color:var(--text);
-    }
-    button.ghost:hover{background:#dde4f3;}
-    button:hover{filter:brightness(.97);}
-    .menu{
+    button.secondary { background:var(--blue); }
+    button.destructive { background:var(--red); }
+    button.ghost { background:#e9eef8; color:#1a2a42; }
+    button:hover { filter:brightness(.95); }
+    .menu {
       display:flex;
       flex-wrap:wrap;
       gap:10px;
-      margin:14px 0 0;
+      margin:12px 0 0;
     }
-    .menu button{
-      border-radius:12px;
-      padding-inline:16px;
-    }
-    .grid{display:grid;gap:10px;}
-    .col2{grid-template-columns:1fr 1fr;}
-    .col3{grid-template-columns:1fr 1fr 1fr;}
-    @media(max-width:860px){
-      .col2,.col3{grid-template-columns:1fr;}
-    }
-    table{
+    .menu button { background:var(--blue); }
+    .grid { display:grid; gap:12px; }
+    .col2 { grid-template-columns:1fr 1fr; }
+    .col3 { grid-template-columns:1fr 1fr 1fr; }
+    table {
       width:100%;
       border-collapse:collapse;
       margin-top:10px;
-      font-size:14px;
       background:#fff;
     }
-    th,td{
+    th,td {
       border:1px solid #eef1f6;
-      padding:6px 6px;
+      padding:8px;
       text-align:center;
+      font-size:14px;
     }
-    th{
-      background:#f7f9fe;
-      font-weight:600;
-    }
-    .muted{color:var(--muted);font-size:13px;}
-    .hidden{display:none;}
-    #resultado{min-height:22px;margin-top:8px;}
-    .ok{color:var(--greenD);font-weight:700;}
-    .warn{color:var(--red);font-weight:700;}
-    .low{background:#fff1f1;}
-    .pill{
-      display:inline-flex;
-      align-items:center;
-      gap:6px;
-      padding:4px 10px;
+    th { background:#f7f9fe; }
+    .muted { color:#5f6b7a; font-size:13px; }
+    .hidden { display:none; }
+    #resultado { min-height:22px; margin-top:8px; }
+    .ok { color:var(--greenD); font-weight:700; }
+    .warn { color:var(--red); font-weight:700; }
+    .low { background:#fff1f1; }
+    .pill {
+      display:inline-block;
+      padding:2px 8px;
       border-radius:999px;
       font-size:12px;
       background:#ecf3ff;
       color:#0c3a94;
     }
-    .pill span{font-weight:600;}
-    .badge-role{
-      font-size:11px;
-      padding:2px 6px;
-      border-radius:999px;
-      background:#ffe082;
-      color:#6d4c00;
+    .scan-flash { animation:flash .25s ease-in-out; }
+    @keyframes flash {
+      from { background:#fff59d; }
+      to   { background:transparent; }
     }
-    .scan-flash{animation:flash .25s ease-in-out;}
-    @keyframes flash{from{background:#fff59d;}to{background:transparent;}}
-    @keyframes fade{from{opacity:0;transform:translateY(-6px);}to{opacity:1;transform:none;}}
-    .section{
-      margin-top:14px;
+    @keyframes fade {
+      from { opacity:0; transform:translateY(-6px); }
+      to   { opacity:1; transform:none; }
+    }
+    .section {
       background:var(--bg);
-      border-radius:14px;
-      padding:14px 14px 12px;
+      border-radius:12px;
+      padding:12px;
     }
-    video{
+    video {
       width:100%;
       max-height:240px;
-      border-radius:12px;
+      border-radius:10px;
       background:#000;
-      margin-top:6px;
     }
-    pre.json{
+    pre.json {
       background:#0b1020;
       color:#c4d0ff;
       padding:12px;
       border-radius:10px;
       overflow:auto;
       white-space:pre-wrap;
-      font-size:13px;
+      font-size:12px;
     }
-    .flex-between{
+    .ticket-box {
+      font-family: "Courier New",monospace;
+      font-size:12px;
+      background:#fff;
+      border-radius:8px;
+      padding:12px;
+      border:1px dashed #999;
+      max-height:320px;
+      overflow:auto;
+    }
+    .ticket-box h4 {
+      margin:0 0 4px;
+      text-align:center;
+      font-size:13px;
+      text-transform:uppercase;
+    }
+    .ticket-line {
+      display:flex;
+      justify-content:space-between;
+    }
+    .badge {
+      display:inline-block;
+      padding:2px 6px;
+      border-radius:999px;
+      background:#e3f2fd;
+      font-size:11px;
+      margin-left:4px;
+    }
+    /* Modal de ticket */
+    .modal-backdrop {
+      position:fixed;
+      inset:0;
+      background:rgba(0,0,0,.45);
       display:flex;
       align-items:center;
+      justify-content:center;
+      z-index:999;
+    }
+    .modal {
+      background:#fff;
+      padding:16px;
+      border-radius:14px;
+      width:100%;
+      max-width:420px;
+      box-shadow:0 18px 40px rgba(0,0,0,.35);
+    }
+    .modal-header {
+      display:flex;
       justify-content:space-between;
+      align-items:center;
+      margin-bottom:8px;
+    }
+    .modal-header h3 {
+      margin:0;
+      font-size:16px;
+    }
+    .modal-actions {
+      margin-top:10px;
+      text-align:right;
+      display:flex;
+      justify-content:flex-end;
       gap:8px;
     }
-    .small-label{
-      font-size:12px;
-      font-weight:600;
-      color:var(--muted);
-      text-transform:uppercase;
-      letter-spacing:.04em;
-    }
-    .ticket-preview{
-      font-family:monospace;
-      font-size:13px;
-      background:#fff;
-      padding:12px;
-      border-radius:10px;
-      border:1px dashed #bbb;
-    }
-    .kpi-row{
-      display:flex;
-      flex-wrap:wrap;
-      gap:10px;
-      margin-top:8px;
-    }
-    .kpi{
-      flex:1 1 140px;
-      background:#fff;
-      border-radius:10px;
-      padding:8px 10px;
-      border:1px solid #e2e6f0;
-    }
-    .kpi-title{
+    .tag-small {
       font-size:11px;
-      text-transform:uppercase;
-      color:var(--muted);
-    }
-    .kpi-value{
-      margin-top:4px;
-      font-size:16px;
-      font-weight:700;
+      padding:1px 6px;
+      border-radius:999px;
+      background:#f1f3f4;
     }
   </style>
 </head>
 <body>
   <div class="card">
     <h2>POS Tiendita</h2>
-    <div class="muted" style="text-align:center;margin-bottom:10px;">Versión ULTRA – Proyecto Escolar</div>
 
     <!-- LOGIN -->
     <div id="loginBox">
-      <div class="grid col2">
+      <div class="grid">
         <input id="email" type="email" placeholder="Correo" autocomplete="username" />
         <input id="password" type="password" placeholder="Contraseña" autocomplete="current-password" />
-      </div>
-      <div class="grid col2" style="margin-top:6px;">
-        <button id="btnLogin" class="secondary">Iniciar sesión</button>
-        <div class="muted" style="display:flex;align-items:center;justify-content:flex-end;">Uso académico – Supabase · Vercel</div>
+        <button id="btnLogin">Iniciar sesión</button>
       </div>
       <div id="resultado" class="muted">Listo para iniciar sesión…</div>
     </div>
 
     <!-- DASHBOARD -->
     <div id="dashboard" class="hidden">
-      <div class="grid col2" style="align-items:center;">
+      <div class="grid col2">
         <div>
-          <div id="userTitle" class="pill">👤 <span>—</span></div>
+          <div id="userTitle" class="pill">👤 —</div>
           <div id="userRole" class="muted">Rol: —</div>
         </div>
-        <div style="text-align:right;">
+        <div style="text-align:right">
           <button id="btnLogout" class="destructive">Cerrar sesión</button>
         </div>
       </div>
 
       <div class="menu" id="menuOpciones"></div>
 
-      <div id="vistas" style="margin-top:14px;">
+      <div id="vistas" style="margin-top:16px">
         <!-- PRODUCTOS -->
         <div id="vistaProductos" class="hidden section">
-          <div class="flex-between">
-            <h3>📦 Gestión de Productos</h3>
-            <span class="small-label">Catálogo maestro</span>
-          </div>
+          <h3>📦 Gestión de Productos</h3>
           <form id="formProducto" class="grid col3">
-            <input id="prodNombre" type="text" placeholder="Nombre del producto" required />
+            <input id="prodNombre" type="text" placeholder="Nombre" required />
             <input id="prodPrecio" type="number" step="0.01" placeholder="Precio" required />
             <input id="prodStock" type="number" placeholder="Stock inicial" required />
-            <div class="grid col3" style="grid-column:1 / -1;gap:8px;">
+            <div class="grid col3" style="grid-column:1 / -1; gap:8px;">
               <input id="prodCodigo" type="text" placeholder="Código de barras (opcional)" />
-              <button type="button" id="btnScanProducto" class="ghost">📷 Escanear código</button>
-              <button type="submit" class="secondary">Guardar / Actualizar</button>
+              <button type="button" id="btnScanProducto" class="ghost">📷 Escanear</button>
+              <button type="submit" class="secondary">Guardar</button>
             </div>
           </form>
           <video id="previewProd" autoplay muted playsinline class="hidden"></video>
 
           <div style="margin-top:10px" class="grid col2">
             <div>
-              <div class="small-label">Carga rápida vía CSV</div>
               <input id="csvFile" type="file" accept=".csv" />
-              <button id="btnImport" class="ghost" type="button">Importar CSV</button>
+              <button id="btnImport" class="ghost">Importar CSV</button>
               <div class="muted">Formato: <code>nombre,precio,stock,codigo_barras</code></div>
             </div>
-            <div style="text-align:right;">
-              <span class="pill">🔔 Alerta stock &lt; stock_minimo</span>
+            <div style="text-align:right">
+              <span class="pill">🔔 Alerta: stock &lt; stock_minimo</span>
             </div>
           </div>
 
           <table>
-            <thead><tr><th>ID</th><th>Nombre</th><th>Precio</th><th>Stock</th><th>Mín.</th><th>Código</th></tr></thead>
+            <thead>
+              <tr><th>ID</th><th>Nombre</th><th>Precio</th><th>Stock</th><th>Mín.</th><th>Código</th></tr>
+            </thead>
             <tbody id="tablaProductos"></tbody>
           </table>
         </div>
 
         <!-- INVENTARIO -->
         <div id="vistaInventario" class="hidden section">
-          <div class="flex-between">
-            <h3>📊 Movimientos de Inventario</h3>
-            <span class="small-label">Entradas por código de barras</span>
-          </div>
+          <h3>📊 Movimientos de Inventario</h3>
           <form id="formEntrada" class="grid col3">
-            <input id="invCodigo" type="text" placeholder="Código de barras" required />
+            <input id="invProducto" type="number" placeholder="ID producto" required />
             <input id="invCantidad" type="number" placeholder="Cantidad" required />
             <button type="submit" class="secondary">Registrar Entrada</button>
           </form>
           <table>
-            <thead><tr><th>Producto</th><th>Código</th><th>Tipo</th><th>Cantidad</th><th>Fecha</th><th>Motivo</th></tr></thead>
+            <thead>
+              <tr><th>Producto</th><th>Tipo</th><th>Cantidad</th><th>Fecha</th><th>Motivo</th></tr>
+            </thead>
             <tbody id="tablaInventario"></tbody>
           </table>
         </div>
 
         <!-- REPORTES -->
         <div id="vistaReportes" class="hidden section">
-          <div class="flex-between">
-            <h3>📑 Reporte Diario</h3>
-            <span class="small-label">Corte por día calendario</span>
+          <h3>📑 Reporte Diario</h3>
+          <div class="grid col2">
+            <button id="btnCargarReporte" class="secondary">Actualizar reporte de hoy</button>
+            <button id="btnCerrarDia" class="ghost">Cerrar día</button>
           </div>
-          <div class="grid col3">
-            <button id="btnCargarReporte" class="secondary" type="button">Actualizar reporte de hoy</button>
-            <button id="btnCerrarDia" class="ghost" type="button">🧾 Cerrar día (corte imprimible)</button>
-            <div class="muted" style="display:flex;align-items:center;">Basado en ventas registradas en la tabla <code>ventas</code>.</div>
-          </div>
-          <div id="resumenKPIs" class="kpi-row"></div>
-          <pre id="reporteContenido" class="json" style="margin-top:10px;"></pre>
+          <pre id="reporteContenido" class="json" style="margin-top:10px"></pre>
         </div>
 
         <!-- VENTAS -->
         <div id="vistaVentas" class="hidden section">
-          <div class="flex-between">
-            <h3>🛒 Registrar Venta</h3>
-            <span class="small-label">Escáner + efectivo + ticket</span>
-          </div>
+          <h3>🛒 Registrar Venta</h3>
 
           <!-- Buscar por código + escanear -->
           <div class="grid col3">
             <input id="codigoBarras" type="text" placeholder="Código de barras" />
-            <button id="btnBuscarCodigo" class="ghost" type="button">Buscar / Agregar</button>
-            <button id="btnStartScanner" class="ghost" type="button">📷 Escanear con cámara</button>
+            <button id="btnBuscarCodigo" class="ghost">Buscar / agregar</button>
+            <button id="btnStartScanner" class="ghost">📷 Escanear con cámara</button>
           </div>
-          <video id="preview" autoplay muted playsinline class="hidden"></video>
+          <video id="preview" autoplay muted playsinline class="hidden" style="margin-top:8px"></video>
 
           <!-- Selección manual -->
-          <form id="formVenta" class="grid col3" style="margin-top:10px;">
+          <form id="formVenta" class="grid col3" style="margin-top:10px">
             <select id="ventaProducto"></select>
             <input id="ventaCantidad" type="number" placeholder="Cantidad" required />
             <button type="submit" class="secondary">Agregar al Carrito</button>
           </form>
 
-          <h4 style="margin:12px 0 6px;">Carrito</h4>
+          <h4 style="margin:12px 0 6px">Carrito</h4>
           <table>
             <thead><tr><th>Producto</th><th>Cant</th><th>Precio</th><th>Subtotal</th></tr></thead>
             <tbody id="tablaCarrito"></tbody>
           </table>
 
-          <div class="grid col3" style="align-items:center;margin-top:10px;">
+          <div class="grid col2" style="margin-top:10px; align-items:center;">
             <div>
               <div class="muted">Total:</div>
-              <div style="font-weight:800;font-size:18px;">$<span id="totalVenta">0.00</span></div>
+              <div style="font-weight:800; font-size:18px">$<span id="totalVenta">0.00</span></div>
             </div>
             <div>
               <label class="muted">Efectivo recibido</label>
-              <input id="pagoEfectivo" type="number" step="0.01" placeholder="Ej. 200" />
-              <div class="muted">Cambio: <strong>$<span id="cambioTexto">0.00</span></strong></div>
-            </div>
-            <div style="text-align:right;">
-              <button id="btnFinalizarVenta" type="button">Finalizar Venta</button>
-              <button id="btnImprimir" class="ghost" type="button">🖨️ Imprimir Ticket actual</button>
+              <input id="efectivoRecibido" type="number" step="0.01" placeholder="Ej. 200" />
+              <div class="muted">Cambio: $<span id="cambioTexto">0.00</span></div>
             </div>
           </div>
 
-          <div id="ticketPreview" class="ticket-preview" style="margin-top:10px;display:none;"></div>
-        </div>
-
-        <!-- CAJA -->
-        <div id="vistaCaja" class="hidden section">
-          <div class="flex-between">
-            <h3>💵 Caja</h3>
-            <span class="small-label">Movimientos manuales + apoyo de cambio</span>
+          <div style="text-align:right; margin-top:10px;">
+            <button id="btnFinalizarVenta">Finalizar Venta</button>
           </div>
-          <div class="grid col3">
-            <div>
-              <form id="formCaja" class="grid col3">
-                <input id="cajaMonto" type="number" step="0.01" placeholder="Monto" required />
-                <select id="cajaTipo">
-                  <option value="ingreso">Ingreso (añadir a caja)</option>
-                  <option value="egreso">Egreso (retiro)</option>
-                </select>
-                <button type="submit" class="secondary">Registrar movimiento</button>
-              </form>
-              <div class="muted" style="margin-top:4px;">Las ventas registran un ingreso automático de tipo <code>venta</code>.</div>
-            </div>
-            <div>
-              <div class="small-label">Calculadora rápida de cambio</div>
-              <input id="calcTotal" type="number" step="0.01" placeholder="Total de la compra" />
-              <input id="calcEfectivo" type="number" step="0.01" placeholder="Efectivo recibido" />
-              <div class="muted">Cambio sugerido: <strong>$<span id="calcCambio">0.00</span></strong></div>
-            </div>
-            <div class="muted" style="display:flex;align-items:center;">
-              Usa esta sección para depósitos, retiros y cortes parciales de caja.
-            </div>
-          </div>
-          <table>
-            <thead><tr><th>Tipo</th><th>Monto</th><th>Fecha</th></tr></thead>
-            <tbody id="tablaCaja"></tbody>
-          </table>
         </div>
 
         <!-- HISTORIAL -->
         <div id="vistaHistorial" class="hidden section">
-          <div class="flex-between">
-            <h3>🧾 Historial de Ventas</h3>
-            <span class="small-label">Detalle por ticket</span>
-          </div>
+          <h3>🧾 Historial de Ventas</h3>
           <table>
-            <thead>
-              <tr><th>ID</th><th>Fecha</th><th>Detalle</th><th>Total aprox.</th></tr>
-            </thead>
+            <thead><tr><th>Folio</th><th>Fecha</th><th>Detalle</th><th>Total</th></tr></thead>
             <tbody id="tablaHistorial"></tbody>
           </table>
         </div>
@@ -404,7 +337,21 @@
     </div>
   </div>
 
-  <!-- SCRIPT -->
+  <!-- MODAL DE TICKET -->
+  <div id="ticketModal" class="modal-backdrop hidden">
+    <div class="modal">
+      <div class="modal-header">
+        <h3>Ticket de venta</h3>
+        <span class="tag-small" id="ticketFolioTag">Folio —</span>
+      </div>
+      <div id="ticketContent" class="ticket-box"></div>
+      <div class="modal-actions">
+        <button id="btnTicketCerrar" class="ghost">Cerrar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- SCRIPT PRINCIPAL -->
   <script type="module">
     import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
 
@@ -419,12 +366,12 @@
 
     const $  = (id)=>document.getElementById(id);
     const peso = (n)=> Number(n ?? 0).toFixed(2);
-
-    // Sonido tipo "bip" de supermercado
-    const beepAudio = new Audio('https://actions.google.com/sounds/v1/alarms/beep_short.ogg');
-    const scanAudio = new Audio('https://actions.google.com/sounds/v1/alarms/beep_short.ogg');
-    function beep(){ try{ beepAudio.currentTime=0; beepAudio.play(); }catch{} }
-    function bipScan(){ try{ scanAudio.currentTime=0; scanAudio.play(); }catch{} }
+    const beep = ()=> {
+      try {
+        // beep corto estilo POS
+        new Audio('https://actions.google.com/sounds/v1/alarms/beep_short.ogg').play();
+      } catch {}
+    };
 
     // ---------- LOGIN ----------
     $('btnLogin').addEventListener('click', async ()=>{
@@ -455,8 +402,7 @@
       const { data, error } = await supabase
         .from('profiles')
         .select('nombre, rol_id, rol:rol_id(nombre)')
-        .eq('user_id', uid)
-        .single();
+        .eq('user_id', uid).single();
 
       if (error || !data) {
         $('resultado').innerHTML = '<span class="warn">No se encontró perfil en tabla profiles</span>';
@@ -465,25 +411,23 @@
 
       $('loginBox').classList.add('hidden');
       $('dashboard').classList.remove('hidden');
-      $('userTitle').innerHTML = `👤 <span>${data.nombre}</span>`;
-      $('userRole').innerHTML  = `Rol: <span class="badge-role">${data.rol?.nombre ?? '—'}</span>`;
+      $('userTitle').textContent = '👤 ' + data.nombre;
+      $('userRole').textContent  = 'Rol: ' + (data.rol?.nombre ?? '—');
 
       const menu = $('menuOpciones');
       menu.innerHTML = '';
       if (data.rol?.nombre === 'admin') {
         menu.innerHTML += `<button class="secondary" data-v="vistaVentas">🛒 Ventas</button>`;
-        menu.innerHTML += `<button class="secondary" data-v="vistaCaja">💵 Caja</button>`;
         menu.innerHTML += `<button class="secondary" data-v="vistaHistorial">🧾 Historial</button>`;
-        menu.innerHTML += `<button class="secondary" data-v="vistaReportes">📑 Reportes</button>`;
-        menu.innerHTML += `<button class="secondary" data-v="vistaInventario">📊 Inventario</button>`;
         menu.innerHTML += `<button class="secondary" data-v="vistaProductos">📦 Productos</button>`;
+        menu.innerHTML += `<button class="secondary" data-v="vistaInventario">📊 Inventario</button>`;
+        menu.innerHTML += `<button class="secondary" data-v="vistaReportes">📑 Reportes</button>`;
       } else {
         menu.innerHTML += `<button class="secondary" data-v="vistaVentas">🛒 Ventas</button>`;
-        menu.innerHTML += `<button class="secondary" data-v="vistaCaja">💵 Caja</button>`;
         menu.innerHTML += `<button class="secondary" data-v="vistaHistorial">🧾 Historial</button>`;
-        menu.innerHTML += `<button class="secondary" data-v="vistaReportes">📑 Reportes</button>`;
       }
-      menu.querySelectorAll('button').forEach(b=> b.addEventListener('click', ()=> abrirVista(b.dataset.v)));
+      menu.querySelectorAll('button')
+        .forEach(b=> b.addEventListener('click', ()=> abrirVista(b.dataset.v)));
       abrirVista('vistaVentas');
     }
 
@@ -494,9 +438,7 @@
       if (id==='vistaProductos')  cargarProductos();
       if (id==='vistaInventario') cargarInventario();
       if (id==='vistaVentas')     cargarProductosVenta();
-      if (id==='vistaCaja')       cargarCaja();
       if (id==='vistaHistorial')  cargarHistorial();
-      if (id==='vistaReportes')   cargarReporte();
     }
 
     // ==================== PRODUCTOS ====================
@@ -518,6 +460,7 @@
       }).join('');
     }
 
+    // alta / edición rápida
     $('formProducto').addEventListener('submit', async (e)=>{
       e.preventDefault();
       const nombre = $('prodNombre').value.trim();
@@ -537,9 +480,7 @@
           if (error) throw error;
         } else {
           const { error } = await supabase.from('productos').insert({
-            nombre,
-            precio,
-            stock
+            nombre, precio, stock
           });
           if (error) throw error;
         }
@@ -551,6 +492,7 @@
       }
     });
 
+    // importación CSV
     $('btnImport').addEventListener('click', ()=>{
       const f = $('csvFile').files?.[0];
       if (!f) return alert('Selecciona un archivo CSV');
@@ -563,16 +505,16 @@
           try {
             if (codigo) {
               await supabase.rpc('upsert_producto_por_codigo', {
-                p_nombre: nombre,
-                p_precio: parseFloat(precio),
-                p_codigo: codigo,
-                p_stock_inicial: parseInt(stock || '0', 10)
+                p_nombre:nombre,
+                p_precio:parseFloat(precio),
+                p_codigo:codigo,
+                p_stock_inicial:parseInt(stock || '0',10)
               });
             } else {
               await supabase.from('productos').insert({
                 nombre,
-                precio: parseFloat(precio),
-                stock: parseInt(stock || '0', 10)
+                precio:parseFloat(precio),
+                stock:parseInt(stock || '0',10)
               });
             }
           } catch(e) { console.error(e); }
@@ -583,7 +525,7 @@
       r.readAsText(f);
     });
 
-    // Escáner para alta de productos
+    // escáner para alta/código producto
     let prodStream = null;
     let prodDetector = null;
     let prodScanning = false;
@@ -625,7 +567,7 @@
             const code = String(codes[0].rawValue || '');
             if (code) {
               $('prodCodigo').value = code;
-              bipScan();
+              beep();
               stopScanProd();
               break;
             }
@@ -647,9 +589,7 @@
       productosCache.clear();
       for (const p of (data || [])) {
         productosCache.set(p.id, p);
-        sel.innerHTML += `<option value="${p.id}">
-          ${p.nombre} ($${peso(p.precio)}) — ${p.stock} en stock
-        </option>`;
+        sel.innerHTML += `<option value="${p.id}">${p.nombre} ($${peso(p.precio)}) — ${p.stock} en stock</option>`;
       }
       carrito = [];
       renderCarrito();
@@ -670,7 +610,6 @@
           found = rpc.data[0];
         }
       } catch(e) { console.error(e); }
-
       if (!found) {
         const { data } = await supabase
           .from('productos')
@@ -679,7 +618,6 @@
           .maybeSingle();
         if (data) found = data;
       }
-
       if (!found) {
         alert('No se encontró el producto para ese código');
         return;
@@ -687,7 +625,7 @@
       addToCartFromProduct(found, 1);
       const lastRow = $('tablaCarrito').lastElementChild;
       if (lastRow) lastRow.classList.add('scan-flash');
-      bipScan();
+      beep();
     }
 
     $('formVenta').addEventListener('submit', (e)=>{
@@ -695,7 +633,7 @@
       const id = parseInt($('ventaProducto').value,10);
       const cant = parseInt($('ventaCantidad').value,10);
       const p = productosCache.get(id);
-      if (!p) { alert('Producto inexistente (cache). Recarga la página.'); return; }
+      if (!p) { alert('Producto inexistente'); return; }
       addToCartFromProduct(p, cant);
       e.target.reset();
     });
@@ -709,12 +647,7 @@
         return;
       }
       if (ya) ya.cantidad += cantidad;
-      else carrito.push({
-        id: p.id,
-        nombre: p.nombre,
-        cantidad,
-        precio: Number(p.precio ?? 0)
-      });
+      else carrito.push({ id:p.id, nombre:p.nombre, cantidad, precio:Number(p.precio ?? 0) });
       renderCarrito();
     }
 
@@ -730,18 +663,9 @@
       const total = carrito.reduce((s,c)=> s + c.cantidad * c.precio, 0);
       $('totalVenta').textContent = peso(total);
       actualizarCambio();
-      actualizarPreviewTicket();
     }
 
-    $('pagoEfectivo').addEventListener('input', actualizarCambio);
-    function actualizarCambio(){
-      const total = parseFloat($('totalVenta').textContent) || 0;
-      const pago  = parseFloat($('pagoEfectivo').value || '0');
-      const cambio = pago - total;
-      $('cambioTexto').textContent = peso(cambio > 0 ? cambio : 0);
-    }
-
-    // Escáner para ventas
+    // escáner para ventas
     let ventaStream = null;
     let ventaDetector = null;
     let ventaScanning = false;
@@ -792,28 +716,30 @@
       }
     }
 
-    // finalizar venta con ticket y caja automática
+    // efectivo / cambio
+    $('efectivoRecibido').addEventListener('input', actualizarCambio);
+    function actualizarCambio(){
+      const total = parseFloat($('totalVenta').textContent || '0');
+      const efectivo = parseFloat($('efectivoRecibido').value || '0');
+      const cambio = Math.max(0, efectivo - total);
+      $('cambioTexto').textContent = peso(cambio);
+    }
+
+    // finalizar venta con caja_movimientos y ticket modal
     $('btnFinalizarVenta').addEventListener('click', async ()=>{
       if (!carrito.length) return alert('Carrito vacío');
-      const total = carrito.reduce((s,c)=> s + c.cantidad * c.precio, 0);
-      const pago  = parseFloat($('pagoEfectivo').value || '0');
-      if (pago < total) {
-        const ok = confirm('El efectivo es menor que el total. ¿Continuar de todos modos?');
-        if (!ok) return;
-      }
 
-      // Prevalidación: asegurar que cada ID exista en productos (evita "Producto X inexistente")
-      for (const c of carrito) {
-        const { data:prodCheck } = await supabase
-          .from('productos')
-          .select('id')
-          .eq('id', c.id)
-          .maybeSingle();
-        if (!prodCheck) {
-          alert(`Error: el producto con ID ${c.id} ya no existe en la tabla productos.`);
-          return;
-        }
+      const total = carrito.reduce((s,c)=> s + c.cantidad * c.precio, 0);
+      const efectivo = parseFloat($('efectivoRecibido').value || '0');
+      if (isNaN(efectivo) || efectivo <= 0) {
+        alert('Ingresa el efectivo recibido');
+        return;
       }
+      if (efectivo < total) {
+        alert('El efectivo es menor al total de la venta');
+        return;
+      }
+      const cambio = efectivo - total;
 
       try {
         const { data:venta, error:errV } = await supabase
@@ -823,114 +749,106 @@
           .single();
         if (errV) throw errV;
 
-for (const c of carrito) {
-  const precioUnit = Number(c.precio ?? productosCache.get(c.id)?.precio ?? 0);
-  const { error } = await supabase.from('ventas_items').insert({
-    venta_id: venta.id,
-    producto_id: c.id,
-    cantidad: c.cantidad,
-    precio_unitario: precioUnit
-  });
-  if (error) throw error;
-}
-
-
-        // Movimiento automático en caja
-        const { error:errCaja } = await supabase.from('caja_movimientos').insert({
-          monto: total,
-          tipo: 'venta'
-        });
-        if (errCaja) console.error('Error registrando caja:', errCaja);
-
-        alert('✅ Venta registrada (#'+venta.id+')');
-
-        const quiereTicket = confirm('¿Deseas imprimir el ticket de esta venta?');
-        if (quiereTicket) {
-          imprimirTicket(venta.id, total, pago);
+        for (const c of carrito) {
+          const precioUnit = Number(c.precio ?? productosCache.get(c.id)?.precio ?? 0);
+          const { error } = await supabase.from('ventas_items').insert({
+            venta_id: venta.id,
+            producto_id: c.id,
+            cantidad: c.cantidad,
+            precio_unitario: precioUnit
+          });
+          if (error) throw error;
         }
 
+        // Caja: ingreso por el pago
+        const movimientos = [
+          { tipo:'INGRESO', monto: efectivo },
+        ];
+        if (cambio > 0.0001) {
+          movimientos.push({ tipo:'EGRESO', monto: cambio });
+        }
+        const { error:errCaja } = await supabase
+          .from('caja_movimientos')
+          .insert(movimientos);
+        if (errCaja) throw errCaja;
+
+        // Preguntar por ticket
+        const quiereTicket = confirm('Venta registrada. ¿Deseas ver/imprimir el ticket?');
+        if (quiereTicket) {
+          mostrarTicket({
+            ventaId: venta.id,
+            fecha: venta.fecha || new Date().toISOString(),
+            items: carrito.map(c=>({ ...c })),
+            total,
+            efectivo,
+            cambio
+          });
+        }
+
+        alert('✅ Venta registrada (#' + venta.id + ')');
         carrito = [];
-        $('pagoEfectivo').value = '';
+        $('efectivoRecibido').value = '';
         renderCarrito();
-        await Promise.all([
-          cargarProductosVenta(),
-          cargarProductos(),
-          cargarHistorial(),
-          cargarCaja(),
-          cargarReporte()
-        ]);
+        await Promise.all([cargarProductosVenta(), cargarProductos(), cargarHistorial()]);
       } catch(e) {
         alert('Error registrando venta: ' + e.message);
       }
     });
 
-    // Ticket actual sin registrar venta
-    $('btnImprimir').addEventListener('click', ()=>{
-      const total = carrito.reduce((s,c)=> s + c.cantidad * c.precio, 0);
-      const pago  = parseFloat($('pagoEfectivo').value || '0');
-      imprimirTicket(null, total, pago);
-    });
+    // ==================== TICKET MODAL ====================
+    function mostrarTicket({ ventaId, fecha, items, total, efectivo, cambio }) {
+      $('ticketFolioTag').textContent = 'Folio ' + ventaId;
+      const d = new Date(fecha);
+      const fechaStr = d.toLocaleString();
 
-    function armarTextoTicket(idVenta, total, pago){
-      const cambio = pago - total;
-      const fecha = new Date().toLocaleString();
-      const folio = idVenta ?? 'PREVIEW';
       const lineas = [];
-      lineas.push('        TIENDITA ESCOLAR');
-      lineas.push('       POS – Proyecto UNITEC');
+      lineas.push('TIENDA LA ESQUINA FELIZ');
+      lineas.push('RFC: TES010203AB1');
+      lineas.push('Av. Principal 123, Col. Centro');
+      lineas.push('C.P. 06000, Ciudad de México');
       lineas.push('--------------------------------');
-      lineas.push('Fecha: ' + fecha);
-      lineas.push('Folio: ' + folio);
+      lineas.push('Folio: ' + ventaId);
+      lineas.push('Fecha: ' + fechaStr);
       lineas.push('--------------------------------');
-      carrito.forEach(c=>{
-        const sub = c.cantidad * c.precio;
-        lineas.push(`${c.nombre.slice(0,22).padEnd(22)} ${String(c.cantidad).padStart(2)} x ${peso(c.precio)} = ${peso(sub)}`);
+      items.forEach(it=>{
+        const sub = it.cantidad * it.precio;
+        lineas.push(
+          (it.nombre || '').slice(0,26).padEnd(26,' ') +
+          String(it.cantidad).padStart(3,' ') + ' x ' +
+          peso(it.precio).padStart(7,' ')
+        );
+        lineas.push(' '.repeat(26) + ' = $' + peso(sub));
       });
       lineas.push('--------------------------------');
-      lineas.push('TOTAL:           $ ' + peso(total));
-      lineas.push('EFECTIVO:        $ ' + peso(pago));
-      lineas.push('CAMBIO:          $ ' + peso(cambio>0?cambio:0));
+      lineas.push('TOTAL          : $' + peso(total));
+      lineas.push('EFECTIVO       : $' + peso(efectivo));
+      lineas.push('CAMBIO         : $' + peso(cambio));
       lineas.push('--------------------------------');
-      lineas.push('Gracias por su compra');
-      lineas.push('   Uso académico – demo');
-      return lineas.join('\n');
+      lineas.push('GRACIAS POR SU COMPRA');
+      lineas.push('Vuelva pronto');
+
+      $('ticketContent').innerHTML =
+        '<h4>Tienda La Esquina Feliz</h4><pre style="margin:4px 0 0;">' +
+        lineas.join('\n') +
+        '</pre>';
+
+      $('ticketModal').classList.remove('hidden');
     }
 
-    function imprimirTicket(idVenta, total, pago){
-      const texto = armarTextoTicket(idVenta, total, pago);
-      const html = `
-        <pre style="font-family:monospace;font-size:13px;">${texto}</pre>
-      `;
-      const w = window.open('', 'ticket');
-      w.document.write(html);
-      w.document.close();
-      w.print();
-    }
-
-    function actualizarPreviewTicket(){
-      if (!carrito.length){
-        $('ticketPreview').style.display='none';
-        $('ticketPreview').textContent='';
-        return;
-      }
-      const total = carrito.reduce((s,c)=> s + c.cantidad * c.precio, 0);
-      const pago  = parseFloat($('pagoEfectivo').value || '0');
-      const texto = armarTextoTicket('PREVIEW', total, pago);
-      $('ticketPreview').style.display='block';
-      $('ticketPreview').textContent = texto;
-    }
+    $('btnTicketCerrar').addEventListener('click', ()=>{
+      $('ticketModal').classList.add('hidden');
+    });
 
     // ==================== INVENTARIO ====================
     async function cargarInventario(){
       const { data, error } = await supabase
         .from('inventario_movimientos')
-        .select('producto_id,tipo,cantidad,fecha,motivo,productos(nombre,codigo_barras)')
+        .select('producto_id,tipo,cantidad,fecha,motivo')
         .order('fecha', { ascending:false });
       if (error) { console.error(error); return; }
       $('tablaInventario').innerHTML = (data || []).map(m=>`
         <tr>
-          <td>${m.productos?.nombre || m.producto_id}</td>
-          <td>${m.productos?.codigo_barras || ''}</td>
+          <td>${m.producto_id}</td>
           <td>${m.tipo || ''}</td>
           <td>${m.cantidad}</td>
           <td>${m.fecha ? new Date(m.fecha).toLocaleString() : ''}</td>
@@ -941,89 +859,128 @@ for (const c of carrito) {
 
     $('formEntrada').addEventListener('submit', async (e)=>{
       e.preventDefault();
-      const codigo   = $('invCodigo').value.trim();
-      const cantidad = parseInt($('invCantidad').value,10);
-      if (!codigo || !cantidad) { alert('Completa código y cantidad'); return; }
-
-      // buscar producto por código
-      const { data:prod, error:errProd } = await supabase
-        .from('productos')
-        .select('id')
-        .eq('codigo_barras', codigo)
-        .maybeSingle();
-      if (errProd) { alert('Error buscando producto: '+errProd.message); return; }
-      if (!prod) { alert('No se encontró producto con ese código.'); return; }
-
+      const producto_id = parseInt($('invProducto').value,10);
+      const cantidad   = parseInt($('invCantidad').value,10);
+      if (!producto_id || !cantidad) { alert('Completa producto y cantidad'); return; }
       try {
         const { error } = await supabase.from('inventario_movimientos').insert({
-          producto_id: prod.id,
+          producto_id,
           tipo: 'ENTRADA',
           cantidad,
           motivo: 'Entrada manual'
         });
         if (error) throw error;
-
-        // Actualiza stock por si no lo maneja trigger
-        await supabase.rpc('ajustar_stock_por_entrada', {
-          p_producto_id: prod.id,
-          p_cantidad: cantidad
-        }).catch(()=>{ /* si no existe la rpc, no pasa nada */ });
-
         e.target.reset();
-        await Promise.all([cargarInventario(), cargarProductos(), cargarProductosVenta()]);
+        await Promise.all([cargarInventario(), cargarProductos()]);
       } catch(err) {
         alert('Error registrando inventario: ' + err.message);
       }
     });
 
-    // ==================== CAJA ====================
-    async function cargarCaja(){
-      const { data, error } = await supabase
-        .from('caja_movimientos')
-        .select('*')
-        .order('fecha', { ascending:false });
-      if (error) { console.error(error); return; }
-      $('tablaCaja').innerHTML = (data || []).map(c=>`
-        <tr>
-          <td>${c.tipo}</td>
-          <td>$${peso(c.monto)}</td>
-          <td>${c.fecha ? new Date(c.fecha).toLocaleString() : ''}</td>
-        </tr>
-      `).join('');
+    // ==================== REPORTES ====================
+    $('btnCargarReporte').addEventListener('click', cargarReporte);
+    $('btnCerrarDia').addEventListener('click', cerrarDia);
+
+    function rangoHoy() {
+      const hoy = new Date();
+      const inicio = new Date(hoy.getFullYear(), hoy.getMonth(), hoy.getDate());
+      const fin = new Date(hoy.getFullYear(), hoy.getMonth(), hoy.getDate()+1);
+      return {
+        inicio: inicio.toISOString(),
+        fin: fin.toISOString()
+      };
     }
 
-    $('formCaja').addEventListener('submit', async (e)=>{
-      e.preventDefault();
-      const monto = parseFloat($('cajaMonto').value);
-      const tipo  = $('cajaTipo').value;
-      if (!monto || isNaN(monto)) { alert('Monto inválido'); return; }
+    async function cargarReporte(){
       try {
-        const { error } = await supabase.from('caja_movimientos').insert({
-          monto,
-          tipo
-        });
-        if (error) throw error;
-        e.target.reset();
-        await cargarCaja();
-      } catch(err) {
-        alert('Error registrando caja: ' + err.message);
-      }
-    });
+        const { inicio, fin } = rangoHoy();
 
-    // calculadora de cambio en caja
-    $('calcTotal').addEventListener('input', calcCambioCaja);
-    $('calcEfectivo').addEventListener('input', calcCambioCaja);
-    function calcCambioCaja(){
-      const t = parseFloat($('calcTotal').value || '0');
-      const e = parseFloat($('calcEfectivo').value || '0');
-      const c = e - t;
-      $('calcCambio').textContent = peso(c>0?c:0);
+        const ventasRes = await supabase
+          .from('ventas')
+          .select('id,fecha,ventas_items(cantidad,precio_unitario)')
+          .gte('fecha', inicio)
+          .lt('fecha', fin);
+        if (ventasRes.error) throw ventasRes.error;
+
+        const cajaRes = await supabase
+          .from('caja_movimientos')
+          .select('*')
+          .gte('fecha', inicio)
+          .lt('fecha', fin);
+        if (cajaRes.error) throw cajaRes.error;
+
+        const ventas = ventasRes.data || [];
+        const caja = cajaRes.data || [];
+
+        let totalVentas = 0;
+        let totalIngresos = 0;
+        let totalEgresos = 0;
+        let totalTickets = ventas.length;
+
+        ventas.forEach(v=>{
+          const items = v.ventas_items || [];
+          const suma = items.reduce((s,i)=> s + i.cantidad * i.precio_unitario, 0);
+          totalVentas += suma;
+        });
+
+        caja.forEach(m=>{
+          if (m.tipo === 'INGRESO') totalIngresos += Number(m.monto || 0);
+          else if (m.tipo === 'EGRESO') totalEgresos += Number(m.monto || 0);
+        });
+
+        const netoCaja = totalIngresos - totalEgresos;
+
+        const resumen = {
+          fecha: new Date().toLocaleDateString(),
+          tickets_emitidos: totalTickets,
+          total_ventas: totalVentas,
+          ingresos_caja: totalIngresos,
+          egresos_caja: totalEgresos,
+          saldo_caja_estimado: netoCaja
+        };
+
+        let detalleVentas = ventas.map(v=>{
+          const items = v.ventas_items || [];
+          const suma = items.reduce((s,i)=> s + i.cantidad * i.precio_unitario, 0);
+          return `#${v.id} ${new Date(v.fecha).toLocaleTimeString()} -> $${peso(suma)}`;
+        }).join('\n') || 'Sin ventas registradas hoy.';
+
+        let detalleCaja = caja.map(m=>
+          `${new Date(m.fecha).toLocaleTimeString()} ${m.tipo.padEnd(8,' ')} $${peso(m.monto)}`
+        ).join('\n') || 'Sin movimientos de caja hoy.';
+
+        const texto = [
+          '=== RESUMEN DEL DÍA ===',
+          JSON.stringify(resumen, null, 2),
+          '',
+          '=== VENTAS HOY ===',
+          detalleVentas,
+          '',
+          '=== CAJA HOY ===',
+          detalleCaja
+        ].join('\n');
+
+        $('reporteContenido').textContent = texto;
+      } catch(e) {
+        $('reporteContenido').textContent = 'Error cargando reporte: ' + e.message;
+      }
     }
 
-    // ==================== REPORTES / HISTORIAL ====================
-    $('btnCargarReporte').addEventListener('click', ()=>cargarReporte(false));
-    $('btnCerrarDia').addEventListener('click', ()=>cargarReporte(true));
+    async function cerrarDia(){
+      if (!confirm('Esto registrará un cierre de día en la caja. ¿Continuar?')) return;
+      try {
+        const { error } = await supabase
+          .from('caja_movimientos')
+          .insert({ tipo:'CIERRE', monto:0 });
+        if (error) throw error;
+        await cargarReporte();
+        alert('📘 Día cerrado. Se registró el cierre en caja_movimientos.');
+      } catch(e) {
+        alert('Error al cerrar el día: ' + e.message);
+      }
+    }
 
+    // ==================== HISTORIAL ====================
     async function cargarHistorial(){
       const { data, error } = await supabase
         .from('ventas')
@@ -1032,103 +989,22 @@ for (const c of carrito) {
         .limit(50);
       if (error) { console.error(error); return; }
       $('tablaHistorial').innerHTML = (data || []).map(v=>{
-        const detalleArr = (v.ventas_items || []).map(i=>
-          `${i.productos?.nombre || '#?'} x${i.cantidad} ($${peso(i.precio_unitario)})`
-        );
-        const total = (v.ventas_items || []).reduce((s,i)=> s + i.cantidad * i.precio_unitario, 0);
-        return `<tr>
-          <td>${v.id}</td>
-          <td>${v.fecha ? new Date(v.fecha).toLocaleString() : ''}</td>
-          <td style="text-align:left;padding-left:6px;">${detalleArr.join(', ') || '(sin detalle)'}</td>
-          <td>$${peso(total)}</td>
-        </tr>`;
-      }).join('');
-    }
-
-    async function cargarReporte(imprimir){
-      const hoy   = new Date();
-      const inicio = new Date(hoy.getFullYear(), hoy.getMonth(), hoy.getDate());
-      const inicioIso = inicio.toISOString();
-
-      const { data:ventas, error } = await supabase
-        .from('ventas')
-        .select('id,fecha,ventas_items(cantidad,precio_unitario,productos(nombre))')
-        .gte('fecha', inicioIso)
-        .order('id', { ascending:true });
-      if (error) { console.error(error); return; }
-
-      let totalDia = 0;
-      let totalArticulos = 0;
-      const productosContador = new Map();
-      (ventas || []).forEach(v=>{
-        (v.ventas_items || []).forEach(i=>{
+        const items = v.ventas_items || [];
+        const detalle = items.map(i=>{
+          const nombre = i.productos?.nombre || 'Prod.';
           const sub = i.cantidad * i.precio_unitario;
-          totalDia += sub;
-          totalArticulos += i.cantidad;
-          const nombre = i.productos?.nombre || 'Producto';
-          productosContador.set(nombre, (productosContador.get(nombre) || 0) + i.cantidad);
-        });
-      });
-
-      const top = Array.from(productosContador.entries())
-        .sort((a,b)=>b[1]-a[1])
-        .slice(0,5);
-
-      // KPIs bonitos
-      $('resumenKPIs').innerHTML = `
-        <div class="kpi">
-          <div class="kpi-title">Ventas del día</div>
-          <div class="kpi-value">${ventas?.length || 0}</div>
-        </div>
-        <div class="kpi">
-          <div class="kpi-title">Total vendido</div>
-          <div class="kpi-value">$${peso(totalDia)}</div>
-        </div>
-        <div class="kpi">
-          <div class="kpi-title">Artículos vendidos</div>
-          <div class="kpi-value">${totalArticulos}</div>
-        </div>
-        <div class="kpi">
-          <div class="kpi-title">Ticket promedio</div>
-          <div class="kpi-value">$${peso((ventas?.length||0)? totalDia/ventas.length : 0)}</div>
-        </div>
-      `;
-
-      const reporte = {
-        fecha: inicio.toISOString().slice(0,10),
-        num_ventas: ventas?.length || 0,
-        total_vendido: totalDia,
-        articulos_vendidos: totalArticulos,
-        ticket_promedio: (ventas?.length||0)? totalDia/ventas.length : 0,
-        top_productos: top.map(([nombre,cant])=>({nombre,cant})),
-        detalle: (ventas || []).map(v=>({
-          id: v.id,
-          fecha: v.fecha,
-          total: (v.ventas_items || []).reduce((s,i)=> s + i.cantidad * i.precio_unitario, 0)
-        }))
-      };
-      $('reporteContenido').textContent = JSON.stringify(reporte, null, 2);
-
-      if (imprimir){
-        const texto = [
-          'CORTE DE DÍA – TIENDITA',
-          'Fecha: ' + reporte.fecha,
-          '--------------------------------',
-          'Ventas: ' + reporte.num_ventas,
-          'Total vendido: $' + peso(reporte.total_vendido),
-          'Artículos vendidos: ' + reporte.articulos_vendidos,
-          'Ticket promedio: $' + peso(reporte.ticket_promedio),
-          '--------------------------------',
-          'Top productos:'
-        ];
-        reporte.top_productos.forEach(p=>{
-          texto.push(`- ${p.nombre} (${p.cant})`);
-        });
-        const w = window.open('', 'corte');
-        w.document.write(`<pre style="font-family:monospace;font-size:13px;">${texto.join('\n')}</pre>`);
-        w.document.close();
-        w.print();
-      }
+          return `${nombre} x${i.cantidad} ($${peso(sub)})`;
+        }).join(', ');
+        const total = items.reduce((s,i)=> s + i.cantidad * i.precio_unitario, 0);
+        return `
+          <tr>
+            <td>${v.id}</td>
+            <td>${v.fecha ? new Date(v.fecha).toLocaleString() : ''}</td>
+            <td style="text-align:left">${detalle || 'Sin detalle'}</td>
+            <td>$${peso(total)}</td>
+          </tr>
+        `;
+      }).join('');
     }
   </script>
 </body>
