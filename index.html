@@ -5,105 +5,266 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>POS Tiendita</title>
   <style>
-    :root { --green:#4caf50; --greenD:#2e7d32; --blue:#1e88e5; --red:#c62828; --bg:#f5f7fb }
-    * { box-sizing: border-box }
-    body {
-      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-      background: linear-gradient(135deg,var(--green),var(--greenD));
-      min-height: 100vh; margin: 0; display:flex; align-items:center; justify-content:center; padding: 24px;
+    :root {
+      --green:#4caf50;
+      --greenD:#2e7d32;
+      --blue:#1e88e5;
+      --blueD:#155fa5;
+      --red:#c62828;
+      --bg:#f5f7fb;
+      --card:#ffffff;
+      --border:#e1e4ea;
+      --text:#1c2533;
+      --muted:#5f6b7a;
     }
-    .card {
-      width:100%; max-width: 980px; background:#fff; border-radius:16px; padding:24px;
-      box-shadow: 0 20px 48px rgba(0,0,0,.25); animation: fade .35s ease;
+    * { box-sizing:border-box; }
+    body{
+      margin:0;
+      min-height:100vh;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:24px;
+      font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
+      background:radial-gradient(circle at top,var(--green),var(--greenD));
+      color:var(--text);
     }
-    h2 { margin: 0 0 10px; text-align:center }
-    h3 { margin: 16px 0 12px }
-    input, select, button { font-size: 15px; }
-    input, select {
-      width:100%; padding:12px; margin:6px 0; border:1px solid #e1e4ea; border-radius:10px; background:#fff;
+    .card{
+      width:100%;
+      max-width:1100px;
+      background:var(--card);
+      border-radius:18px;
+      padding:24px 24px 20px;
+      box-shadow:0 24px 60px rgba(0,0,0,.30);
+      animation:fade .35s ease;
     }
-    button {
-      padding:12px 14px; border:0; border-radius:10px; font-weight:700; cursor:pointer; background:var(--green); color:#fff;
+    h2{margin:0 0 4px;text-align:center}
+    h3{margin:12px 0 10px;}
+    h4{margin:10px 0 6px;}
+    input,select,button{font-size:15px;}
+    input,select{
+      width:100%;
+      padding:10px 12px;
+      margin:4px 0;
+      border-radius:10px;
+      border:1px solid var(--border);
+      background:#fff;
     }
-    button.secondary { background: var(--blue) }
-    button.destructive { background: var(--red) }
-    button.ghost { background:#e9eef8; color:#1a2a42 }
-    button:hover { filter: brightness(.95) }
-    .menu { display:flex; flex-wrap:wrap; gap:10px; margin: 12px 0 0 }
-    .menu button { background:var(--blue) }
-    .grid { display:grid; gap:12px }
-    .col2 { grid-template-columns: 1fr 1fr }
-    .col3 { grid-template-columns: 1fr 1fr 1fr }
-    table { width:100%; border-collapse: collapse; margin-top: 10px; background:#fff }
-    th, td { border: 1px solid #eef1f6; padding: 8px; text-align:center; vertical-align: top }
-    th { background:#f7f9fe }
-    .muted { color:#5f6b7a; font-size: 13px }
-    .hidden { display:none }
-    #resultado { min-height: 22px; margin-top:8px; }
-    .ok { color: var(--greenD); font-weight: 700 }
-    .warn { color: var(--red); font-weight: 700 }
-    .low { background: #fff1f1 }
-    .pill { display:inline-block; padding:2px 8px; border-radius:999px; font-size:12px; background:#ecf3ff; color:#0c3a94 }
-    .scan-flash { animation: flash .25s ease-in-out }
-    @keyframes flash { from { background:#fff59d } to { background:transparent } }
-    @keyframes fade { from{opacity:0; transform: translateY(-6px)} to {opacity:1; transform:none} }
-    .section { background: var(--bg); border-radius: 12px; padding: 12px }
-    video { width:100%; max-height: 240px; border-radius: 10px; background: #000 }
-    pre.json { background:#0b1020; color:#c4d0ff; padding:12px; border-radius:10px; overflow:auto; white-space:pre-wrap }
+    input:focus,select:focus{
+      outline:none;
+      border-color:var(--blue);
+      box-shadow:0 0 0 1px rgba(30,136,229,.25);
+    }
+    button{
+      padding:10px 14px;
+      border-radius:999px;
+      border:0;
+      font-weight:700;
+      cursor:pointer;
+      background:var(--green);
+      color:#fff;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      gap:6px;
+      white-space:nowrap;
+    }
+    button.secondary{background:var(--blue);}
+    button.secondary:hover{background:var(--blueD);}
+    button.destructive{background:var(--red);}
+    button.ghost{
+      background:#e9eef8;
+      color:var(--text);
+    }
+    button.ghost:hover{background:#dde4f3;}
+    button:hover{filter:brightness(.97);}
+    .menu{
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+      margin:14px 0 0;
+    }
+    .menu button{
+      border-radius:12px;
+      padding-inline:16px;
+    }
+    .grid{display:grid;gap:10px;}
+    .col2{grid-template-columns:1fr 1fr;}
+    .col3{grid-template-columns:1fr 1fr 1fr;}
+    @media(max-width:860px){
+      .col2,.col3{grid-template-columns:1fr;}
+    }
+    table{
+      width:100%;
+      border-collapse:collapse;
+      margin-top:10px;
+      font-size:14px;
+      background:#fff;
+    }
+    th,td{
+      border:1px solid #eef1f6;
+      padding:6px 6px;
+      text-align:center;
+    }
+    th{
+      background:#f7f9fe;
+      font-weight:600;
+    }
+    .muted{color:var(--muted);font-size:13px;}
+    .hidden{display:none;}
+    #resultado{min-height:22px;margin-top:8px;}
+    .ok{color:var(--greenD);font-weight:700;}
+    .warn{color:var(--red);font-weight:700;}
+    .low{background:#fff1f1;}
+    .pill{
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+      padding:4px 10px;
+      border-radius:999px;
+      font-size:12px;
+      background:#ecf3ff;
+      color:#0c3a94;
+    }
+    .pill span{font-weight:600;}
+    .badge-role{
+      font-size:11px;
+      padding:2px 6px;
+      border-radius:999px;
+      background:#ffe082;
+      color:#6d4c00;
+    }
+    .scan-flash{animation:flash .25s ease-in-out;}
+    @keyframes flash{from{background:#fff59d;}to{background:transparent;}}
+    @keyframes fade{from{opacity:0;transform:translateY(-6px);}to{opacity:1;transform:none;}}
+    .section{
+      margin-top:14px;
+      background:var(--bg);
+      border-radius:14px;
+      padding:14px 14px 12px;
+    }
+    video{
+      width:100%;
+      max-height:240px;
+      border-radius:12px;
+      background:#000;
+      margin-top:6px;
+    }
+    pre.json{
+      background:#0b1020;
+      color:#c4d0ff;
+      padding:12px;
+      border-radius:10px;
+      overflow:auto;
+      white-space:pre-wrap;
+      font-size:13px;
+    }
+    .flex-between{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:8px;
+    }
+    .small-label{
+      font-size:12px;
+      font-weight:600;
+      color:var(--muted);
+      text-transform:uppercase;
+      letter-spacing:.04em;
+    }
+    .ticket-preview{
+      font-family:monospace;
+      font-size:13px;
+      background:#fff;
+      padding:12px;
+      border-radius:10px;
+      border:1px dashed #bbb;
+    }
+    .kpi-row{
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+      margin-top:8px;
+    }
+    .kpi{
+      flex:1 1 140px;
+      background:#fff;
+      border-radius:10px;
+      padding:8px 10px;
+      border:1px solid #e2e6f0;
+    }
+    .kpi-title{
+      font-size:11px;
+      text-transform:uppercase;
+      color:var(--muted);
+    }
+    .kpi-value{
+      margin-top:4px;
+      font-size:16px;
+      font-weight:700;
+    }
   </style>
 </head>
 <body>
   <div class="card">
     <h2>POS Tiendita</h2>
+    <div class="muted" style="text-align:center;margin-bottom:10px;">Versión ULTRA – Proyecto Escolar</div>
 
     <!-- LOGIN -->
     <div id="loginBox">
-      <div class="grid">
+      <div class="grid col2">
         <input id="email" type="email" placeholder="Correo" autocomplete="username" />
         <input id="password" type="password" placeholder="Contraseña" autocomplete="current-password" />
-        <button id="btnLogin">Iniciar sesión</button>
+      </div>
+      <div class="grid col2" style="margin-top:6px;">
+        <button id="btnLogin" class="secondary">Iniciar sesión</button>
+        <div class="muted" style="display:flex;align-items:center;justify-content:flex-end;">Uso académico – Supabase · Vercel</div>
       </div>
       <div id="resultado" class="muted">Listo para iniciar sesión…</div>
     </div>
 
     <!-- DASHBOARD -->
     <div id="dashboard" class="hidden">
-      <div class="grid col2">
+      <div class="grid col2" style="align-items:center;">
         <div>
-          <div id="userTitle" class="pill">👤 —</div>
+          <div id="userTitle" class="pill">👤 <span>—</span></div>
           <div id="userRole" class="muted">Rol: —</div>
         </div>
-        <div style="text-align:right">
+        <div style="text-align:right;">
           <button id="btnLogout" class="destructive">Cerrar sesión</button>
         </div>
       </div>
 
       <div class="menu" id="menuOpciones"></div>
 
-      <div id="vistas" style="margin-top:16px">
+      <div id="vistas" style="margin-top:14px;">
         <!-- PRODUCTOS -->
         <div id="vistaProductos" class="hidden section">
-          <h3>📦 Gestión de Productos</h3>
+          <div class="flex-between">
+            <h3>📦 Gestión de Productos</h3>
+            <span class="small-label">Catálogo maestro</span>
+          </div>
           <form id="formProducto" class="grid col3">
-            <input id="prodNombre" type="text" placeholder="Nombre" required />
+            <input id="prodNombre" type="text" placeholder="Nombre del producto" required />
             <input id="prodPrecio" type="number" step="0.01" placeholder="Precio" required />
             <input id="prodStock" type="number" placeholder="Stock inicial" required />
-            <div class="grid col3" style="grid-column: 1 / -1; gap:8px;">
+            <div class="grid col3" style="grid-column:1 / -1;gap:8px;">
               <input id="prodCodigo" type="text" placeholder="Código de barras (opcional)" />
-              <button type="button" id="btnScanProducto" class="ghost">📷 Escanear</button>
-              <button type="submit" class="secondary">Guardar</button>
+              <button type="button" id="btnScanProducto" class="ghost">📷 Escanear código</button>
+              <button type="submit" class="secondary">Guardar / Actualizar</button>
             </div>
           </form>
           <video id="previewProd" autoplay muted playsinline class="hidden"></video>
 
           <div style="margin-top:10px" class="grid col2">
             <div>
+              <div class="small-label">Carga rápida vía CSV</div>
               <input id="csvFile" type="file" accept=".csv" />
-              <button id="btnImport" class="ghost">Importar CSV</button>
+              <button id="btnImport" class="ghost" type="button">Importar CSV</button>
               <div class="muted">Formato: <code>nombre,precio,stock,codigo_barras</code></div>
             </div>
-            <div style="text-align:right">
-              <span class="pill">🔔 Alerta: stock &lt; stock_minimo</span>
+            <div style="text-align:right;">
+              <span class="pill">🔔 Alerta stock &lt; stock_minimo</span>
             </div>
           </div>
 
@@ -115,100 +276,110 @@
 
         <!-- INVENTARIO -->
         <div id="vistaInventario" class="hidden section">
-          <h3>📊 Movimientos de Inventario</h3>
+          <div class="flex-between">
+            <h3>📊 Movimientos de Inventario</h3>
+            <span class="small-label">Entradas por código de barras</span>
+          </div>
           <form id="formEntrada" class="grid col3">
-            <input id="invProducto" type="text" placeholder="Código de barras del producto" required />
+            <input id="invCodigo" type="text" placeholder="Código de barras" required />
             <input id="invCantidad" type="number" placeholder="Cantidad" required />
             <button type="submit" class="secondary">Registrar Entrada</button>
           </form>
           <table>
-            <thead><tr><th>Producto ID</th><th>Tipo</th><th>Cantidad</th><th>Fecha</th><th>Motivo</th></tr></thead>
+            <thead><tr><th>Producto</th><th>Código</th><th>Tipo</th><th>Cantidad</th><th>Fecha</th><th>Motivo</th></tr></thead>
             <tbody id="tablaInventario"></tbody>
           </table>
         </div>
 
         <!-- REPORTES -->
         <div id="vistaReportes" class="hidden section">
-          <h3>📑 Reporte Diario</h3>
-          <div class="grid col2" style="margin-bottom:10px">
-            <div class="section" style="background:#fff">
-              <div class="muted">Total ventas del día</div>
-              <div style="font-weight:700;font-size:18px">$<span id="repTotalVentas">0.00</span></div>
-              <div class="muted">Núm. ventas: <span id="repNumVentas">0</span></div>
-              <div class="muted">Ticket promedio: $<span id="repTicketPromedio">0.00</span></div>
-              <div class="muted">Producto más vendido: <span id="repProductoTop">—</span></div>
-            </div>
-            <div>
-              <button id="btnCargarReporte" class="secondary" style="margin-bottom:6px">Actualizar reporte de hoy</button>
-              <button id="btnCerrarDia" class="destructive">Cerrar día</button>
-              <div class="muted" style="margin-top:6px">
-                El cierre de día registra un movimiento de tipo <b>cierre</b> en caja con el total de ventas de hoy.
-              </div>
-            </div>
+          <div class="flex-between">
+            <h3>📑 Reporte Diario</h3>
+            <span class="small-label">Corte por día calendario</span>
           </div>
-          <table>
-            <thead><tr><th>Venta</th><th>Hora</th><th>Total aprox.</th></tr></thead>
-            <tbody id="tablaReporteVentasDia"></tbody>
-          </table>
-          <pre id="reporteContenido" class="json" style="margin-top:10px"></pre>
+          <div class="grid col3">
+            <button id="btnCargarReporte" class="secondary" type="button">Actualizar reporte de hoy</button>
+            <button id="btnCerrarDia" class="ghost" type="button">🧾 Cerrar día (corte imprimible)</button>
+            <div class="muted" style="display:flex;align-items:center;">Basado en ventas registradas en la tabla <code>ventas</code>.</div>
+          </div>
+          <div id="resumenKPIs" class="kpi-row"></div>
+          <pre id="reporteContenido" class="json" style="margin-top:10px;"></pre>
         </div>
 
         <!-- VENTAS -->
         <div id="vistaVentas" class="hidden section">
-          <h3>🛒 Registrar Venta</h3>
+          <div class="flex-between">
+            <h3>🛒 Registrar Venta</h3>
+            <span class="small-label">Escáner + efectivo + ticket</span>
+          </div>
 
           <!-- Buscar por código + escanear -->
           <div class="grid col3">
             <input id="codigoBarras" type="text" placeholder="Código de barras" />
-            <button id="btnBuscarCodigo" class="ghost">Buscar</button>
-            <button id="btnStartScanner" class="ghost">📷 Escanear</button>
+            <button id="btnBuscarCodigo" class="ghost" type="button">Buscar / Agregar</button>
+            <button id="btnStartScanner" class="ghost" type="button">📷 Escanear con cámara</button>
           </div>
-          <video id="preview" autoplay muted playsinline class="hidden" style="margin-top:8px"></video>
+          <video id="preview" autoplay muted playsinline class="hidden"></video>
 
           <!-- Selección manual -->
-          <form id="formVenta" class="grid col3" style="margin-top:10px">
+          <form id="formVenta" class="grid col3" style="margin-top:10px;">
             <select id="ventaProducto"></select>
             <input id="ventaCantidad" type="number" placeholder="Cantidad" required />
             <button type="submit" class="secondary">Agregar al Carrito</button>
           </form>
 
-          <h4 style="margin:12px 0 6px">Carrito</h4>
+          <h4 style="margin:12px 0 6px;">Carrito</h4>
           <table>
             <thead><tr><th>Producto</th><th>Cant</th><th>Precio</th><th>Subtotal</th></tr></thead>
             <tbody id="tablaCarrito"></tbody>
           </table>
-          <div class="grid col3" style="align-items:center; margin-top:10px">
+
+          <div class="grid col3" style="align-items:center;margin-top:10px;">
             <div>
               <div class="muted">Total:</div>
-              <div style="font-weight:800; font-size:18px">$<span id="totalVenta">0.00</span></div>
+              <div style="font-weight:800;font-size:18px;">$<span id="totalVenta">0.00</span></div>
             </div>
             <div>
-              <input id="ventaPagoCon" type="number" step="0.01" placeholder="Pago con" />
-              <div class="muted">Cambio: $<span id="ventaCambio">0.00</span></div>
+              <label class="muted">Efectivo recibido</label>
+              <input id="pagoEfectivo" type="number" step="0.01" placeholder="Ej. 200" />
+              <div class="muted">Cambio: <strong>$<span id="cambioTexto">0.00</span></strong></div>
             </div>
-            <div style="text-align:right">
-              <button id="btnFinalizarVenta">Finalizar Venta</button>
-              <button id="btnImprimir" class="ghost">🖨️ Imprimir Ticket</button>
+            <div style="text-align:right;">
+              <button id="btnFinalizarVenta" type="button">Finalizar Venta</button>
+              <button id="btnImprimir" class="ghost" type="button">🖨️ Imprimir Ticket actual</button>
             </div>
           </div>
+
+          <div id="ticketPreview" class="ticket-preview" style="margin-top:10px;display:none;"></div>
         </div>
 
         <!-- CAJA -->
         <div id="vistaCaja" class="hidden section">
-          <h3>💵 Caja</h3>
-          <form id="formCaja" class="grid col3">
-            <input id="cajaMonto" type="number" step="0.01" placeholder="Monto manual" required />
-            <select id="cajaTipo">
-              <option value="ingreso">Ingreso</option>
-              <option value="egreso">Egreso</option>
-              <option value="cierre">Cierre</option>
-            </select>
-            <button type="submit" class="secondary">Registrar</button>
-          </form>
-          <div class="grid col3" style="margin-top:10px">
-            <div class="muted">Ingresos: $<span id="cajaIngresos">0.00</span></div>
-            <div class="muted">Egresos: $<span id="cajaEgresos">0.00</span></div>
-            <div class="muted">Saldo: $<span id="cajaSaldo">0.00</span></div>
+          <div class="flex-between">
+            <h3>💵 Caja</h3>
+            <span class="small-label">Movimientos manuales + apoyo de cambio</span>
+          </div>
+          <div class="grid col3">
+            <div>
+              <form id="formCaja" class="grid col3">
+                <input id="cajaMonto" type="number" step="0.01" placeholder="Monto" required />
+                <select id="cajaTipo">
+                  <option value="ingreso">Ingreso (añadir a caja)</option>
+                  <option value="egreso">Egreso (retiro)</option>
+                </select>
+                <button type="submit" class="secondary">Registrar movimiento</button>
+              </form>
+              <div class="muted" style="margin-top:4px;">Las ventas registran un ingreso automático de tipo <code>venta</code>.</div>
+            </div>
+            <div>
+              <div class="small-label">Calculadora rápida de cambio</div>
+              <input id="calcTotal" type="number" step="0.01" placeholder="Total de la compra" />
+              <input id="calcEfectivo" type="number" step="0.01" placeholder="Efectivo recibido" />
+              <div class="muted">Cambio sugerido: <strong>$<span id="calcCambio">0.00</span></strong></div>
+            </div>
+            <div class="muted" style="display:flex;align-items:center;">
+              Usa esta sección para depósitos, retiros y cortes parciales de caja.
+            </div>
           </div>
           <table>
             <thead><tr><th>Tipo</th><th>Monto</th><th>Fecha</th></tr></thead>
@@ -218,9 +389,14 @@
 
         <!-- HISTORIAL -->
         <div id="vistaHistorial" class="hidden section">
-          <h3>🧾 Historial de Ventas</h3>
+          <div class="flex-between">
+            <h3>🧾 Historial de Ventas</h3>
+            <span class="small-label">Detalle por ticket</span>
+          </div>
           <table>
-            <thead><tr><th>ID</th><th>Fecha</th><th>Detalle</th></tr></thead>
+            <thead>
+              <tr><th>ID</th><th>Fecha</th><th>Detalle</th><th>Total aprox.</th></tr>
+            </thead>
             <tbody id="tablaHistorial"></tbody>
           </table>
         </div>
@@ -243,11 +419,12 @@
 
     const $  = (id)=>document.getElementById(id);
     const peso = (n)=> Number(n ?? 0).toFixed(2);
-    const beep = ()=> {
-      try {
-        new Audio('https://actions.google.com/sounds/v1/buttons/beep_short.ogg').play();
-      } catch {}
-    };
+
+    // Sonido tipo "bip" de supermercado
+    const beepAudio = new Audio('https://actions.google.com/sounds/v1/alarms/beep_short.ogg');
+    const scanAudio = new Audio('https://actions.google.com/sounds/v1/alarms/beep_short.ogg');
+    function beep(){ try{ beepAudio.currentTime=0; beepAudio.play(); }catch{} }
+    function bipScan(){ try{ scanAudio.currentTime=0; scanAudio.play(); }catch{} }
 
     // ---------- LOGIN ----------
     $('btnLogin').addEventListener('click', async ()=>{
@@ -278,7 +455,8 @@
       const { data, error } = await supabase
         .from('profiles')
         .select('nombre, rol_id, rol:rol_id(nombre)')
-        .eq('user_id', uid).single();
+        .eq('user_id', uid)
+        .single();
 
       if (error || !data) {
         $('resultado').innerHTML = '<span class="warn">No se encontró perfil en tabla profiles</span>';
@@ -287,22 +465,23 @@
 
       $('loginBox').classList.add('hidden');
       $('dashboard').classList.remove('hidden');
-      $('userTitle').textContent = '👤 ' + data.nombre;
-      $('userRole').textContent  = 'Rol: ' + (data.rol?.nombre ?? '—');
+      $('userTitle').innerHTML = `👤 <span>${data.nombre}</span>`;
+      $('userRole').innerHTML  = `Rol: <span class="badge-role">${data.rol?.nombre ?? '—'}</span>`;
 
       const menu = $('menuOpciones');
       menu.innerHTML = '';
       if (data.rol?.nombre === 'admin') {
-        menu.innerHTML += `<button class="secondary" data-v="vistaProductos">📦 Productos</button>`;
-        menu.innerHTML += `<button class="secondary" data-v="vistaInventario">📊 Inventario</button>`;
-        menu.innerHTML += `<button class="secondary" data-v="vistaReportes">📑 Reportes</button>`;
         menu.innerHTML += `<button class="secondary" data-v="vistaVentas">🛒 Ventas</button>`;
         menu.innerHTML += `<button class="secondary" data-v="vistaCaja">💵 Caja</button>`;
         menu.innerHTML += `<button class="secondary" data-v="vistaHistorial">🧾 Historial</button>`;
+        menu.innerHTML += `<button class="secondary" data-v="vistaReportes">📑 Reportes</button>`;
+        menu.innerHTML += `<button class="secondary" data-v="vistaInventario">📊 Inventario</button>`;
+        menu.innerHTML += `<button class="secondary" data-v="vistaProductos">📦 Productos</button>`;
       } else {
         menu.innerHTML += `<button class="secondary" data-v="vistaVentas">🛒 Ventas</button>`;
         menu.innerHTML += `<button class="secondary" data-v="vistaCaja">💵 Caja</button>`;
         menu.innerHTML += `<button class="secondary" data-v="vistaHistorial">🧾 Historial</button>`;
+        menu.innerHTML += `<button class="secondary" data-v="vistaReportes">📑 Reportes</button>`;
       }
       menu.querySelectorAll('button').forEach(b=> b.addEventListener('click', ()=> abrirVista(b.dataset.v)));
       abrirVista('vistaVentas');
@@ -317,7 +496,7 @@
       if (id==='vistaVentas')     cargarProductosVenta();
       if (id==='vistaCaja')       cargarCaja();
       if (id==='vistaHistorial')  cargarHistorial();
-      if (id==='vistaReportes')   cargarReporteDia(false);
+      if (id==='vistaReportes')   cargarReporte();
     }
 
     // ==================== PRODUCTOS ====================
@@ -404,7 +583,7 @@
       r.readAsText(f);
     });
 
-    // ----- escáner alta código de barras -----
+    // Escáner para alta de productos
     let prodStream = null;
     let prodDetector = null;
     let prodScanning = false;
@@ -412,7 +591,7 @@
     $('btnScanProducto').addEventListener('click', async ()=>{
       if (prodScanning) { stopScanProd(); return; }
       if (!('BarcodeDetector' in window)) {
-        alert('Tu navegador no soporta escaneo nativo. Usa el lector USB como teclado.');
+        alert('Tu navegador no soporta escaneo nativo. Usa lector USB como teclado.');
         return;
       }
       const video = $('previewProd');
@@ -446,7 +625,7 @@
             const code = String(codes[0].rawValue || '');
             if (code) {
               $('prodCodigo').value = code;
-              beep();
+              bipScan();
               stopScanProd();
               break;
             }
@@ -456,30 +635,10 @@
       }
     }
 
-    // ==================== UTIL: PRODUCTO POR CÓDIGO ====================
-    async function obtenerProductoPorCodigo(code){
-      const codigo = String(code || '').trim();
-      if (!codigo) return null;
-
-      // 1) RPC si existe
-      try {
-        const { data, error } = await supabase.rpc('buscar_producto_por_codigo', { p_codigo: codigo });
-        if (!error && data && data.length) return data[0];
-      } catch(e) { console.error(e); }
-
-      // 2) Fallback select directo
-      const { data, error } = await supabase
-        .from('productos')
-        .select('id,nombre,precio,stock,codigo_barras')
-        .eq('codigo_barras', codigo)
-        .maybeSingle();
-      if (error) { console.error(error); return null; }
-      return data || null;
-    }
-
     // ==================== VENTAS ====================
     async function cargarProductosVenta(){
-      const { data, error } = await supabase.from('productos')
+      const { data, error } = await supabase
+        .from('productos')
         .select('id,nombre,precio,stock,codigo_barras')
         .order('nombre');
       if (error) { console.error(error); return; }
@@ -488,11 +647,12 @@
       productosCache.clear();
       for (const p of (data || [])) {
         productosCache.set(p.id, p);
-        sel.innerHTML += `<option value="${p.id}">${p.nombre} ($${peso(p.precio)}) — ${p.stock} en stock</option>`;
+        sel.innerHTML += `<option value="${p.id}">
+          ${p.nombre} ($${peso(p.precio)}) — ${p.stock} en stock
+        </option>`;
       }
       carrito = [];
       renderCarrito();
-      actualizarCambio();
     }
 
     $('btnBuscarCodigo').addEventListener('click', async ()=>{
@@ -503,7 +663,23 @@
     });
 
     async function buscarYAgregarPorCodigo(code){
-      const found = await obtenerProductoPorCodigo(code);
+      let found = null;
+      try {
+        const rpc = await supabase.rpc('buscar_producto_por_codigo', { p_codigo: code });
+        if (!rpc.error && rpc.data && rpc.data.length) {
+          found = rpc.data[0];
+        }
+      } catch(e) { console.error(e); }
+
+      if (!found) {
+        const { data } = await supabase
+          .from('productos')
+          .select('id,nombre,precio,stock,codigo_barras')
+          .eq('codigo_barras', code)
+          .maybeSingle();
+        if (data) found = data;
+      }
+
       if (!found) {
         alert('No se encontró el producto para ese código');
         return;
@@ -511,7 +687,7 @@
       addToCartFromProduct(found, 1);
       const lastRow = $('tablaCarrito').lastElementChild;
       if (lastRow) lastRow.classList.add('scan-flash');
-      beep();
+      bipScan();
     }
 
     $('formVenta').addEventListener('submit', (e)=>{
@@ -519,7 +695,7 @@
       const id = parseInt($('ventaProducto').value,10);
       const cant = parseInt($('ventaCantidad').value,10);
       const p = productosCache.get(id);
-      if (!p) { alert('Producto inexistente'); return; }
+      if (!p) { alert('Producto inexistente (cache). Recarga la página.'); return; }
       addToCartFromProduct(p, cant);
       e.target.reset();
     });
@@ -554,18 +730,18 @@
       const total = carrito.reduce((s,c)=> s + c.cantidad * c.precio, 0);
       $('totalVenta').textContent = peso(total);
       actualizarCambio();
+      actualizarPreviewTicket();
     }
 
+    $('pagoEfectivo').addEventListener('input', actualizarCambio);
     function actualizarCambio(){
-      const total = parseFloat($('totalVenta').textContent || '0');
-      const pago = parseFloat($('ventaPagoCon').value || '0');
-      const cambio = (!isNaN(pago) && pago >= total) ? (pago - total) : 0;
-      $('ventaCambio').textContent = peso(cambio);
+      const total = parseFloat($('totalVenta').textContent) || 0;
+      const pago  = parseFloat($('pagoEfectivo').value || '0');
+      const cambio = pago - total;
+      $('cambioTexto').textContent = peso(cambio > 0 ? cambio : 0);
     }
 
-    $('ventaPagoCon').addEventListener('input', actualizarCambio);
-
-    // escáner para ventas
+    // Escáner para ventas
     let ventaStream = null;
     let ventaDetector = null;
     let ventaScanning = false;
@@ -616,21 +792,28 @@
       }
     }
 
-    // finalizar venta con pago/cambio, caja y ticket
+    // finalizar venta con ticket y caja automática
     $('btnFinalizarVenta').addEventListener('click', async ()=>{
       if (!carrito.length) return alert('Carrito vacío');
-
       const total = carrito.reduce((s,c)=> s + c.cantidad * c.precio, 0);
-      const pago = parseFloat($('ventaPagoCon').value || '0');
-      if (isNaN(pago) || pago < total) {
-        alert('El pago debe ser mayor o igual al total de la venta');
-        return;
+      const pago  = parseFloat($('pagoEfectivo').value || '0');
+      if (pago < total) {
+        const ok = confirm('El efectivo es menor que el total. ¿Continuar de todos modos?');
+        if (!ok) return;
       }
-      const cambio = pago - total;
-      $('ventaCambio').textContent = peso(cambio);
 
-      // copia del carrito para el ticket antes de vaciar
-      const itemsTicket = carrito.map(c=>({ ...c }));
+      // Prevalidación: asegurar que cada ID exista en productos (evita "Producto X inexistente")
+      for (const c of carrito) {
+        const { data:prodCheck } = await supabase
+          .from('productos')
+          .select('id')
+          .eq('id', c.id)
+          .maybeSingle();
+        if (!prodCheck) {
+          alert(`Error: el producto con ID ${c.id} ya no existe en la tabla productos.`);
+          return;
+        }
+      }
 
       try {
         const { data:venta, error:errV } = await supabase
@@ -646,95 +829,108 @@
             venta_id: venta.id,
             producto_id: c.id,
             cantidad: c.cantidad,
-            precio_unitario: precioUnit
+            precio_unitario: precioUnit,
+            subtotal: c.cantidad * precioUnit
           });
           if (error) throw error;
         }
 
-        // movimientos de caja: ingreso por total y egreso por cambio
-        const movimientos = [
-          { monto: total, tipo: 'ingreso' }
-        ];
-        if (cambio > 0) movimientos.push({ monto: cambio, tipo: 'egreso' });
-        await supabase.from('caja_movimientos').insert(movimientos);
+        // Movimiento automático en caja
+        const { error:errCaja } = await supabase.from('caja_movimientos').insert({
+          monto: total,
+          tipo: 'venta'
+        });
+        if (errCaja) console.error('Error registrando caja:', errCaja);
 
-        // actualizar vistas
-        carrito = [];
-        renderCarrito();
-        $('ventaPagoCon').value = '';
-        $('ventaCambio').textContent = '0.00';
-        await Promise.all([cargarProductosVenta(), cargarProductos(), cargarHistorial(), cargarCaja(), cargarReporteDia(false)]);
+        alert('✅ Venta registrada (#'+venta.id+')');
 
-        if (confirm('✅ Venta registrada (#'+venta.id+'). ¿Deseas imprimir ticket?')) {
-          imprimirTicket(venta, itemsTicket, total, pago, cambio);
+        const quiereTicket = confirm('¿Deseas imprimir el ticket de esta venta?');
+        if (quiereTicket) {
+          imprimirTicket(venta.id, total, pago);
         }
+
+        carrito = [];
+        $('pagoEfectivo').value = '';
+        renderCarrito();
+        await Promise.all([
+          cargarProductosVenta(),
+          cargarProductos(),
+          cargarHistorial(),
+          cargarCaja(),
+          cargarReporte()
+        ]);
       } catch(e) {
         alert('Error registrando venta: ' + e.message);
       }
     });
 
-    function imprimirTicket(venta, items, total, pago, cambio){
-      const lineas = items.map(c =>
-        `${c.nombre.padEnd(16).slice(0,16)} x${String(c.cantidad).padStart(2)}  $${peso(c.cantidad*c.precio)}`
-      ).join('<br>');
+    // Ticket actual sin registrar venta
+    $('btnImprimir').addEventListener('click', ()=>{
+      const total = carrito.reduce((s,c)=> s + c.cantidad * c.precio, 0);
+      const pago  = parseFloat($('pagoEfectivo').value || '0');
+      imprimirTicket(null, total, pago);
+    });
 
+    function armarTextoTicket(idVenta, total, pago){
+      const cambio = pago - total;
+      const fecha = new Date().toLocaleString();
+      const folio = idVenta ?? 'PREVIEW';
+      const lineas = [];
+      lineas.push('        TIENDITA ESCOLAR');
+      lineas.push('       POS – Proyecto UNITEC');
+      lineas.push('--------------------------------');
+      lineas.push('Fecha: ' + fecha);
+      lineas.push('Folio: ' + folio);
+      lineas.push('--------------------------------');
+      carrito.forEach(c=>{
+        const sub = c.cantidad * c.precio;
+        lineas.push(`${c.nombre.slice(0,22).padEnd(22)} ${String(c.cantidad).padStart(2)} x ${peso(c.precio)} = ${peso(sub)}`);
+      });
+      lineas.push('--------------------------------');
+      lineas.push('TOTAL:           $ ' + peso(total));
+      lineas.push('EFECTIVO:        $ ' + peso(pago));
+      lineas.push('CAMBIO:          $ ' + peso(cambio>0?cambio:0));
+      lineas.push('--------------------------------');
+      lineas.push('Gracias por su compra');
+      lineas.push('   Uso académico – demo');
+      return lineas.join('\n');
+    }
+
+    function imprimirTicket(idVenta, total, pago){
+      const texto = armarTextoTicket(idVenta, total, pago);
       const html = `
-        <html>
-        <head>
-          <meta charset="utf-8">
-          <title>Ticket</title>
-          <style>
-            body { font-family: monospace; margin:0; padding:0; }
-            .ticket {
-              width: 260px;
-              padding: 12px;
-            }
-            h3, h4 { margin:0; text-align:center; }
-            hr { border:none; border-top:1px dashed #000; margin:6px 0; }
-            .tot { text-align:right; }
-          </style>
-        </head>
-        <body>
-          <div class="ticket">
-            <h3>TIENDITA MX</h3>
-            <div style="text-align:center;font-size:11px">
-              RFC: TDM010101ABC<br>
-              Av. Principal 123, CDMX
-            </div>
-            <hr>
-            <div>Folio: ${venta.id}</div>
-            <div>${venta.fecha ? new Date(venta.fecha).toLocaleString() : new Date().toLocaleString()}</div>
-            <hr>
-            <div style="font-size:12px">
-              ${lineas || '(sin items)'}
-            </div>
-            <hr>
-            <div class="tot">SUBTOTAL: $${peso(total)}</div>
-            <div class="tot">PAGO:     $${peso(pago)}</div>
-            <div class="tot">CAMBIO:   $${peso(cambio)}</div>
-            <hr>
-            <h4>¡GRACIAS POR SU COMPRA!</h4>
-          </div>
-        </body>
-        </html>
+        <pre style="font-family:monospace;font-size:13px;">${texto}</pre>
       `;
-      const w = window.open('', 'ticket', 'width=320,height=600');
+      const w = window.open('', 'ticket');
       w.document.write(html);
       w.document.close();
-      w.focus();
       w.print();
+    }
+
+    function actualizarPreviewTicket(){
+      if (!carrito.length){
+        $('ticketPreview').style.display='none';
+        $('ticketPreview').textContent='';
+        return;
+      }
+      const total = carrito.reduce((s,c)=> s + c.cantidad * c.precio, 0);
+      const pago  = parseFloat($('pagoEfectivo').value || '0');
+      const texto = armarTextoTicket('PREVIEW', total, pago);
+      $('ticketPreview').style.display='block';
+      $('ticketPreview').textContent = texto;
     }
 
     // ==================== INVENTARIO ====================
     async function cargarInventario(){
       const { data, error } = await supabase
         .from('inventario_movimientos')
-        .select('producto_id,tipo,cantidad,fecha,motivo')
+        .select('producto_id,tipo,cantidad,fecha,motivo,productos(nombre,codigo_barras)')
         .order('fecha', { ascending:false });
       if (error) { console.error(error); return; }
       $('tablaInventario').innerHTML = (data || []).map(m=>`
         <tr>
-          <td>${m.producto_id}</td>
+          <td>${m.productos?.nombre || m.producto_id}</td>
+          <td>${m.productos?.codigo_barras || ''}</td>
           <td>${m.tipo || ''}</td>
           <td>${m.cantidad}</td>
           <td>${m.fecha ? new Date(m.fecha).toLocaleString() : ''}</td>
@@ -745,12 +941,20 @@
 
     $('formEntrada').addEventListener('submit', async (e)=>{
       e.preventDefault();
-      const codigo = $('invProducto').value.trim();
-      const cantidad   = parseInt($('invCantidad').value,10);
+      const codigo   = $('invCodigo').value.trim();
+      const cantidad = parseInt($('invCantidad').value,10);
       if (!codigo || !cantidad) { alert('Completa código y cantidad'); return; }
+
+      // buscar producto por código
+      const { data:prod, error:errProd } = await supabase
+        .from('productos')
+        .select('id')
+        .eq('codigo_barras', codigo)
+        .maybeSingle();
+      if (errProd) { alert('Error buscando producto: '+errProd.message); return; }
+      if (!prod) { alert('No se encontró producto con ese código.'); return; }
+
       try {
-        const prod = await obtenerProductoPorCodigo(codigo);
-        if (!prod) { alert('No se encontró el producto para ese código'); return; }
         const { error } = await supabase.from('inventario_movimientos').insert({
           producto_id: prod.id,
           tipo: 'ENTRADA',
@@ -758,8 +962,15 @@
           motivo: 'Entrada manual'
         });
         if (error) throw error;
+
+        // Actualiza stock por si no lo maneja trigger
+        await supabase.rpc('ajustar_stock_por_entrada', {
+          p_producto_id: prod.id,
+          p_cantidad: cantidad
+        }).catch(()=>{ /* si no existe la rpc, no pasa nada */ });
+
         e.target.reset();
-        await Promise.all([cargarInventario(), cargarProductos()]);
+        await Promise.all([cargarInventario(), cargarProductos(), cargarProductosVenta()]);
       } catch(err) {
         alert('Error registrando inventario: ' + err.message);
       }
@@ -772,17 +983,6 @@
         .select('*')
         .order('fecha', { ascending:false });
       if (error) { console.error(error); return; }
-
-      let ingresos = 0, egresos = 0;
-      (data || []).forEach(c=>{
-        if (c.tipo === 'egreso') egresos += Number(c.monto || 0);
-        else if (c.tipo === 'ingreso') ingresos += Number(c.monto || 0);
-      });
-
-      $('cajaIngresos').textContent = peso(ingresos);
-      $('cajaEgresos').textContent  = peso(egresos);
-      $('cajaSaldo').textContent    = peso(ingresos - egresos);
-
       $('tablaCaja').innerHTML = (data || []).map(c=>`
         <tr>
           <td>${c.tipo}</td>
@@ -810,156 +1010,125 @@
       }
     });
 
-    // ==================== REPORTES / HISTORIAL ====================
-    $('btnCargarReporte').addEventListener('click', ()=>cargarReporteDia(false));
-    $('btnCerrarDia').addEventListener('click', ()=>cargarReporteDia(true));
-
-    async function cargarReporteDia(cerrar){
-      try {
-        const hoy = new Date();
-        const start = new Date(hoy.getFullYear(), hoy.getMonth(), hoy.getDate());
-        const end   = new Date(hoy.getFullYear(), hoy.getMonth(), hoy.getDate()+1);
-        const startIso = start.toISOString();
-        const endIso   = end.toISOString();
-
-        const { data:ventas, error } = await supabase
-          .from('ventas')
-          .select('id,fecha')
-          .gte('fecha', startIso)
-          .lt('fecha', endIso)
-          .order('fecha', { ascending:true });
-        if (error) throw error;
-
-        let totalDia = 0;
-        const filas = [];
-        const conteoProductos = new Map(); // id -> uds
-
-        for (const v of (ventas || [])) {
-          const { data:items, error:errI } = await supabase
-            .from('ventas_items')
-            .select('cantidad,precio_unitario,producto_id')
-            .eq('venta_id', v.id);
-          if (errI) throw errI;
-
-          let totalVenta = 0;
-          for (const it of (items || [])) {
-            totalVenta += it.cantidad * it.precio_unitario;
-            if (it.producto_id != null) {
-              const prev = conteoProductos.get(it.producto_id) || 0;
-              conteoProductos.set(it.producto_id, prev + it.cantidad);
-            }
-          }
-          totalDia += totalVenta;
-          filas.push({ id:v.id, fecha:v.fecha, total: totalVenta });
-        }
-
-        const numVentas = filas.length;
-        const ticketProm = numVentas ? (totalDia / numVentas) : 0;
-
-        $('repTotalVentas').textContent     = peso(totalDia);
-        $('repNumVentas').textContent       = String(numVentas);
-        $('repTicketPromedio').textContent  = peso(ticketProm);
-
-        // producto más vendido
-        let productoTopTexto = '—';
-        if (conteoProductos.size) {
-          const ids = Array.from(conteoProductos.keys());
-          const { data:prods, error:errP } = await supabase
-            .from('productos')
-            .select('id,nombre')
-            .in('id', ids);
-          if (errP) console.error(errP);
-          else {
-            const mapNombres = new Map();
-            (prods || []).forEach(p=> mapNombres.set(p.id, p.nombre));
-            let bestId = null, bestCant = -1;
-            conteoProductos.forEach((cant,id)=>{
-              if (cant > bestCant) { bestCant = cant; bestId = id; }
-            });
-            if (bestId != null) {
-              const nom = mapNombres.get(bestId) || ('Producto '+bestId);
-              productoTopTexto = `${nom} (${bestCant} uds)`;
-            }
-          }
-        }
-        $('repProductoTop').textContent = productoTopTexto;
-
-        $('tablaReporteVentasDia').innerHTML = filas.map(f=>`
-          <tr>
-            <td>${f.id}</td>
-            <td>${f.fecha ? new Date(f.fecha).toLocaleTimeString() : ''}</td>
-            <td>$${peso(f.total)}</td>
-          </tr>
-        `).join('') || '<tr><td colspan="3">Sin ventas hoy</td></tr>';
-
-        $('reporteContenido').textContent = JSON.stringify({
-          fecha: start.toISOString().substring(0,10),
-          totalDia,
-          numVentas,
-          ticketPromedio: ticketProm,
-          productoTop: productoTopTexto
-        }, null, 2);
-
-        if (cerrar) {
-          const ok = confirm(`Total ventas del día: $${peso(totalDia)}.\n¿Registrar cierre de día en caja?`);
-          if (!ok) return;
-          const { error:errC } = await supabase.from('caja_movimientos').insert({
-            monto: totalDia,
-            tipo: 'cierre'
-          });
-          if (errC) {
-            alert('Error registrando cierre: ' + errC.message);
-          } else {
-            alert('Cierre de día registrado en caja.');
-            await cargarCaja();
-          }
-        }
-      } catch(e) {
-        $('reporteContenido').textContent = 'Error cargando reporte: ' + e.message;
-      }
+    // calculadora de cambio en caja
+    $('calcTotal').addEventListener('input', calcCambioCaja);
+    $('calcEfectivo').addEventListener('input', calcCambioCaja);
+    function calcCambioCaja(){
+      const t = parseFloat($('calcTotal').value || '0');
+      const e = parseFloat($('calcEfectivo').value || '0');
+      const c = e - t;
+      $('calcCambio').textContent = peso(c>0?c:0);
     }
 
+    // ==================== REPORTES / HISTORIAL ====================
+    $('btnCargarReporte').addEventListener('click', ()=>cargarReporte(false));
+    $('btnCerrarDia').addEventListener('click', ()=>cargarReporte(true));
+
     async function cargarHistorial(){
-      const { data:ventas, error } = await supabase
+      const { data, error } = await supabase
         .from('ventas')
-        .select('id,fecha')
+        .select('id,fecha,ventas_items(cantidad,precio_unitario,productos(nombre))')
         .order('id', { ascending:false })
         .limit(50);
       if (error) { console.error(error); return; }
+      $('tablaHistorial').innerHTML = (data || []).map(v=>{
+        const detalleArr = (v.ventas_items || []).map(i=>
+          `${i.productos?.nombre || '#?'} x${i.cantidad} ($${peso(i.precio_unitario)})`
+        );
+        const total = (v.ventas_items || []).reduce((s,i)=> s + i.cantidad * i.precio_unitario, 0);
+        return `<tr>
+          <td>${v.id}</td>
+          <td>${v.fecha ? new Date(v.fecha).toLocaleString() : ''}</td>
+          <td style="text-align:left;padding-left:6px;">${detalleArr.join(', ') || '(sin detalle)'}</td>
+          <td>$${peso(total)}</td>
+        </tr>`;
+      }).join('');
+    }
 
-      const filasHTML = [];
-      for (const v of (ventas || [])) {
-        let detalleHtml = '';
-        let total = 0;
-        try {
-          const { data:items, error:errI } = await supabase
-            .from('ventas_items')
-            .select('cantidad,precio_unitario,productos(nombre)')
-            .eq('venta_id', v.id);
-          if (!errI && items) {
-            detalleHtml = items.map(i=>{
-              const nom = i.productos?.nombre || 'Prod';
-              const sub = i.cantidad * i.precio_unitario;
-              total += sub;
-              return `${nom} x${i.cantidad} ($${peso(i.precio_unitario)}) = $${peso(sub)}`;
-            }).join('<br>');
-          } else {
-            detalleHtml = '(sin detalle)';
-          }
-        } catch(e) {
-          console.error(e);
-          detalleHtml = '(error obteniendo detalle)';
-        }
-        detalleHtml += `<br><strong>Total: $${peso(total)}</strong>`;
-        filasHTML.push(`
-          <tr>
-            <td>${v.id}</td>
-            <td>${v.fecha ? new Date(v.fecha).toLocaleString() : ''}</td>
-            <td>${detalleHtml}</td>
-          </tr>
-        `);
+    async function cargarReporte(imprimir){
+      const hoy   = new Date();
+      const inicio = new Date(hoy.getFullYear(), hoy.getMonth(), hoy.getDate());
+      const inicioIso = inicio.toISOString();
+
+      const { data:ventas, error } = await supabase
+        .from('ventas')
+        .select('id,fecha,ventas_items(cantidad,precio_unitario,productos(nombre))')
+        .gte('fecha', inicioIso)
+        .order('id', { ascending:true });
+      if (error) { console.error(error); return; }
+
+      let totalDia = 0;
+      let totalArticulos = 0;
+      const productosContador = new Map();
+      (ventas || []).forEach(v=>{
+        (v.ventas_items || []).forEach(i=>{
+          const sub = i.cantidad * i.precio_unitario;
+          totalDia += sub;
+          totalArticulos += i.cantidad;
+          const nombre = i.productos?.nombre || 'Producto';
+          productosContador.set(nombre, (productosContador.get(nombre) || 0) + i.cantidad);
+        });
+      });
+
+      const top = Array.from(productosContador.entries())
+        .sort((a,b)=>b[1]-a[1])
+        .slice(0,5);
+
+      // KPIs bonitos
+      $('resumenKPIs').innerHTML = `
+        <div class="kpi">
+          <div class="kpi-title">Ventas del día</div>
+          <div class="kpi-value">${ventas?.length || 0}</div>
+        </div>
+        <div class="kpi">
+          <div class="kpi-title">Total vendido</div>
+          <div class="kpi-value">$${peso(totalDia)}</div>
+        </div>
+        <div class="kpi">
+          <div class="kpi-title">Artículos vendidos</div>
+          <div class="kpi-value">${totalArticulos}</div>
+        </div>
+        <div class="kpi">
+          <div class="kpi-title">Ticket promedio</div>
+          <div class="kpi-value">$${peso((ventas?.length||0)? totalDia/ventas.length : 0)}</div>
+        </div>
+      `;
+
+      const reporte = {
+        fecha: inicio.toISOString().slice(0,10),
+        num_ventas: ventas?.length || 0,
+        total_vendido: totalDia,
+        articulos_vendidos: totalArticulos,
+        ticket_promedio: (ventas?.length||0)? totalDia/ventas.length : 0,
+        top_productos: top.map(([nombre,cant])=>({nombre,cant})),
+        detalle: (ventas || []).map(v=>({
+          id: v.id,
+          fecha: v.fecha,
+          total: (v.ventas_items || []).reduce((s,i)=> s + i.cantidad * i.precio_unitario, 0)
+        }))
+      };
+      $('reporteContenido').textContent = JSON.stringify(reporte, null, 2);
+
+      if (imprimir){
+        const texto = [
+          'CORTE DE DÍA – TIENDITA',
+          'Fecha: ' + reporte.fecha,
+          '--------------------------------',
+          'Ventas: ' + reporte.num_ventas,
+          'Total vendido: $' + peso(reporte.total_vendido),
+          'Artículos vendidos: ' + reporte.articulos_vendidos,
+          'Ticket promedio: $' + peso(reporte.ticket_promedio),
+          '--------------------------------',
+          'Top productos:'
+        ];
+        reporte.top_productos.forEach(p=>{
+          texto.push(`- ${p.nombre} (${p.cant})`);
+        });
+        const w = window.open('', 'corte');
+        w.document.write(`<pre style="font-family:monospace;font-size:13px;">${texto.join('\n')}</pre>`);
+        w.document.close();
+        w.print();
       }
-      $('tablaHistorial').innerHTML = filasHTML.join('') || '<tr><td colspan="3">Sin ventas registradas</td></tr>';
     }
   </script>
 </body>
