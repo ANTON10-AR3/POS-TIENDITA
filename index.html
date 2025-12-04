@@ -777,43 +777,57 @@
       `).join('');
     }
 
-    $('formEntrada').addEventListener('submit',async e=>{
-      e.preventDefault();
-      const codigo=$('invCodigo').value.trim();
-      const cantidad=parseInt($('invCantidad').value,10);
-      if(!codigo || !cantidad || cantidad<=0){
-        alert('Completa código y cantidad');
-        return;
-      }
-      const { data:p, error } = await supabase
-        .from('productos')
-        .select('id,stock')
-        .eq('codigo_barras',codigo)
-        .maybeSingle();
-      if(error || !p){
-        alert('No se encontró producto con ese código');
-        return;
-      }
-      try{
-        const { error: errInv } = await supabase.from('inventario_movimientos').insert({
-          producto_id: p.id,
-          tipo: TIPO_ENTRADA,
-          cantidad,
-          motivo: 'Entrada manual'
-        });
-        if(errInv) throw errInv;
-        const nuevoStock = (p.stock||0)+cantidad;
-        const { error: errProd } = await supabase
-          .from('productos')
-          .update({ stock:nuevoStock, actualizado_en:new Date().toISOString() })
-          .eq('id',p.id);
-        if(errProd) throw errProd;
-        e.target.reset();
-        await Promise.all([cargarInventario(),cargarProductosVenta(),cargarProductos()]);
-      }catch(err){
-        alert('Error registrando inventario: '+err.message);
-      }
+$('formEntrada').addEventListener('submit',async e=>{
+  e.preventDefault();
+  const codigo = $('invCodigo').value.trim();
+  const cantidad = parseInt($('invCantidad').value, 10);
+
+  if (!codigo || !cantidad || cantidad <= 0) {
+    alert('Completa código y cantidad');
+    return;
+  }
+
+  // buscar producto por código
+  const { data:p, error } = await supabase
+    .from('productos')
+    .select('id,stock')
+    .eq('codigo_barras', codigo)
+    .maybeSingle();
+
+  if (error || !p) {
+    alert('No se encontró producto con ese código');
+    return;
+  }
+
+  try {
+    // registrar ENTRADA válida
+    await supabase.from('inventario_movimientos').insert({
+      producto_id: p.id,
+      tipo: 'entrada',
+      cantidad: cantidad,
+      motivo: 'Entrada manual'
     });
+
+    // actualizar stock
+    await supabase.from('productos')
+      .update({
+        stock: (p.stock || 0) + cantidad,
+        actualizado_en: new Date().toISOString()
+      })
+      .eq('id', p.id);
+
+    e.target.reset();
+
+    await Promise.all([
+      cargarInventario(),
+      cargarProductosVenta(),
+      cargarProductos()
+    ]);
+
+  } catch(err) {
+    alert('Error registrando inventario: ' + err.message);
+  }
+});
 
     // -------- CAJA ----------
     async function cargarCaja(){
