@@ -594,29 +594,39 @@ $('btnFinalizarVenta').addEventListener('click', async () => {
 
 // ===== TICKET =====
 function mostrarTicket(folio, fechaISO, items, total, efectivo, cambio) {
-  $('ticketFolio').textContent = folio;
-  $('ticketAtendio').textContent = currentNombre + " (" + currentRole + ")";
+  const fecha = new Date(fechaISO).toLocaleString();
 
   let lines = [];
-  lines.push("TIENDITA LAS PALMAS");
-  lines.push("-----------------------------");
+  lines.push("     TIENDITA LAS PALMAS");
+  lines.push("       RFC: TLP010203AB1");
+  lines.push(" Av. Siempre Viva 123, CDMX");
+  lines.push("--------------------------------");
+  lines.push(`Folio: ${folio}`);
+  lines.push(`Fecha: ${fecha}`);
+  lines.push(`Atendió: ${currentNombre} (${currentRole})`);
+  lines.push("--------------------------------");
+  lines.push(" PRODUCTO           CANT   IMP");
+  lines.push("--------------------------------");
 
   for (const c of items) {
-    lines.push(`${c.nombre.padEnd(18)} ${String(c.cantidad).padStart(3)}  ${peso(c.cantidad * c.precio)}`);
+    const nombre = c.nombre.substring(0, 14).padEnd(14, ' ');
+    const cant = String(c.cantidad).padStart(3, ' ');
+    const imp = peso(c.cantidad * c.precio).padStart(7, ' ');
+    lines.push(` ${nombre}   ${cant}  ${imp}`);
   }
 
-  lines.push("-----------------------------");
-  lines.push(`TOTAL:    $${peso(total)}`);
-  lines.push(`EFECTIVO: $${peso(efectivo)}`);
-  lines.push(`CAMBIO:   $${peso(cambio)}`);
+  lines.push("--------------------------------");
+  lines.push(` SUBTOTAL:        $${peso(total)}`);
+  lines.push(` EFECTIVO:        $${peso(efectivo)}`);
+  lines.push(` CAMBIO:          $${peso(cambio)}`);
+  lines.push("--------------------------------");
+  lines.push("   GRACIAS POR SU COMPRA");
+  lines.push("   ESTE NO ES UN CFDI");
+  lines.push("--------------------------------");
 
   $('ticketContent').textContent = lines.join("\n");
   $('ticketOverlay').style.display = "flex";
 }
-
-$('btnCerrarTicket').addEventListener('click', () => {
-  $('ticketOverlay').style.display = "none";
-});
 
 // ===== INVENTARIO (ARREGLADO) =====
 async function cargarInventario() {
@@ -699,38 +709,42 @@ async function cargarCaja() {
   `).join('');
 }
 
-// ===== HISTORIAL =====
+// ===== HISTORIAL (CORREGIDO) =====
 async function cargarHistorial() {
-  const { data: ventas } = await supabase
+  const { data: ventas, error } = await supabase
     .from('ventas')
-    .select('*')
+    .select('id, fecha')
     .order('id', { ascending: false })
     .limit(50);
+
+  if (error || !ventas) return;
 
   const ids = ventas.map(v => v.id);
 
   const { data: items } = await supabase
     .from('ventas_items')
-    .select('*')
+    .select('venta_id, cantidad, precio_unitario')
     .in('venta_id', ids);
 
-  const map = {};
-  for (const it of items) {
-    if (!map[it.venta_id]) map[it.venta_id] = [];
-    map[it.venta_id].push(it);
+  // Agrupar
+  const totales = {};
+  for (const it of items || []) {
+    if (!totales[it.venta_id]) {
+      totales[it.venta_id] = { cantidad: 0, total: 0 };
+    }
+    totales[it.venta_id].cantidad += it.cantidad;
+    totales[it.venta_id].total += it.cantidad * it.precio_unitario;
   }
 
   $('tablaHistorial').innerHTML = ventas.map(v => {
-    const its = map[v.id] || [];
-    const total = its.reduce((s, i) => s + i.cantidad * i.precio_unitario, 0);
-    const cant = its.reduce((s, i) => s + i.cantidad, 0);
+    const data = totales[v.id] || { cantidad: 0, total: 0 };
 
     return `
       <tr>
         <td>${v.id}</td>
         <td>${new Date(v.fecha).toLocaleString()}</td>
-        <td>${cant}</td>
-        <td>$${peso(total)}</td>
+        <td>${data.cantidad}</td>
+        <td>$${peso(data.total)}</td>
       </tr>`;
   }).join('');
 }
