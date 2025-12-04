@@ -783,11 +783,12 @@
         return;
       }
       try{
-        await supabase.from('inventario_movimientos').insert({
-          producto_id:p.id,
-          tipo:'entrada',
-          cantidad,
-          motivo:'Entrada manual'
+await supabase.from('inventario_movimientos').insert({
+  producto_id: p.id,
+  tipo: 'salida',
+  cantidad: c.cantidad,
+  motivo: `Venta #${venta.id}`
+});
         });
         await supabase.from('productos')
           .update({ stock:(p.stock||0)+cantidad, actualizado_en:new Date().toISOString() })
