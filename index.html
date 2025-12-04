@@ -5,63 +5,206 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>POS Tiendita</title>
   <style>
-    :root { --green:#4caf50; --greenD:#2e7d32; --blue:#1e88e5; --red:#c62828; --bg:#f5f7fb }
-    * { box-sizing:border-box }
-    body{
+    :root {
+      --green:#4caf50;
+      --greenD:#2e7d32;
+      --blue:#1e88e5;
+      --red:#c62828;
+      --bg:#f5f7fb;
+      --dark:#122033;
+    }
+    * { box-sizing:border-box; }
+    body {
       font-family: system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
-      background:linear-gradient(135deg,var(--green),var(--greenD));
-      min-height:100vh;margin:0;display:flex;align-items:center;justify-content:center;padding:24px;
+      background: linear-gradient(135deg,var(--green),var(--greenD));
+      min-height:100vh;
+      margin:0;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:24px;
+      color:#1a2433;
     }
-    .card{
-      width:100%;max-width:980px;background:#fff;border-radius:16px;padding:24px;
-      box-shadow:0 20px 48px rgba(0,0,0,.25);animation:fade .35s ease;
+    .card {
+      width:100%;
+      max-width:1100px;
+      background:#fff;
+      border-radius:18px;
+      padding:24px 24px 28px;
+      box-shadow:0 22px 52px rgba(0,0,0,.26);
+      animation:fade .35s ease;
     }
-    h2{margin:0 0 10px;text-align:center}
-    h3{margin:16px 0 12px}
-    input,select,button{font-size:15px}
-    input,select{
-      width:100%;padding:12px;margin:6px 0;border:1px solid #e1e4ea;border-radius:10px;background:#fff;
+    h2 {
+      margin:0 0 6px;
+      text-align:center;
+      letter-spacing:.04em;
     }
-    button{
-      padding:12px 14px;border:0;border-radius:10px;font-weight:700;cursor:pointer;background:var(--green);color:#fff;
+    h3 { margin:16px 0 12px; }
+    input,select,button {
+      font-size:15px;
     }
-    button.secondary{background:var(--blue)}
-    button.destructive{background:var(--red)}
-    button.ghost{background:#e9eef8;color:#1a2a42}
-    button:hover{filter:brightness(.95)}
-    .menu{display:flex;flex-wrap:wrap;gap:10px;margin:12px 0 0}
-    .menu button{background:var(--blue)}
-    .grid{display:grid;gap:12px}
-    .col2{grid-template-columns:1fr 1fr}
-    .col3{grid-template-columns:1fr 1fr 1fr}
-    table{width:100%;border-collapse:collapse;margin-top:10px;background:#fff}
-    th,td{border:1px solid #eef1f6;padding:8px;text-align:center}
-    th{background:#f7f9fe}
-    .muted{color:#5f6b7a;font-size:13px}
-    .hidden{display:none}
-    #resultado{min-height:22px;margin-top:8px}
-    .ok{color:var(--greenD);font-weight:700}
-    .warn{color:var(--red);font-weight:700}
-    .low{background:#fff1f1}
-    .pill{display:inline-block;padding:2px 8px;border-radius:999px;font-size:12px;background:#ecf3ff;color:#0c3a94}
-    .scan-flash{animation:flash .25s ease-in-out}
-    @keyframes flash{from{background:#fff59d}to{background:transparent}}
-    @keyframes fade{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:none}}
-    .section{background:var(--bg);border-radius:12px;padding:12px}
-    video{width:100%;max-height:240px;border-radius:10px;background:#000}
-    pre.json{
-      background:#0b1020;color:#c4d0ff;padding:12px;border-radius:10px;overflow:auto;white-space:pre-wrap;
+    input,select {
+      width:100%;
+      padding:11px 12px;
+      margin:5px 0;
+      border:1px solid #e1e4ea;
+      border-radius:10px;
+      background:#fff;
+    }
+    input:focus,select:focus {
+      outline:none;
+      border-color:var(--blue);
+      box-shadow:0 0 0 1px rgba(30,136,229,.25);
+    }
+    button {
+      padding:11px 14px;
+      border:0;
+      border-radius:10px;
+      font-weight:700;
+      cursor:pointer;
+      background:var(--green);
+      color:#fff;
+      white-space:nowrap;
+    }
+    button.secondary { background:var(--blue); }
+    button.destructive { background:var(--red); }
+    button.ghost { background:#e9eef8; color:#1a2a42; }
+    button:hover { filter:brightness(.96); }
+    button:disabled { opacity:.55; cursor:not-allowed; }
+
+    .menu { display:flex; flex-wrap:wrap; gap:10px; margin:14px 0 0; }
+    .menu button { background:var(--blue); }
+
+    .grid { display:grid; gap:12px; }
+    .col2 { grid-template-columns:1fr 1fr; }
+    .col3 { grid-template-columns:1fr 1fr 1fr; }
+    .col4 { grid-template-columns:2fr 1fr 1.2fr 1fr; }
+
+    table {
+      width:100%;
+      border-collapse:collapse;
+      margin-top:10px;
+      background:#fff;
+      font-size:14px;
+    }
+    th,td {
+      border:1px solid #eef1f6;
+      padding:7px 8px;
+      text-align:center;
+    }
+    th { background:#f7f9fe; font-weight:600; }
+    .muted { color:#5f6b7a; font-size:13px; }
+    .hidden { display:none !important; }
+
+    #resultado { min-height:22px; margin-top:8px; }
+    .ok { color:var(--greenD); font-weight:700; }
+    .warn { color:var(--red); font-weight:700; }
+    .low { background:#fff1f1; }
+
+    .pill {
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+      padding:2px 10px;
+      border-radius:999px;
+      font-size:12px;
+      background:#ecf3ff;
+      color:#0c3a94;
+    }
+    .scan-flash { animation:flash .25s ease-in-out; }
+
+    .section {
+      background:var(--bg);
+      border-radius:12px;
+      padding:14px;
+      margin-top:6px;
+    }
+    video {
+      width:100%;
+      max-height:230px;
+      border-radius:10px;
+      background:#000;
     }
 
-    /* Modal ticket */
-    .modal-backdrop{
-      position:fixed;inset:0;background:rgba(0,0,0,.45);display:flex;align-items:center;justify-content:center;z-index:50;
+    pre.json {
+      background:#0b1020;
+      color:#c4d0ff;
+      padding:12px;
+      border-radius:10px;
+      overflow:auto;
+      white-space:pre-wrap;
+      font-size:13px;
     }
-    .modal{
-      background:#fff;border-radius:16px;max-width:420px;width:100%;padding:20px;box-shadow:0 18px 40px rgba(0,0,0,.35);
+
+    .top-row {
+      display:flex;
+      justify-content:space-between;
+      align-items:flex-start;
+      gap:10px;
+      margin-bottom:6px;
     }
-    .ticket-box{
-      font-family:monospace;font-size:13px;border:1px dashed #999;border-radius:8px;padding:10px;line-height:1.35;
+
+    /* Ticket modal */
+    .ticket-modal {
+      position:fixed;
+      inset:0;
+      background:rgba(0,0,0,.45);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      z-index:50;
+    }
+    .ticket-dialog {
+      background:#fff;
+      border-radius:16px;
+      padding:18px 20px 16px;
+      width:100%;
+      max-width:420px;
+      box-shadow:0 18px 40px rgba(0,0,0,.4);
+    }
+    .ticket-header {
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      margin-bottom:8px;
+    }
+    .ticket-header h4 {
+      margin:0;
+      font-size:16px;
+    }
+    .ticket-folio {
+      font-size:13px;
+      color:#4c5a70;
+    }
+    .ticket-box {
+      border-radius:10px;
+      border:1px dashed #c7cedd;
+      padding:8px 10px;
+      background:#fafbff;
+      font-family: 'SF Mono','Roboto Mono',monospace;
+      font-size:12px;
+      white-space:pre-wrap;
+      max-height:260px;
+      overflow:auto;
+    }
+    .ticket-footer {
+      margin-top:10px;
+      text-align:right;
+    }
+
+    @keyframes flash {
+      from { background:#fff59d; }
+      to { background:transparent; }
+    }
+    @keyframes fade {
+      from{opacity:0; transform:translateY(-6px);}
+      to{opacity:1; transform:none;}
+    }
+
+    @media (max-width:800px){
+      .col3,.col4 { grid-template-columns:1fr; }
+      body { padding:10px; }
+      .card { padding:18px 14px 20px; }
     }
   </style>
 </head>
@@ -71,24 +214,24 @@
 
     <!-- LOGIN -->
     <div id="loginBox">
-      <div class="grid">
+      <div class="grid col2">
         <input id="email" type="email" placeholder="Correo" autocomplete="username" />
         <input id="password" type="password" placeholder="Contraseña" autocomplete="current-password" />
+      </div>
+      <div style="margin-top:10px; display:flex; justify-content:space-between; gap:10px;">
+        <div class="muted" id="resultado">Listo para iniciar sesión…</div>
         <button id="btnLogin">Iniciar sesión</button>
       </div>
-      <div id="resultado" class="muted">Listo para iniciar sesión…</div>
     </div>
 
     <!-- DASHBOARD -->
     <div id="dashboard" class="hidden">
-      <div class="grid col2">
+      <div class="top-row">
         <div>
           <div id="userTitle" class="pill">👤 —</div>
           <div id="userRole" class="muted">Rol: —</div>
         </div>
-        <div style="text-align:right">
-          <button id="btnLogout" class="destructive">Cerrar sesión</button>
-        </div>
+        <button id="btnLogout" class="destructive">Cerrar sesión</button>
       </div>
 
       <div class="menu" id="menuOpciones"></div>
@@ -101,7 +244,7 @@
             <input id="prodNombre" type="text" placeholder="Nombre" required />
             <input id="prodPrecio" type="number" step="0.01" placeholder="Precio" required />
             <input id="prodStock" type="number" placeholder="Stock inicial" required />
-            <div class="grid col3" style="grid-column:1 / -1;gap:8px;">
+            <div class="grid col3" style="grid-column:1 / -1; gap:8px;">
               <input id="prodCodigo" type="text" placeholder="Código de barras (opcional)" />
               <button type="button" id="btnScanProducto" class="ghost">📷 Escanear</button>
               <button type="submit" class="secondary">Guardar</button>
@@ -158,13 +301,15 @@
         <div id="vistaVentas" class="hidden section">
           <h3>🛒 Registrar Venta</h3>
 
+          <!-- Buscar por código + escanear -->
           <div class="grid col3">
             <input id="codigoBarras" type="text" placeholder="Código de barras" />
-            <button id="btnBuscarCodigo" class="ghost">Buscar</button>
-            <button id="btnStartScanner" class="ghost">📷 Escanear</button>
+            <button id="btnBuscarCodigo" class="ghost">Buscar / Agregar</button>
+            <button id="btnStartScanner" class="ghost">📷 Escanear con cámara</button>
           </div>
           <video id="preview" autoplay muted playsinline class="hidden" style="margin-top:8px"></video>
 
+          <!-- Selección manual -->
           <form id="formVenta" class="grid col3" style="margin-top:10px">
             <select id="ventaProducto"></select>
             <input id="ventaCantidad" type="number" placeholder="Cantidad" required />
@@ -179,34 +324,34 @@
             <tbody id="tablaCarrito"></tbody>
           </table>
 
-          <div class="grid col3" style="align-items:center;margin-top:12px">
-            <div class="muted">Total venta: $<span id="totalVenta">0.00</span></div>
-            <input id="efectivoRecibido" type="number" step="0.01" placeholder="Efectivo recibido" />
-            <div class="muted">Cambio: $<span id="cambioMostrar">0.00</span></div>
+          <div class="grid col2" style="margin-top:10px; align-items:center;">
+            <div>
+              <div class="muted">Total venta:</div>
+              <div style="font-weight:800; font-size:18px">$<span id="totalVenta">0.00</span></div>
+            </div>
+            <div class="grid col2" style="align-items:center;">
+              <div>
+                <div class="muted">Efectivo recibido</div>
+                <input id="efectivoRecibido" type="number" step="0.01" placeholder="0.00" />
+              </div>
+              <div>
+                <div class="muted">Cambio:</div>
+                <div style="font-weight:700;" id="labelCambio">$0.00</div>
+              </div>
+            </div>
           </div>
 
-          <div style="text-align:right;margin-top:10px">
+          <div style="text-align:right; margin-top:10px;">
             <button id="btnFinalizarVenta">Finalizar Venta</button>
           </div>
         </div>
 
-        <!-- CAJA -->
-        <div id="vistaCaja" class="hidden section">
-          <h3>💵 Movimientos de Caja</h3>
-          <table>
-            <thead>
-              <tr><th>Tipo</th><th>Monto</th><th>Fecha</th></tr>
-            </thead>
-            <tbody id="tablaCaja"></tbody>
-          </table>
-        </div>
-
         <!-- HISTORIAL -->
         <div id="vistaHistorial" class="hidden section">
-          <h3>🧾 Historial de Ventas</h3>
+          <h3>📜 Historial de Ventas</h3>
           <table>
             <thead>
-              <tr><th>ID</th><th>Fecha</th><th>Detalle</th><th>Total</th></tr>
+              <tr><th>ID</th><th>Fecha</th><th>Total</th><th>Detalle</th></tr>
             </thead>
             <tbody id="tablaHistorial"></tbody>
           </table>
@@ -216,61 +361,52 @@
   </div>
 
   <!-- MODAL TICKET -->
-  <div id="ticketModal" class="hidden modal-backdrop">
-    <div class="modal">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
-        <strong>Ticket de venta</strong>
-        <span id="ticketFolio" class="muted" style="font-size:12px"></span>
+  <div id="ticketModal" class="ticket-modal hidden">
+    <div class="ticket-dialog">
+      <div class="ticket-header">
+        <h4>Ticket de venta</h4>
+        <div id="ticketFolio" class="ticket-folio"></div>
       </div>
       <div id="ticketContenido" class="ticket-box"></div>
-      <div style="text-align:right;margin-top:10px">
-        <button id="btnCerrarTicket" class="secondary">Cerrar</button>
+      <div class="ticket-footer">
+        <button id="btnCerrarTicket" class="ghost">Cerrar</button>
       </div>
     </div>
   </div>
 
+  <!-- SCRIPT -->
   <script type="module">
     import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
 
+    /*************** CONFIG SUPABASE ***************/
     const SUPABASE_URL = 'https://gnguvdqdhqrupkkrtdmp.supabase.co';
     const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImduZ3V2ZHFkaHFydXBra3J0ZG1wIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTk3NjEwNTIsImV4cCI6MjA3NTMzNzA1Mn0.a5XbjmM5eyREKI1j0HrZe36Gz52SAz0_3_jzjW8bYo0';
 
     const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-    const TIENDA = {
-      nombre: 'Mini Súper La Esquinita',
-      direccion: 'Av. Universidad 123, Ciudad de México, C.P. 01234',
-      rfc: 'MES910101ABC'
-    };
-
+    /*************** ESTADO ***************/
     let carrito = [];
     let productosCache = new Map();
     let currentUser = null;
-    let currentUserName = '';
+    let currentProfile = null;
 
-    const $ = (id)=>document.getElementById(id);
-    const peso = (n)=>Number(n ?? 0).toFixed(2);
-    const scannerBeep = ()=> {
-      try {
-        new Audio('https://actions.google.com/sounds/v1/cartoon/wood_plank_flicks.ogg').play();
-      } catch {}
-    };
+    const $  = (id)=>document.getElementById(id);
+    const peso = (n)=> Number(n ?? 0).toFixed(2);
 
-    // ==================== LOGIN ====================
+    const scanBeep = new Audio('https://actions.google.com/sounds/v1/alarms/beep_short.ogg');
+
+    /*************** LOGIN ***************/
     $('btnLogin').addEventListener('click', async ()=>{
       const email = $('email').value.trim();
       const password = $('password').value.trim();
       const out = $('resultado');
-      if (!email || !password){
+      if (!email || !password) {
         out.innerHTML = '<span class="warn">Ingresa correo y contraseña</span>';
         return;
       }
       out.textContent = 'Iniciando…';
       const { data, error } = await supabase.auth.signInWithPassword({ email, password });
-      if (error){
-        out.innerHTML = '<span class="warn">'+error.message+'</span>';
-        return;
-      }
+      if (error) { out.innerHTML = '<span class="warn">'+error.message+'</span>'; return; }
       currentUser = data.user;
       out.innerHTML = '<span class="ok">Login OK</span>';
       await cargarPerfil(data.user.id);
@@ -279,6 +415,7 @@
     $('btnLogout').addEventListener('click', async ()=>{
       await supabase.auth.signOut();
       currentUser = null;
+      currentProfile = null;
       $('dashboard').classList.add('hidden');
       $('loginBox').classList.remove('hidden');
       $('resultado').textContent = '👋 Sesión cerrada.';
@@ -291,68 +428,61 @@
         .eq('user_id', uid)
         .single();
 
-      if (error || !data){
+      if (error || !data) {
         $('resultado').innerHTML = '<span class="warn">No se encontró perfil en tabla profiles</span>';
         return;
       }
 
-      currentUserName = data.nombre || 'Cajero';
+      currentProfile = data;
 
       $('loginBox').classList.add('hidden');
       $('dashboard').classList.remove('hidden');
-      $('userTitle').textContent = '👤 '+data.nombre;
-      $('userRole').textContent = 'Rol: '+(data.rol?.nombre ?? '—');
+      $('userTitle').textContent = '👤 ' + data.nombre;
+      $('userRole').textContent  = 'Rol: ' + (data.rol?.nombre ?? '—');
 
       const menu = $('menuOpciones');
       menu.innerHTML = '';
-      if (data.rol?.nombre === 'admin'){
+      if (data.rol?.nombre === 'admin') {
         menu.innerHTML += '<button class="secondary" data-v="vistaVentas">🛒 Ventas</button>';
-        menu.innerHTML += '<button class="secondary" data-v="vistaCaja">💵 Caja</button>';
-        menu.innerHTML += '<button class="secondary" data-v="vistaHistorial">🧾 Historial</button>';
         menu.innerHTML += '<button class="secondary" data-v="vistaProductos">📦 Productos</button>';
         menu.innerHTML += '<button class="secondary" data-v="vistaInventario">📊 Inventario</button>';
-        menu.innerHTML += '<button class="secondary" data-v="vistaReportes">📑 Reportes</button>';
+        menu.innerHTML += '<button class="secondary" data-v="vistaReportes">🧾 Reportes</button>';
+        menu.innerHTML += '<button class="secondary" data-v="vistaHistorial">📜 Historial</button>';
       } else {
         menu.innerHTML += '<button class="secondary" data-v="vistaVentas">🛒 Ventas</button>';
-        menu.innerHTML += '<button class="secondary" data-v="vistaCaja">💵 Caja</button>';
-        menu.innerHTML += '<button class="secondary" data-v="vistaHistorial">🧾 Historial</button>';
+        menu.innerHTML += '<button class="secondary" data-v="vistaHistorial">📜 Historial</button>';
       }
-      menu.querySelectorAll('button').forEach(b=>b.addEventListener('click', ()=>abrirVista(b.dataset.v)));
+      menu.querySelectorAll('button').forEach(b=> b.addEventListener('click', ()=> abrirVista(b.dataset.v)));
       abrirVista('vistaVentas');
     }
 
     function abrirVista(id){
       document.querySelectorAll('#vistas > div').forEach(d=>d.classList.add('hidden'));
-      const el = $(id);
-      if (!el) return;
+      const el = $(id); if (!el) return;
       el.classList.remove('hidden');
-      if (id === 'vistaProductos')  cargarProductos();
-      if (id === 'vistaInventario') cargarInventario();
-      if (id === 'vistaVentas')     cargarProductosVenta();
-      if (id === 'vistaCaja')       cargarCaja();
-      if (id === 'vistaHistorial')  cargarHistorial();
-      if (id === 'vistaReportes')   cargarReporteHoy();
+      if (id==='vistaProductos')  cargarProductos();
+      if (id==='vistaInventario') cargarInventario();
+      if (id==='vistaVentas')     cargarProductosVenta();
+      if (id==='vistaHistorial')  cargarHistorial();
     }
 
-    // ==================== PRODUCTOS ====================
+    /*************** PRODUCTOS ***************/
     async function cargarProductos(){
-      const { data, error } = await supabase
-        .from('productos')
-        .select('*')
-        .order('id');
-      if (error){ console.error(error); return; }
+      const { data, error } = await supabase.from('productos').select('*').order('id');
+      if (error) { console.error(error); return; }
       productosCache.clear();
       $('tablaProductos').innerHTML = (data || []).map(p=>{
         productosCache.set(p.id, p);
-        const low = p.stock < (p.stock_minimo ?? 5) ? 'low' : '';
-        return '<tr class="'+low+'">'+
-          '<td>'+p.id+'</td>'+
-          '<td>'+p.nombre+'</td>'+
-          '<td>$'+peso(p.precio)+'</td>'+
-          '<td>'+p.stock+'</td>'+
-          '<td>'+(p.stock_minimo ?? '-')+'</td>'+
-          '<td>'+(p.codigo_barras || '')+'</td>'+
-        '</tr>';
+        const low = (p.stock < (p.stock_minimo ?? 5)) ? 'low' : '';
+        return `
+          <tr class="${low}">
+            <td>${p.id}</td>
+            <td>${p.nombre}</td>
+            <td>$${peso(p.precio)}</td>
+            <td>${p.stock}</td>
+            <td>${p.stock_minimo ?? '-'}</td>
+            <td>${p.codigo_barras || ''}</td>
+          </tr>`;
       }).join('');
     }
 
@@ -362,45 +492,38 @@
       const precio = parseFloat($('prodPrecio').value);
       const stock  = parseInt($('prodStock').value || '0',10);
       const codigo = $('prodCodigo').value.trim() || null;
-      if (!nombre || isNaN(precio)){
-        alert('Completa nombre y precio');
-        return;
-      }
-      try{
-        if (codigo){
-          const { error } = await supabase.rpc('upsert_producto_por_codigo',{
-            p_nombre:nombre,
-            p_precio:precio,
-            p_codigo:codigo,
-            p_stock_inicial:stock
+      if (!nombre || isNaN(precio)) { alert('Completa nombre y precio'); return; }
+
+      try {
+        if (codigo) {
+          const { error } = await supabase.rpc('upsert_producto_por_codigo', {
+            p_nombre:nombre, p_precio:precio, p_codigo:codigo, p_stock_inicial:stock
           });
           if (error) throw error;
         } else {
-          const { error } = await supabase
-            .from('productos')
-            .insert({ nombre, precio, stock });
+          const { error } = await supabase.from('productos').insert({ nombre, precio, stock });
           if (error) throw error;
         }
         e.target.reset();
         await cargarProductos();
         alert('✅ Producto guardado');
-      }catch(err){
+      } catch(err) {
         alert('Error guardando producto: '+err.message);
       }
     });
 
     $('btnImport').addEventListener('click', ()=>{
       const f = $('csvFile').files?.[0];
-      if (!f){ alert('Selecciona un archivo CSV'); return; }
+      if (!f) return alert('Selecciona un archivo CSV');
       const r = new FileReader();
       r.onload = async ()=>{
         const rows = String(r.result).split(/\r?\n/).map(l=>l.trim()).filter(Boolean);
-        for (const line of rows){
+        for (const line of rows) {
           const [nombre,precio,stock,codigo] = line.split(',').map(x=>x?.trim());
           if (!nombre || !precio) continue;
-          try{
-            if (codigo){
-              await supabase.rpc('upsert_producto_por_codigo',{
+          try {
+            if (codigo) {
+              await supabase.rpc('upsert_producto_por_codigo', {
                 p_nombre:nombre,
                 p_precio:parseFloat(precio),
                 p_codigo:codigo,
@@ -413,7 +536,7 @@
                 stock:parseInt(stock || '0',10)
               });
             }
-          }catch(e){ console.error(e); }
+          } catch(e){ console.error(e); }
         }
         await cargarProductos();
         alert('✅ Importación terminada');
@@ -421,18 +544,19 @@
       r.readAsText(f);
     });
 
-    // escáner alta producto
+    // Escáner para alta de código
     let prodStream=null, prodDetector=null, prodScanning=false;
-
     $('btnScanProducto').addEventListener('click', async ()=>{
-      if (prodScanning){ stopScanProd(); return; }
-      if (!('BarcodeDetector' in window)){
-        alert('Tu navegador no soporta escaneo nativo');
+      if (prodScanning) { stopScanProd(); return; }
+      if (!('BarcodeDetector' in window)) {
+        alert('Tu navegador no soporta escaneo nativo. Puedes usar lector USB.');
         return;
       }
       const video = $('previewProd');
       video.classList.remove('hidden');
-      prodStream = await navigator.mediaDevices.getUserMedia({ video:{ facingMode:{ ideal:'environment' } }, audio:false });
+      prodStream = await navigator.mediaDevices.getUserMedia({
+        video:{ facingMode:{ ideal:'environment' } }, audio:false
+      });
       video.srcObject = prodStream;
       prodDetector = new window.BarcodeDetector({ formats:['ean_13','ean_8','upc_a','code_128'] });
       prodScanning = true;
@@ -440,67 +564,69 @@
     });
 
     function stopScanProd(){
-      prodScanning = false;
-      if (prodStream){ prodStream.getTracks().forEach(t=>t.stop()); prodStream=null; }
+      prodScanning=false;
+      if (prodStream) { prodStream.getTracks().forEach(t=>t.stop()); prodStream=null; }
       $('previewProd').classList.add('hidden');
     }
-
     async function scanProdLoop(video){
-      while (prodScanning && prodDetector){
-        try{
-          if (!video.videoWidth){ await new Promise(r=>setTimeout(r,150)); continue; }
-          const canvas = document.createElement('canvas');
-          canvas.width = video.videoWidth;
-          canvas.height = video.videoHeight;
+      while (prodScanning && prodDetector) {
+        try {
+          if (!video.videoWidth) { await new Promise(r=>setTimeout(r,150)); continue; }
+          const canvas=document.createElement('canvas');
+          canvas.width=video.videoWidth;
+          canvas.height=video.videoHeight;
           canvas.getContext('2d').drawImage(video,0,0,canvas.width,canvas.height);
           const bmp = await createImageBitmap(canvas);
           const codes = await prodDetector.detect(bmp);
-          if (codes && codes.length){
+          if (codes && codes.length) {
             const code = String(codes[0].rawValue || '');
-            if (code){
+            if (code) {
               $('prodCodigo').value = code;
-              scannerBeep();
+              scanBeep.play().catch(()=>{});
               stopScanProd();
               break;
             }
           }
-        }catch(e){ console.error(e); }
+        } catch(e){ console.error(e); }
         await new Promise(r=>setTimeout(r,200));
       }
     }
 
-    // ==================== VENTAS ====================
+    /*************** VENTAS ***************/
     async function cargarProductosVenta(){
       const { data, error } = await supabase
         .from('productos')
         .select('id,nombre,precio,stock,codigo_barras')
         .order('nombre');
-      if (error){ console.error(error); return; }
+      if (error) { console.error(error); return; }
       const sel = $('ventaProducto');
-      sel.innerHTML = '';
+      sel.innerHTML='';
       productosCache.clear();
-      (data || []).forEach(p=>{
+      for (const p of (data || [])) {
         productosCache.set(p.id, p);
-        sel.innerHTML += '<option value="'+p.id+'">'+p.nombre+' ($'+peso(p.precio)+') — '+p.stock+' en stock</option>';
-      });
-      carrito = [];
+        sel.innerHTML += `<option value="${p.id}">${p.nombre} ($${peso(p.precio)}) — ${p.stock} en stock</option>`;
+      }
+      carrito=[];
       renderCarrito();
     }
 
     $('btnBuscarCodigo').addEventListener('click', async ()=>{
       const code = $('codigoBarras').value.trim();
       if (!code) return;
-      await buscarYAgregarPorCodigo(code, 1);
-      $('codigoBarras').value = '';
+      await buscarYAgregarPorCodigo(code);
+      $('codigoBarras').value='';
     });
 
-    async function buscarYAgregarPorCodigo(code, cantidad){
-      let found = null;
-      try{
-        const rpc = await supabase.rpc('buscar_producto_por_codigo',{ p_codigo:code });
-        if (!rpc.error && rpc.data && rpc.data.length) found = rpc.data[0];
-      }catch(e){ console.error(e); }
-      if (!found){
+    async function buscarYAgregarPorCodigo(code){
+      let found=null;
+      try {
+        const rpc = await supabase.rpc('buscar_producto_por_codigo', { p_codigo:code });
+        if (!rpc.error && rpc.data && rpc.data.length) {
+          found = rpc.data[0];
+        }
+      } catch(e){ console.error(e); }
+
+      if (!found) {
         const { data } = await supabase
           .from('productos')
           .select('id,nombre,precio,stock,codigo_barras')
@@ -508,14 +634,12 @@
           .maybeSingle();
         if (data) found = data;
       }
-      if (!found){
-        alert('No se encontró un producto para ese código');
-        return;
-      }
-      addToCartFromProduct(found, cantidad || 1);
+
+      if (!found) { alert('No se encontró el producto para ese código'); return; }
+      addToCartFromProduct(found, 1);
       const lastRow = $('tablaCarrito').lastElementChild;
       if (lastRow) lastRow.classList.add('scan-flash');
-      scannerBeep();
+      scanBeep.play().catch(()=>{});
     }
 
     $('formVenta').addEventListener('submit', (e)=>{
@@ -523,20 +647,17 @@
       const id = parseInt($('ventaProducto').value,10);
       const cant = parseInt($('ventaCantidad').value,10);
       const p = productosCache.get(id);
-      if (!p){
-        alert('Producto inexistente');
-        return;
-      }
+      if (!p) { alert('Producto inexistente'); return; }
       addToCartFromProduct(p, cant);
       e.target.reset();
     });
 
     function addToCartFromProduct(p, cantidad){
-      if (!p || !cantidad || cantidad <= 0) return;
-      const ya = carrito.find(x=>x.id === p.id);
+      if (!p || !cantidad || cantidad<=0) return;
+      const ya = carrito.find(x=>x.id===p.id);
       const enCarrito = ya ? ya.cantidad : 0;
-      if (p.stock != null && (cantidad + enCarrito) > p.stock){
-        alert('Solo hay '+p.stock+' unidades de "'+p.nombre+'" en stock');
+      if (p.stock != null && (cantidad + enCarrito) > p.stock) {
+        alert(`Solo hay ${p.stock} unidades de "${p.nombre}" en stock`);
         return;
       }
       if (ya) ya.cantidad += cantidad;
@@ -545,15 +666,15 @@
     }
 
     function renderCarrito(){
-      $('tablaCarrito').innerHTML = carrito.map(c=>
-        '<tr>'+
-          '<td>'+c.nombre+'</td>'+
-          '<td>'+c.cantidad+'</td>'+
-          '<td>$'+peso(c.precio)+'</td>'+
-          '<td>$'+peso(c.cantidad * c.precio)+'</td>'+
-        '</tr>'
-      ).join('');
-      const total = carrito.reduce((s,c)=>s + c.cantidad * c.precio,0);
+      $('tablaCarrito').innerHTML = carrito.map(c=>`
+        <tr>
+          <td>${c.nombre}</td>
+          <td>${c.cantidad}</td>
+          <td>$${peso(c.precio)}</td>
+          <td>$${peso(c.cantidad * c.precio)}</td>
+        </tr>
+      `).join('');
+      const total = carrito.reduce((s,c)=> s + c.cantidad * c.precio, 0);
       $('totalVenta').textContent = peso(total);
       actualizarCambio();
     }
@@ -562,22 +683,23 @@
     function actualizarCambio(){
       const total = parseFloat($('totalVenta').textContent || '0');
       const efectivo = parseFloat($('efectivoRecibido').value || '0');
-      const cambio = Math.max(0, efectivo - total);
-      $('cambioMostrar').textContent = peso(cambio);
+      const cambio = Math.max(efectivo - total, 0);
+      $('labelCambio').textContent = '$'+peso(cambio);
     }
 
-    // escáner ventas
+    // Escáner en ventas
     let ventaStream=null, ventaDetector=null, ventaScanning=false;
-
     $('btnStartScanner').addEventListener('click', async ()=>{
-      if (ventaScanning){ stopScannerVentas(); return; }
-      if (!('BarcodeDetector' in window)){
-        alert('Tu navegador no soporta escaneo nativo');
+      if (ventaScanning) { stopScannerVentas(); return; }
+      if (!('BarcodeDetector' in window)) {
+        alert('Tu navegador no soporta escaneo nativo. También puedes usar lector USB.');
         return;
       }
       const video = $('preview');
       video.classList.remove('hidden');
-      ventaStream = await navigator.mediaDevices.getUserMedia({ video:{ facingMode:{ ideal:'environment' } }, audio:false });
+      ventaStream = await navigator.mediaDevices.getUserMedia({
+        video:{ facingMode:{ ideal:'environment' } }, audio:false
+      });
       video.srcObject = ventaStream;
       ventaDetector = new window.BarcodeDetector({ formats:['ean_13','ean_8','upc_a','code_128'] });
       ventaScanning = true;
@@ -585,50 +707,46 @@
     });
 
     function stopScannerVentas(){
-      ventaScanning = false;
-      if (ventaStream){ ventaStream.getTracks().forEach(t=>t.stop()); ventaStream=null; }
+      ventaScanning=false;
+      if (ventaStream) { ventaStream.getTracks().forEach(t=>t.stop()); ventaStream=null; }
       $('preview').classList.add('hidden');
     }
-
     async function scanVentasLoop(video){
-      while (ventaScanning && ventaDetector){
-        try{
-          if (!video.videoWidth){ await new Promise(r=>setTimeout(r,150)); continue; }
-          const canvas = document.createElement('canvas');
-          canvas.width = video.videoWidth;
-          canvas.height = video.videoHeight;
+      while (ventaScanning && ventaDetector) {
+        try {
+          if (!video.videoWidth) { await new Promise(r=>setTimeout(r,150)); continue; }
+          const canvas=document.createElement('canvas');
+          canvas.width=video.videoWidth;
+          canvas.height=video.videoHeight;
           canvas.getContext('2d').drawImage(video,0,0,canvas.width,canvas.height);
-          const bmp = await createImageBitmap(canvas);
-          const codes = await ventaDetector.detect(bmp);
-          if (codes && codes.length){
-            const code = String(codes[0].rawValue || '');
-            if (code){
+          const bmp=await createImageBitmap(canvas);
+          const codes=await ventaDetector.detect(bmp);
+          if (codes && codes.length) {
+            const code=String(codes[0].rawValue || '');
+            if (code) {
               stopScannerVentas();
-              await buscarYAgregarPorCodigo(code,1);
+              await buscarYAgregarPorCodigo(code);
               break;
             }
           }
-        }catch(e){ console.error(e); }
+        } catch(e){ console.error(e); }
         await new Promise(r=>setTimeout(r,200));
       }
     }
 
-    // finalizar venta
+    // Finalizar venta
     $('btnFinalizarVenta').addEventListener('click', async ()=>{
-      if (!carrito.length){
-        alert('Carrito vacío');
-        return;
-      }
-      const total = carrito.reduce((s,c)=>s + c.cantidad * c.precio,0);
+      if (!carrito.length) return alert('Carrito vacío');
+      const total = carrito.reduce((s,c)=> s + c.cantidad * c.precio, 0);
       const efectivo = parseFloat($('efectivoRecibido').value || '0');
-      if (efectivo < total){
-        alert('El efectivo recibido es menor al total de la venta');
-        return;
+      if (efectivo < total) {
+        if (!confirm('El efectivo es menor al total. ¿Registrar de todos modos?')) return;
       }
-      const cambio = efectivo - total;
+      const cambio = Math.max(efectivo - total, 0);
 
-      const carritoCopia = carrito.map(c=>({ ...c }));
-      try{
+      const carritoCopia = carrito.map(c=>({...c}));
+
+      try {
         const { data:venta, error:errV } = await supabase
           .from('ventas')
           .insert({})
@@ -636,114 +754,121 @@
           .single();
         if (errV) throw errV;
 
-        // items de venta
-        for (const c of carritoCopia){
+        // items de venta + inventario (salida)
+        for (const c of carritoCopia) {
           const precioUnit = Number(c.precio ?? productosCache.get(c.id)?.precio ?? 0);
-          const { error } = await supabase.from('ventas_items').insert({
+
+          const { error:itemErr } = await supabase.from('ventas_items').insert({
             venta_id:venta.id,
             producto_id:c.id,
             cantidad:c.cantidad,
-            precio_unitario:precioUnit
-            // NO mandamos subtotal: lo calcula la BD si lo tienes generado
+            precio_unitario:precioUnit   // subtotal lo calcula la BD
           });
-          if (error) throw error;
+          if (itemErr) throw itemErr;
 
-          // movimiento inventario: salida
           await supabase.from('inventario_movimientos').insert({
             producto_id:c.id,
             tipo:'salida',
             cantidad:c.cantidad,
-            motivo:'Venta #'+venta.id
+            motivo:`Venta #${venta.id}`
           });
         }
 
-        // movimientos de caja automáticos
-        await supabase.from('caja_movimientos').insert([
-          { tipo:'ingreso', monto:efectivo },
-          { tipo:'egreso',  monto:cambio }
-        ]);
+        // caja: entrada por total, salida por cambio
+        const movimientosCaja = [];
+        if (total > 0) movimientosCaja.push({ tipo:'entrada', monto:total });
+        if (cambio > 0) movimientosCaja.push({ tipo:'salida', monto:cambio });
+        if (movimientosCaja.length) {
+          const { error:cajaErr } = await supabase.from('caja_movimientos').insert(movimientosCaja);
+          if (cajaErr) console.error('Error registrando caja:', cajaErr);
+        }
 
         alert('✅ Venta registrada (#'+venta.id+')');
 
-        // mostrar ticket si quiere
-        if (confirm('¿Imprimir ticket de esta venta?')){
-          mostrarTicketModal(venta, carritoCopia, total, efectivo, cambio);
+        // actualizar vistas
+        carrito=[];
+        $('efectivoRecibido').value='';
+        renderCarrito();
+        await Promise.all([cargarProductosVenta(), cargarProductos(), cargarHistorial()]);
+
+        // Ticket
+        if (confirm('¿Deseas ticket de esta venta?')) {
+          const ticketTexto = generarTicketTexto(venta.id, venta.fecha, carritoCopia, total, efectivo, cambio);
+          mostrarTicket('T-'+String(venta.id).padStart(6,'0'), ticketTexto);
         }
 
-        carrito = [];
-        $('efectivoRecibido').value = '';
-        $('cambioMostrar').textContent = '0.00';
-        renderCarrito();
-        await Promise.all([cargarProductosVenta(), cargarProductos(), cargarCaja(), cargarHistorial(), cargarInventario()]);
-      }catch(e){
+      } catch(e){
         alert('Error registrando venta: '+e.message);
       }
     });
 
-    // ==================== TICKET MODAL ====================
+    /*************** TICKET ***************/
+    function mostrarTicket(folio, texto){
+      $('ticketFolio').textContent = folio;
+      $('ticketContenido').textContent = texto;
+      $('ticketModal').classList.remove('hidden');
+    }
     $('btnCerrarTicket').addEventListener('click', ()=>{
       $('ticketModal').classList.add('hidden');
     });
 
-    function padFolio(n){
-      return String(n).padStart(6,'0');
-    }
+    function generarTicketTexto(idVenta, fechaISO, items, total, efectivo, cambio){
+      const tiendaNombre = 'Tiendita La Esquina Feliz';
+      const rfc          = 'TEF010101ABC';
+      const direccion    = 'Av. Principal 123, Col. Centro, CDMX';
+      const fecha = fechaISO ? new Date(fechaISO) : new Date();
 
-    function mostrarTicketModal(venta, items, total, efectivo, cambio){
-      $('ticketModal').classList.remove('hidden');
-      $('ticketFolio').textContent = 'Folio '+padFolio(venta.id);
-      const fecha = new Date(venta.fecha || Date.now());
-      let lines = '';
-      lines += TIENDA.nombre+'\n';
-      lines += 'RFC: '+TIENDA.rfc+'\n';
-      lines += TIENDA.direccion+'\n';
-      lines += '--------------------------------\n';
-      lines += 'Folio: '+padFolio(venta.id)+'\n';
-      lines += 'Fecha: '+fecha.toLocaleString()+'\n';
-      lines += 'Cajero: '+currentUserName+'\n';
-      lines += '--------------------------------\n';
-      items.forEach(c=>{
-        const sub = c.cantidad * c.precio;
-        lines += c.nombre+'\n';
-        lines += '  '+c.cantidad+' x $'+peso(c.precio)+'   $'+peso(sub)+'\n';
+      const rol = currentProfile?.rol?.nombre === 'admin' ? 'ADMINISTRADOR' : 'CAJERO';
+      const cajero = rol; // ya no mostramos correo
+
+      let lineas = [];
+      lineas.push(tiendaNombre);
+      lineas.push('RFC: '+rfc);
+      lineas.push(direccion);
+      lineas.push('--------------------------------');
+      lineas.push('Folio: T-'+String(idVenta).padStart(6,'0'));
+      lineas.push('Fecha: '+fecha.toLocaleString());
+      lineas.push('Atendió: '+cajero);
+      lineas.push('--------------------------------');
+      items.forEach(it=>{
+        const subtotal = it.cantidad * it.precio;
+        lineas.push(`${it.nombre}`);
+        lineas.push(` ${it.cantidad} x $${peso(it.precio)} = $${peso(subtotal)}`);
       });
-      lines += '--------------------------------\n';
-      lines += 'TOTAL:      $'+peso(total)+'\n';
-      lines += 'EFECTIVO:   $'+peso(efectivo)+'\n';
-      lines += 'CAMBIO:     $'+peso(cambio)+'\n';
-      lines += '--------------------------------\n';
-      lines += 'Gracias por su compra\n';
-      $('ticketContenido').textContent = lines;
+      lineas.push('--------------------------------');
+      lineas.push(`TOTAL:   $${peso(total)}`);
+      lineas.push(`EFECTIVO:$${peso(efectivo)}`);
+      lineas.push(`CAMBIO:  $${peso(cambio)}`);
+      lineas.push('--------------------------------');
+      lineas.push('Gracias por su compra');
+      lineas.push('¡Vuelva pronto!');
+      return lineas.join('\n');
     }
 
-    // ==================== INVENTARIO ====================
+    /*************** INVENTARIO ***************/
     async function cargarInventario(){
       const { data, error } = await supabase
         .from('inventario_movimientos')
         .select('producto_id,tipo,cantidad,fecha,motivo')
         .order('fecha',{ ascending:false });
-      if (error){ console.error(error); return; }
-      $('tablaInventario').innerHTML = (data || []).map(m=>
-        '<tr>'+
-          '<td>'+m.producto_id+'</td>'+
-          '<td>'+m.tipo+'</td>'+
-          '<td>'+m.cantidad+'</td>'+
-          '<td>'+(m.fecha ? new Date(m.fecha).toLocaleString() : '')+'</td>'+
-          '<td>'+(m.motivo || '')+'</td>'+
-        '</tr>'
-      ).join('');
+      if (error) { console.error(error); return; }
+      $('tablaInventario').innerHTML = (data || []).map(m=>`
+        <tr>
+          <td>${m.producto_id}</td>
+          <td>${m.tipo || ''}</td>
+          <td>${m.cantidad}</td>
+          <td>${m.fecha ? new Date(m.fecha).toLocaleString() : ''}</td>
+          <td>${m.motivo || ''}</td>
+        </tr>
+      `).join('');
     }
 
     $('formEntrada').addEventListener('submit', async (e)=>{
       e.preventDefault();
       const producto_id = parseInt($('invProducto').value,10);
-      const cantidad   = parseInt($('invCantidad').value,10);
-      if (!producto_id || !cantidad){
-        alert('Completa producto y cantidad');
-        return;
-      }
-      try{
-        // registrar movimiento
+      const cantidad = parseInt($('invCantidad').value,10);
+      if (!producto_id || !cantidad) { alert('Completa producto y cantidad'); return; }
+      try {
         const { error } = await supabase.from('inventario_movimientos').insert({
           producto_id,
           tipo:'entrada',
@@ -751,118 +876,124 @@
           motivo:'Entrada manual'
         });
         if (error) throw error;
-
-        // actualizar stock del producto
-        await supabase.rpc('ajustar_stock_manual', { p_producto_id:producto_id, p_delta:cantidad })
-          .catch(()=>{}); // si no existe RPC, ignoramos
-
         e.target.reset();
-        await Promise.all([cargarInventario(), cargarProductos(), cargarProductosVenta()]);
-      }catch(err){
+        await Promise.all([cargarInventario(), cargarProductos()]);
+      } catch(err){
         alert('Error registrando inventario: '+err.message);
       }
     });
 
-    // ==================== CAJA ====================
-    async function cargarCaja(){
-      const { data, error } = await supabase
-        .from('caja_movimientos')
-        .select('*')
-        .order('fecha',{ ascending:false });
-      if (error){ console.error(error); return; }
-      $('tablaCaja').innerHTML = (data || []).map(c=>
-        '<tr>'+
-          '<td>'+c.tipo+'</td>'+
-          '<td>$'+peso(c.monto)+'</td>'+
-          '<td>'+(c.fecha ? new Date(c.fecha).toLocaleString() : '')+'</td>'+
-        '</tr>'
-      ).join('');
-    }
-
-    // ==================== HISTORIAL ====================
+    /*************** HISTORIAL ***************/
     async function cargarHistorial(){
       const { data:ventas, error } = await supabase
         .from('ventas')
         .select('id,fecha')
         .order('id',{ ascending:false })
         .limit(50);
-      if (error){ console.error(error); return; }
+      if (error) { console.error(error); return; }
+      if (!ventas || !ventas.length) {
+        $('tablaHistorial').innerHTML = '';
+        return;
+      }
+      const ids = ventas.map(v=>v.id);
+      const { data:items, error:errItems } = await supabase
+        .from('ventas_items')
+        .select('venta_id,cantidad,precio_unitario,productos(nombre)')
+        .in('venta_id', ids);
+      if (errItems) { console.error(errItems); return; }
 
-      const filas = [];
-      for (const v of (ventas || [])){
-        const { data:items } = await supabase
-          .from('ventas_items')
-          .select('cantidad,precio_unitario,productos(nombre)')
-          .eq('venta_id', v.id);
-        let total = 0;
-        let detalle = '';
-        (items || []).forEach(i=>{
-          const sub = i.cantidad * i.precio_unitario;
-          total += sub;
-          const nom = i.productos?.nombre || '#'+v.id;
-          if (detalle) detalle += ' | ';
-          detalle += nom+' x'+i.cantidad;
-        });
-        filas.push({ id:v.id, fecha:v.fecha, total, detalle });
+      const porVenta = new Map();
+      for (const it of (items || [])) {
+        const arr = porVenta.get(it.venta_id) || [];
+        arr.push(it);
+        porVenta.set(it.venta_id, arr);
       }
 
-      $('tablaHistorial').innerHTML = filas.map(f=>
-        '<tr>'+
-          '<td>'+f.id+'</td>'+
-          '<td>'+(f.fecha ? new Date(f.fecha).toLocaleString() : '')+'</td>'+
-          '<td>'+f.detalle+'</td>'+
-          '<td>$'+peso(f.total)+'</td>'+
-        '</tr>'
-      ).join('');
+      $('tablaHistorial').innerHTML = ventas.map(v=>{
+        const its = porVenta.get(v.id) || [];
+        const total = its.reduce((s,i)=> s + i.cantidad * i.precio_unitario, 0);
+        const detalle = its.map(i=>`${i.productos?.nombre || 'Prod.'} x${i.cantidad}`).join(', ');
+        return `
+          <tr>
+            <td>${v.id}</td>
+            <td>${v.fecha ? new Date(v.fecha).toLocaleString() : ''}</td>
+            <td>$${peso(total)}</td>
+            <td style="text-align:left">${detalle}</td>
+          </tr>`;
+      }).join('');
     }
 
-    // ==================== REPORTE DIARIO ====================
+    /*************** REPORTE DIARIO ***************/
     $('btnCargarReporte').addEventListener('click', cargarReporteHoy);
-    $('btnSimularCierre').addEventListener('click', ()=>alert('Solo visual, no cierra nada.'));
+    $('btnSimularCierre').addEventListener('click', cargarReporteHoy);
 
     async function cargarReporteHoy(){
-      try{
+      try {
         const hoy = new Date();
-        const inicio = new Date(hoy.getFullYear(), hoy.getMonth(), hoy.getDate());
-        const fin = new Date(hoy.getFullYear(), hoy.getMonth(), hoy.getDate()+1);
+        const inicio = new Date(hoy); inicio.setHours(0,0,0,0);
+        const fin    = new Date(hoy); fin.setHours(23,59,59,999);
 
-        const { data:ventas, error } = await supabase
+        const { data:ventas, error:errV } = await supabase
           .from('ventas')
           .select('id,fecha')
           .gte('fecha', inicio.toISOString())
-          .lt('fecha', fin.toISOString())
+          .lte('fecha', fin.toISOString())
           .order('fecha',{ ascending:true });
 
-        if (error) throw error;
+        if (errV) throw errV;
 
-        let totalDia = 0;
+        let totalVentas = 0;
         let totalTickets = ventas.length;
-        let lineas = [];
+        let totalArticulos = 0;
 
-        for (const v of (ventas || [])){
-          const { data:items } = await supabase
+        if (ventas.length) {
+          const ids = ventas.map(v=>v.id);
+          const { data:items, error:errI } = await supabase
             .from('ventas_items')
-            .select('cantidad,precio_unitario')
-            .eq('venta_id', v.id);
-          let totalVenta = 0;
-          (items || []).forEach(i=>{
-            totalVenta += i.cantidad * i.precio_unitario;
-          });
-          totalDia += totalVenta;
-          lineas.push('Venta #'+v.id+'  '+new Date(v.fecha).toLocaleTimeString()+'  Total: $'+peso(totalVenta));
+            .select('venta_id,cantidad,precio_unitario')
+            .in('venta_id', ids);
+          if (errI) throw errI;
+          for (const it of (items || [])) {
+            totalVentas    += it.cantidad * it.precio_unitario;
+            totalArticulos += it.cantidad;
+          }
         }
 
-        let texto = '';
-        texto += 'REPORTE DEL DÍA - '+inicio.toLocaleDateString()+'\n';
-        texto += '----------------------------------------\n';
-        texto += 'Tickets: '+totalTickets+'\n';
-        texto += 'Total vendido: $'+peso(totalDia)+'\n';
-        texto += '----------------------------------------\n';
-        if (!lineas.length) texto += 'Sin ventas registradas hoy.\n';
-        else texto += lineas.join('\n')+'\n';
+        const { data:caja, error:errC } = await supabase
+          .from('caja_movimientos')
+          .select('tipo,monto,fecha')
+          .gte('fecha', inicio.toISOString())
+          .lte('fecha', fin.toISOString());
 
-        $('reporteContenido').textContent = texto;
-      }catch(e){
+        if (errC) throw errC;
+
+        let entradas = 0, salidas = 0;
+        for (const m of (caja || [])) {
+          if (m.tipo === 'entrada') entradas += Number(m.monto || 0);
+          else if (m.tipo === 'salida') salidas += Number(m.monto || 0);
+        }
+
+        const netoCaja = entradas - salidas;
+
+        const lineas = [];
+        lineas.push('CORTE DEL DÍA');
+        lineas.push('Fecha: '+hoy.toLocaleDateString());
+        lineas.push('--------------------------------');
+        lineas.push('Tickets emitidos: '+totalTickets);
+        lineas.push('Artículos vendidos: '+totalArticulos);
+        lineas.push('Venta total: $'+peso(totalVentas));
+        lineas.push('--------------------------------');
+        lineas.push('Caja - Entradas: $'+peso(entradas));
+        lineas.push('Caja - Salidas : $'+peso(salidas));
+        lineas.push('Saldo esperado : $'+peso(netoCaja));
+        lineas.push('--------------------------------');
+        lineas.push('Detalle de ventas:');
+        ventas.forEach(v=>{
+          lineas.push('  Venta #'+v.id+' - '+new Date(v.fecha).toLocaleTimeString());
+        });
+
+        $('reporteContenido').textContent = lineas.join('\n');
+      } catch(e){
         $('reporteContenido').textContent = 'Error cargando reporte: '+e.message;
       }
     }
