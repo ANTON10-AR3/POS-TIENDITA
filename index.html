@@ -3,7 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>POS Tiendita v2 PRO</title>
+  <title>POS Tiendita v3 PRO</title>
+
   <style>
     :root {
       --green:#4caf50;
@@ -16,8 +17,10 @@
       --text:#1a2a42;
       --muted:#5f6b7a;
     }
-    *{box-sizing:border-box;margin:0;padding:0}
-    body{
+
+    * { box-sizing:border-box; margin:0; padding:0 }
+
+    body {
       font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
       background:linear-gradient(135deg,var(--green),var(--greenD));
       min-height:100vh;
@@ -27,7 +30,8 @@
       padding:24px;
       color:var(--text);
     }
-    .card{
+
+    .card {
       width:100%;
       max-width:1100px;
       background:var(--card);
@@ -36,11 +40,13 @@
       box-shadow:0 20px 48px rgba(0,0,0,.25);
       animation:fade .35s ease;
     }
-    h2{margin-bottom:4px;text-align:center}
-    h3{margin:12px 0}
-    h4{margin:8px 0}
-    input,select,button{font-size:15px}
-    input,select{
+
+    h2 { margin-bottom:4px; text-align:center }
+    h3 { margin:12px 0 }
+    h4 { margin:8px 0 }
+
+    input,select,button { font-size:15px }
+    input,select {
       width:100%;
       padding:10px 12px;
       margin:4px 0;
@@ -48,7 +54,8 @@
       border:1px solid var(--border);
       background:#fff;
     }
-    button{
+
+    button {
       padding:10px 14px;
       border-radius:10px;
       border:0;
@@ -57,35 +64,68 @@
       background:var(--green);
       color:#fff;
     }
-    button.secondary{background:var(--blue)}
-    button.destructive{background:var(--red)}
-    button.ghost{background:#e9eef8;color:var(--text)}
-    button:disabled{opacity:.6;cursor:not-allowed}
-    button:hover:not(:disabled){filter:brightness(.96)}
-    .grid{display:grid;gap:10px}
-    .col2{grid-template-columns:1fr 1fr}
-    .col3{grid-template-columns:1fr 1fr 1fr}
-    .menu{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0 4px}
-    .menu button{background:var(--blue)}
-    table{width:100%;border-collapse:collapse;margin-top:8px;background:#fff}
-    th,td{border:1px solid #eef1f6;padding:6px 8px;text-align:center;font-size:13px}
-    th{background:#f7f9fe}
-    .muted{font-size:13px;color:var(--muted)}
-    .section{background:var(--bg);border-radius:12px;padding:12px;margin-top:8px}
-    .hidden{display:none}
-    video{width:100%;max-height:230px;border-radius:10px;background:#000}
-    .low{background:#fff1f1}
-    #resultado{min-height:20px;margin-top:6px}
-    .ok{color:var(--greenD);font-weight:600}
-    .warn{color:var(--red);font-weight:600}
-    @keyframes fade{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:none}}
-    .kpi-row{
+
+    button.secondary { background:var(--blue) }
+    button.destructive { background:var(--red) }
+    button.ghost { background:#e9eef8; color:var(--text) }
+    button:disabled { opacity:.6; cursor:not-allowed }
+    button:hover:not(:disabled) { filter:brightness(.96) }
+
+    .grid { display:grid; gap:10px }
+    .col2 { grid-template-columns:1fr 1fr }
+    .col3 { grid-template-columns:1fr 1fr 1fr }
+
+    .menu {
+      display:flex;
+      flex-wrap:wrap;
+      gap:8px;
+      margin:14px 0 4px;
+    }
+
+    table {
+      width:100%;
+      border-collapse:collapse;
+      margin-top:8px;
+      background:#fff;
+    }
+
+    th,td {
+      border:1px solid #eef1f6;
+      padding:6px 8px;
+      text-align:center;
+      font-size:13px;
+    }
+
+    th { background:#f7f9fe }
+
+    .muted { font-size:13px; color:var(--muted) }
+    .section {
+      background:var(--bg);
+      border-radius:12px;
+      padding:12px;
+      margin-top:8px;
+    }
+
+    .hidden { display:none }
+
+    video {
+      width:100%;
+      max-height:230px;
+      border-radius:10px;
+      background:#000;
+    }
+
+    .low { background:#fff1f1 }
+
+    /* KPIs */
+    .kpi-row {
       display:flex;
       flex-wrap:wrap;
       gap:8px;
       margin-top:8px;
     }
-    .kpi{
+
+    .kpi {
       flex:1 1 130px;
       background:#ffffff;
       border-radius:10px;
@@ -93,20 +133,28 @@
       border:1px solid #dde2f2;
       font-size:13px;
     }
-    .kpi label{display:block;font-size:11px;color:var(--muted);margin-bottom:2px}
-    .kpi strong{font-size:15px}
+
+    .kpi label {
+      display:block;
+      font-size:11px;
+      color:var(--muted);
+      margin-bottom:2px;
+    }
+
+    .kpi strong { font-size:15px }
 
     /* Ticket modal */
-    #ticketOverlay{
+    #ticketOverlay {
       position:fixed;
       inset:0;
-      background:rgba(0,0,0,.45);
+      background:rgba(0,0,0,.42);
       display:none;
       align-items:center;
       justify-content:center;
       z-index:9999;
     }
-    #ticketBox{
+
+    #ticketBox {
       background:#fff;
       border-radius:16px;
       width:100%;
@@ -115,13 +163,15 @@
       box-shadow:0 18px 40px rgba(0,0,0,.35);
       position:relative;
     }
-    #ticketHeader{
+
+    #ticketHeader {
       display:flex;
       justify-content:space-between;
       align-items:flex-start;
       margin-bottom:6px;
     }
-    #ticketContent{
+
+    #ticketContent {
       font-family:monospace;
       font-size:13px;
       border:1px dashed #ccc;
@@ -132,12 +182,19 @@
       background:#fafafa;
       white-space:pre-wrap;
     }
-    #ticketFooter{
+
+    #ticketFooter {
       margin-top:8px;
       text-align:right;
     }
+
+    @keyframes fade {
+      from { opacity:0; transform:translateY(-6px); }
+      to   { opacity:1; transform:none; }
+    }
   </style>
 </head>
+
 <body>
   <div class="card">
     <h2>POS Tiendita</h2>
@@ -187,7 +244,7 @@
           <h4 style="margin:10px 0 4px">Carrito</h4>
           <table>
             <thead>
-            <tr><th>Producto</th><th>Cant</th><th>Precio</th><th>Subtotal</th></tr>
+              <tr><th>Producto</th><th>Cant</th><th>Precio</th><th>Subtotal</th></tr>
             </thead>
             <tbody id="tablaCarrito"></tbody>
           </table>
@@ -211,7 +268,9 @@
         <!-- VISTA INVENTARIO -->
         <div id="vistaInventario" class="hidden section">
           <h3>📊 Movimientos de inventario</h3>
-          <p class="muted">Registrar entradas manuales por <strong>código de barras</strong>. Las salidas por venta se generan automáticamente.</p>
+          <p class="muted">
+            Registrar entradas manuales por <strong>código de barras</strong>. Las salidas por venta se generan automáticamente.
+          </p>
           <form id="formEntrada" class="grid col3" style="margin-top:8px">
             <input id="invCodigo" type="text" placeholder="Código de barras" required />
             <input id="invCantidad" type="number" min="1" placeholder="Cantidad" required />
@@ -219,7 +278,7 @@
           </form>
           <table>
             <thead>
-            <tr><th>Producto</th><th>Tipo</th><th>Cantidad</th><th>Fecha</th><th>Motivo</th></tr>
+              <tr><th>Producto</th><th>Tipo</th><th>Cantidad</th><th>Fecha</th><th>Motivo</th></tr>
             </thead>
             <tbody id="tablaInventario"></tbody>
           </table>
@@ -241,7 +300,7 @@
           <video id="previewProd" autoplay muted playsinline class="hidden" style="margin-top:6px"></video>
           <table>
             <thead>
-            <tr><th>ID</th><th>Nombre</th><th>Precio</th><th>Stock</th><th>Mín.</th><th>Código</th></tr>
+              <tr><th>ID</th><th>Nombre</th><th>Precio</th><th>Stock</th><th>Mín.</th><th>Código</th></tr>
             </thead>
             <tbody id="tablaProductos"></tbody>
           </table>
@@ -250,7 +309,9 @@
         <!-- VISTA CAJA -->
         <div id="vistaCaja" class="hidden section">
           <h3>💵 Caja</h3>
-          <p class="muted">Los movimientos se generan automáticamente con cada venta (entrada = total, salida = cambio). También puedes registrar fondos iniciales manuales.</p>
+          <p class="muted">
+            Los movimientos se generan automáticamente con cada venta (entrada = total, salida = cambio). También puedes registrar fondos iniciales manuales.
+          </p>
 
           <form id="formFondoCaja" class="grid col3" style="margin-top:8px">
             <input id="montoFondo" type="number" min="0" step="0.01" placeholder="Monto fondo inicial" />
@@ -274,7 +335,7 @@
 
           <table style="margin-top:8px">
             <thead>
-            <tr><th>Tipo</th><th>Monto</th><th>Motivo</th><th>Fecha</th></tr>
+              <tr><th>Tipo</th><th>Monto</th><th>Motivo</th><th>Fecha</th></tr>
             </thead>
             <tbody id="tablaCaja"></tbody>
           </table>
@@ -285,7 +346,7 @@
           <h3>🧾 Historial de ventas</h3>
           <table>
             <thead>
-            <tr><th>Folio</th><th>Fecha</th><th>Artículos</th><th>Total</th></tr>
+              <tr><th>Folio</th><th>Fecha</th><th>Artículos</th><th>Total</th></tr>
             </thead>
             <tbody id="tablaHistorial"></tbody>
           </table>
@@ -339,7 +400,7 @@
 
     const $ = id => document.getElementById(id);
     const peso = n => Number(n ?? 0).toFixed(2);
-    const sleep = ms => new Promise(r=>setTimeout(r,ms));
+    const sleep = ms => new Promise(r => setTimeout(r, ms));
 
     let carrito = [];
     let productosCache = new Map();
@@ -348,32 +409,37 @@
     let currentNombre = null;
 
     function beep(){
-      try{
+      try {
         new Audio('https://actions.google.com/sounds/v1/cartoon/wood_plank_flicks.ogg').play();
-      }catch{}
+      } catch {}
     }
 
-    // -------- LOGIN ----------
-    $('btnLogin').addEventListener('click', async ()=>{
+    // LOGIN
+    $('btnLogin').addEventListener('click', async () => {
       const email = $('email').value.trim();
       const password = $('password').value.trim();
       const out = $('resultado');
+
       if(!email || !password){
         out.innerHTML = '<span class="warn">Ingresa correo y contraseña</span>';
         return;
       }
+
       out.textContent = 'Iniciando…';
+
       const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+
       if(error){
         out.innerHTML = '<span class="warn">'+error.message+'</span>';
         return;
       }
+
       currentUser = data.user;
       out.innerHTML = '<span class="ok">Login correcto</span>';
       await cargarPerfil(currentUser.id);
     });
 
-    $('btnLogout').addEventListener('click', async ()=>{
+    $('btnLogout').addEventListener('click', async () => {
       await supabase.auth.signOut();
       currentUser = null;
       currentRole = null;
@@ -387,27 +453,30 @@
       const { data, error } = await supabase
         .from('profiles')
         .select('nombre, rol_id, rol:rol_id(nombre)')
-        .eq('user_id', uid).single();
+        .eq('user_id', uid)
+        .single();
 
       if(error || !data){
-        $('resultado').innerHTML = '<span class="warn">No se encontró perfil en "profiles"</span>';
+        $('resultado').innerHTML = '<span class="warn">No se encontró perfil</span>';
         return;
       }
 
-      currentRole = data.rol?.nombre ?? '—';
+      currentRole  = data.rol?.nombre ?? '—';
       currentNombre = data.nombre ?? '';
 
       $('loginBox').classList.add('hidden');
       $('dashboard').classList.remove('hidden');
-      $('userTitle').textContent = '👤 ' + (currentNombre || 'Usuario');
+      $('userTitle').textContent = '👤 ' + currentNombre;
       $('userRole').textContent  = 'Rol: ' + currentRole;
 
       const menu = $('menuOpciones');
       menu.innerHTML = '';
+
       menu.innerHTML += `<button class="secondary" data-v="vistaVentas">🛒 Ventas</button>`;
       menu.innerHTML += `<button class="secondary" data-v="vistaInventario">📊 Inventario</button>`;
       menu.innerHTML += `<button class="secondary" data-v="vistaCaja">💵 Caja</button>`;
       menu.innerHTML += `<button class="secondary" data-v="vistaHistorial">🧾 Historial</button>`;
+
       if(currentRole === 'Administrador'){
         menu.innerHTML += `<button class="secondary" data-v="vistaProductos">📦 Productos</button>`;
         menu.innerHTML += `<button class="secondary" data-v="vistaReportes">📈 Reporte</button>`;
@@ -418,6 +487,7 @@
       });
 
       abrirVista('vistaVentas');
+
       await Promise.all([
         cargarProductosVenta(),
         cargarInventario(),
@@ -431,6 +501,7 @@
       document.querySelectorAll('#vistas > div').forEach(d=>d.classList.add('hidden'));
       const el = $(id);
       if(el) el.classList.remove('hidden');
+
       if(id==='vistaProductos') cargarProductos();
       if(id==='vistaInventario') cargarInventario();
       if(id==='vistaCaja') cargarCaja();
@@ -438,83 +509,107 @@
       if(id==='vistaReportes' && currentRole==='Administrador') cargarReporte();
     }
 
-    // -------- PRODUCTOS ----------
+    // PRODUCTOS
     async function cargarProductos(){
-      const { data, error } = await supabase.from('productos').select('*').order('id');
-      if(error){console.error(error);return;}
+      const { data, error } = await supabase
+        .from('productos')
+        .select('*')
+        .order('id');
+
+      if(error){ console.error(error); return; }
+
       productosCache.clear();
+
       $('tablaProductos').innerHTML = (data||[]).map(p=>{
         productosCache.set(p.id,p);
         const low = p.stock < (p.stock_minimo ?? 5) ? 'low':'';
-        return `<tr class="${low}">
-          <td>${p.id}</td>
-          <td>${p.nombre}</td>
-          <td>$${peso(p.precio)}</td>
-          <td>${p.stock}</td>
-          <td>${p.stock_minimo ?? '-'}</td>
-          <td>${p.codigo_barras || ''}</td>
-        </tr>`;
+        return `
+          <tr class="${low}">
+            <td>${p.id}</td>
+            <td>${p.nombre}</td>
+            <td>$${peso(p.precio)}</td>
+            <td>${p.stock}</td>
+            <td>${p.stock_minimo ?? '-'}</td>
+            <td>${p.codigo_barras || ''}</td>
+          </tr>
+        `;
       }).join('');
     }
 
     $('formProducto').addEventListener('submit', async e=>{
       e.preventDefault();
+
       const nombre = $('prodNombre').value.trim();
       const precio = parseFloat($('prodPrecio').value);
       const stock  = parseInt($('prodStock').value || '0',10);
       const codigo = $('prodCodigo').value.trim() || null;
+
       if(!nombre || isNaN(precio)){
         alert('Completa nombre y precio');
         return;
       }
+
       const { error } = await supabase.from('productos').insert({
-        nombre,precio,stock,codigo_barras:codigo
+        nombre, precio, stock, codigo_barras: codigo
       });
+
       if(error){
-        alert('Error guardando producto: '+error.message);
+        alert('Error guardando producto: ' + error.message);
         return;
       }
+
       e.target.reset();
-      await Promise.all([cargarProductos(),cargarProductosVenta()]);
-      alert('✅ Producto guardado');
+      await Promise.all([cargarProductos(), cargarProductosVenta()]);
+      alert('Producto guardado');
     });
 
-    // Escáner para alta de productos
+    // ESCÁNER PARA PRODUCTOS
     let prodStream=null, prodDetector=null, prodScanning=false;
+
     $('btnScanProducto').addEventListener('click', async ()=>{
       if(prodScanning){
         stopScanProd();
         return;
       }
+
       if(!('BarcodeDetector' in window)){
-        alert('Tu navegador no soporta escaneo nativo. Usa un lector USB configurado como teclado.');
+        alert('Tu navegador no soporta escaneo nativo.');
         return;
       }
+
       const video = $('previewProd');
       video.classList.remove('hidden');
-      prodStream = await navigator.mediaDevices.getUserMedia({video:{facingMode:{ideal:'environment'}},audio:false});
+
+      prodStream = await navigator.mediaDevices.getUserMedia({
+        video:{ facingMode:{ ideal:'environment' } },
+        audio:false
+      });
+
       video.srcObject = prodStream;
-      prodDetector = new BarcodeDetector({formats:['ean_13','ean_8','upc_a','code_128']});
+      prodDetector = new BarcodeDetector({ formats:['ean_13','ean_8','upc_a','code_128'] });
       prodScanning = true;
       scanProdLoop(video);
     });
 
     function stopScanProd(){
       prodScanning=false;
-      if(prodStream){prodStream.getTracks().forEach(t=>t.stop());prodStream=null;}
+      if(prodStream){ prodStream.getTracks().forEach(t=>t.stop()); prodStream=null; }
       $('previewProd').classList.add('hidden');
     }
 
     async function scanProdLoop(video){
       while(prodScanning && prodDetector){
         try{
-          if(!video.videoWidth){await sleep(150);continue;}
+          if(!video.videoWidth){ await sleep(150); continue; }
+
           const canvas=document.createElement('canvas');
           canvas.width=video.videoWidth;
           canvas.height=video.videoHeight;
           canvas.getContext('2d').drawImage(video,0,0,canvas.width,canvas.height);
+
           const bmp=await createImageBitmap(canvas);
           const codes=await prodDetector.detect(bmp);
+
           if(codes && codes.length){
             const code=String(codes[0].rawValue || '');
             if(code){
@@ -524,81 +619,105 @@
               break;
             }
           }
-        }catch(e){console.error(e);}
+        } catch(e){ console.error(e); }
         await sleep(200);
       }
     }
 
-    // -------- VENTAS ----------
+    // VENTAS
     async function cargarProductosVenta(){
       const { data, error } = await supabase
         .from('productos')
         .select('id,nombre,precio,stock,codigo_barras')
         .order('nombre');
-      if(error){console.error(error);return;}
+
+      if(error){ console.error(error); return; }
+
       const sel=$('ventaProducto');
       sel.innerHTML='';
       productosCache.clear();
+
       for(const p of (data||[])){
         productosCache.set(p.id,p);
-        sel.innerHTML+=`<option value="${p.id}">${p.nombre} ($${peso(p.precio)}) — ${p.stock} en stock</option>`;
+        sel.innerHTML += `
+          <option value="${p.id}">
+            ${p.nombre} ($${peso(p.precio)}) — ${p.stock} en stock
+          </option>
+        `;
       }
+
       carrito=[];
       renderCarrito();
     }
 
     $('btnBuscarCodigo').addEventListener('click', async ()=>{
       const code=$('codigoBarras').value.trim();
-      if(!code)return;
+      if(!code) return;
+
       const { data, error } = await supabase
         .from('productos')
         .select('*')
-        .eq('codigo_barras',code).maybeSingle();
+        .eq('codigo_barras',code)
+        .maybeSingle();
+
       $('codigoBarras').value='';
+
       if(error || !data){
         alert('No se encontró producto para ese código');
         return;
       }
+
       addToCartFromProduct(data,1);
       beep();
     });
 
-    // Escáner para ventas
+    // ESCÁNER PARA VENTAS
     let ventaStream=null, ventaDetector=null, ventaScanning=false;
+
     $('btnStartScanner').addEventListener('click', async ()=>{
       if(ventaScanning){
         stopScanVenta();
         return;
       }
+
       if(!('BarcodeDetector' in window)){
-        alert('Tu navegador no soporta escaneo nativo. Usa lector USB.');
+        alert('Tu navegador no soporta escaneo nativo.');
         return;
       }
+
       const video = $('preview');
       video.classList.remove('hidden');
-      ventaStream = await navigator.mediaDevices.getUserMedia({video:{facingMode:{ideal:'environment'}},audio:false});
+
+      ventaStream = await navigator.mediaDevices.getUserMedia({
+        video:{ facingMode:{ ideal:'environment' } },
+        audio:false
+      });
+
       video.srcObject = ventaStream;
-      ventaDetector = new BarcodeDetector({formats:['ean_13','ean_8','upc_a','code_128']});
+      ventaDetector = new BarcodeDetector({ formats:['ean_13','ean_8','upc_a','code_128'] });
       ventaScanning = true;
       scanVentaLoop(video);
     });
 
     function stopScanVenta(){
       ventaScanning=false;
-      if(ventaStream){ventaStream.getTracks().forEach(t=>t.stop());ventaStream=null;}
+      if(ventaStream){ ventaStream.getTracks().forEach(t=>t.stop()); ventaStream=null; }
       $('preview').classList.add('hidden');
     }
 
     async function scanVentaLoop(video){
       while(ventaScanning && ventaDetector){
         try{
-          if(!video.videoWidth){await sleep(150);continue;}
+          if(!video.videoWidth){ await sleep(150); continue; }
+
           const canvas=document.createElement('canvas');
           canvas.width=video.videoWidth;
           canvas.height=video.videoHeight;
           canvas.getContext('2d').drawImage(video,0,0,canvas.width,canvas.height);
+
           const bmp=await createImageBitmap(canvas);
           const codes=await ventaDetector.detect(bmp);
+
           if(codes && codes.length){
             const code=String(codes[0].rawValue || '');
             if(code){
@@ -609,36 +728,53 @@
               break;
             }
           }
-        }catch(e){console.error(e);}
+        } catch(e){ console.error(e); }
         await sleep(200);
       }
     }
 
+    // FORM VENTA
     $('formVenta').addEventListener('submit',e=>{
       e.preventDefault();
+
       const id=parseInt($('ventaProducto').value,10);
       const cant=parseInt($('ventaCantidad').value,10);
       const p=productosCache.get(id);
-      if(!p){alert('Producto inexistente');return;}
+
+      if(!p){
+        alert('Producto inexistente');
+        return;
+      }
+
       addToCartFromProduct(p,cant);
       e.target.reset();
     });
 
-    function addToCartFromProduct(p,cantidad){
-      if(!p || !cantidad || cantidad<=0)return;
-      const enCarrito = carrito.find(x=>x.id===p.id)?.cantidad ?? 0;
-      if(p.stock != null && (cantidad+enCarrito) > p.stock){
+    function addToCartFromProduct(p, cantidad){
+      if(!p || !cantidad || cantidad <= 0) return;
+
+      const enCarrito = carrito.find(x => x.id === p.id)?.cantidad ?? 0;
+
+      if(p.stock != null && (cantidad + enCarrito) > p.stock){
         alert(`Solo hay ${p.stock} unidades de "${p.nombre}" en stock`);
         return;
       }
-      const ya=carrito.find(x=>x.id===p.id);
-      if(ya) ya.cantidad+=cantidad;
-      else carrito.push({
-  id: Number(producto.id),          // <- ARREGLA EL ERROR
-  nombre: String(producto.nombre),
-  precio: Number(producto.precio),
-  cantidad: Number(cantidad),
-});
+
+      const existente = carrito.find(x => x.id === p.id);
+
+      if(existente){
+        existente.cantidad += cantidad;
+      } else {
+        carrito.push({
+          id: Number(p.id),
+          nombre: String(p.nombre),
+          precio: Number(p.precio),
+          cantidad: Number(cantidad)
+        });
+      }
+
+      renderCarrito();
+    }
 
     function renderCarrito(){
       $('tablaCarrito').innerHTML = carrito.map(c=>`
@@ -649,8 +785,10 @@
           <td>$${peso(c.cantidad*c.precio)}</td>
         </tr>
       `).join('');
+
       const total = carrito.reduce((s,c)=>s+c.cantidad*c.precio,0);
       $('totalVenta').textContent=peso(total);
+
       const efectivo=parseFloat($('efectivoRecibido').value||'0');
       const cambio = efectivo>0 ? Math.max(efectivo-total,0):0;
       $('cambioCalculado').textContent=peso(cambio);
@@ -658,19 +796,36 @@
 
     $('efectivoRecibido').addEventListener('input',renderCarrito);
 
-    // FINALIZAR VENTA usando RPC registrar_venta
+    // FINALIZAR VENTA (RPC registrar_venta)
     $('btnFinalizarVenta').addEventListener('click', async ()=>{
-      if(!carrito.length){alert('Carrito vacío');return;}
+      if(!carrito.length){
+        alert('Carrito vacío');
+        return;
+      }
+
       const efectivo = parseFloat($('efectivoRecibido').value||'0');
       if(isNaN(efectivo) || efectivo<=0){
         alert('Captura el efectivo recibido');
         return;
       }
+
+      // Validación extra de carrito
+      for(const item of carrito){
+        if(!item.id || isNaN(item.id)){
+          alert('Error: el carrito contiene un producto inválido. Reinicia la venta.');
+          return;
+        }
+      }
+
+      const snapshotItems = carrito.map(c=>({...c}));
+
       try{
         const { data, error } = await supabase.rpc('registrar_venta',{
+          items: carrito,
           p_items: carrito,
           p_efectivo: efectivo
         });
+
         if(error) throw error;
 
         const ventaId = data.id;
@@ -678,10 +833,15 @@
         const cambio  = Math.max(efectivo-total,0);
 
         const deseaTicket = confirm(
-          `Venta #${ventaId} registrada.\n\nTotal: $${peso(total)}\nEfectivo: $${peso(efectivo)}\nCambio: $${peso(cambio)}\n\n¿Deseas imprimir el ticket?`
+          `Venta #${ventaId} registrada.\n\n` +
+          `Total:   $${peso(total)}\n` +
+          `Efectivo: $${peso(efectivo)}\n` +
+          `Cambio:  $${peso(cambio)}\n\n` +
+          `¿Deseas imprimir el ticket?`
         );
+
         if(deseaTicket){
-          mostrarTicket(ventaId, new Date().toISOString(), carrito, total, efectivo, cambio);
+          mostrarTicket(ventaId, data.fecha || new Date().toISOString(), snapshotItems, total, efectivo, cambio);
         }
 
         carrito=[];
@@ -693,7 +853,7 @@
           cargarInventario(),
           cargarCaja(),
           cargarHistorial(),
-          currentRole==='Administrador'?cargarReporte():Promise.resolve()
+          currentRole==='Administrador' ? cargarReporte() : Promise.resolve()
         ]);
       }catch(e){
         console.error(e);
@@ -701,7 +861,7 @@
       }
     });
 
-    // -------- TICKET ----------
+    // TICKET
     function mostrarTicket(folio, fechaISO, items, total, efectivo, cambio){
       $('ticketFolio').textContent = folio;
       const fecha = fechaISO ? new Date(fechaISO) : new Date();
@@ -736,7 +896,7 @@
       lines.push(` EFECTIVO:         $${peso(efectivo)}`);
       lines.push(` CAMBIO:           $${peso(cambio)}`);
       lines.push('--------------------------------');
-      lines.push('   GRACIAS POR SU COMPRA');
+      lines.push('      GRACIAS POR SU COMPRA');
       lines.push('   ESTE DOCUMENTO NO ES CFDI');
 
       $('ticketContent').textContent = lines.join('\n');
@@ -746,22 +906,26 @@
     $('btnCerrarTicket').addEventListener('click',()=>{
       $('ticketOverlay').style.display='none';
     });
+
     $('ticketOverlay').addEventListener('click',e=>{
       if(e.target.id==='ticketOverlay'){
         $('ticketOverlay').style.display='none';
       }
     });
 
-    // -------- INVENTARIO ----------
+    // INVENTARIO
     async function cargarInventario(){
       const { data, error } = await supabase
         .from('inventario_movimientos')
         .select('producto_id,tipo,cantidad,fecha,motivo')
         .order('fecha',{ascending:false})
         .limit(100);
-      if(error){console.error(error);return;}
+
+      if(error){ console.error(error); return; }
+
       const ids=[...new Set((data||[]).map(m=>m.producto_id).filter(Boolean))];
       let nombres={};
+
       if(ids.length){
         const { data:prods } = await supabase
           .from('productos')
@@ -769,6 +933,7 @@
           .in('id',ids);
         for(const p of (prods||[])) nombres[p.id]=p.nombre;
       }
+
       $('tablaInventario').innerHTML = (data||[]).map(m=>`
         <tr>
           <td>${nombres[m.producto_id] || ('#'+m.producto_id)}</td>
@@ -780,74 +945,75 @@
       `).join('');
     }
 
-$('formEntrada').addEventListener('submit',async e=>{
-  e.preventDefault();
-  const codigo = $('invCodigo').value.trim();
-  const cantidad = parseInt($('invCantidad').value, 10);
+    $('formEntrada').addEventListener('submit',async e=>{
+      e.preventDefault();
+      const codigo = $('invCodigo').value.trim();
+      const cantidad = parseInt($('invCantidad').value, 10);
 
-  if (!codigo || !cantidad || cantidad <= 0) {
-    alert('Completa código y cantidad');
-    return;
-  }
+      if (!codigo || !cantidad || cantidad <= 0) {
+        alert('Completa código y cantidad');
+        return;
+      }
 
-  // buscar producto por código
-  const { data:p, error } = await supabase
-    .from('productos')
-    .select('id,stock')
-    .eq('codigo_barras', codigo)
-    .maybeSingle();
+      const { data:p, error } = await supabase
+        .from('productos')
+        .select('id,stock')
+        .eq('codigo_barras', codigo)
+        .maybeSingle();
 
-  if (error || !p) {
-    alert('No se encontró producto con ese código');
-    return;
-  }
+      if (error || !p) {
+        alert('No se encontró producto con ese código');
+        return;
+      }
 
-  try {
-    // registrar ENTRADA válida
-    await supabase.from('inventario_movimientos').insert({
-      producto_id: p.id,
-      tipo: 'entrada',
-      cantidad: cantidad,
-      motivo: 'Entrada manual'
+      try {
+        await supabase.from('inventario_movimientos').insert({
+          producto_id: p.id,
+          tipo: TIPO_ENTRADA,
+          cantidad: cantidad,
+          motivo: 'Entrada manual'
+        });
+
+        await supabase.from('productos')
+          .update({
+            stock: (p.stock || 0) + cantidad,
+            actualizado_en: new Date().toISOString()
+          })
+          .eq('id', p.id);
+
+        e.target.reset();
+
+        await Promise.all([
+          cargarInventario(),
+          cargarProductosVenta(),
+          cargarProductos()
+        ]);
+
+      } catch(err) {
+        alert('Error registrando inventario: ' + err.message);
+      }
     });
 
-    // actualizar stock
-    await supabase.from('productos')
-      .update({
-        stock: (p.stock || 0) + cantidad,
-        actualizado_en: new Date().toISOString()
-      })
-      .eq('id', p.id);
-
-    e.target.reset();
-
-    await Promise.all([
-      cargarInventario(),
-      cargarProductosVenta(),
-      cargarProductos()
-    ]);
-
-  } catch(err) {
-    alert('Error registrando inventario: ' + err.message);
-  }
-});
-
-    // -------- CAJA ----------
+    // CAJA
     async function cargarCaja(){
       const { data, error } = await supabase
         .from('caja_movimientos')
         .select('*')
         .order('fecha',{ascending:false})
         .limit(200);
+
       if(error){console.error(error);return;}
+
       let entradas=0,salidas=0;
       for(const m of (data||[])){
-        if(m.tipo==='entrada') entradas += Number(m.monto||0);
-        else if(m.tipo==='salida') salidas += Number(m.monto||0);
+        if(m.tipo===TIPO_ENTRADA) entradas += Number(m.monto||0);
+        else if(m.tipo===TIPO_SALIDA) salidas += Number(m.monto||0);
       }
+
       $('cajaEntradas').textContent=peso(entradas);
       $('cajaSalidas').textContent=peso(salidas);
       $('cajaSaldo').textContent=peso(entradas-salidas);
+
       $('tablaCaja').innerHTML = (data||[]).map(m=>`
         <tr>
           <td>${m.tipo}</td>
@@ -866,7 +1032,7 @@ $('formEntrada').addEventListener('submit',async e=>{
         return;
       }
       const { error } = await supabase.from('caja_movimientos').insert({
-        tipo:'entrada',
+        tipo:TIPO_ENTRADA,
         monto,
         motivo:'Fondo inicial'
       });
@@ -879,7 +1045,7 @@ $('formEntrada').addEventListener('submit',async e=>{
       alert('Fondo inicial registrado');
     });
 
-    // -------- HISTORIAL ----------
+    // HISTORIAL
     async function cargarHistorial(){
       const { data:ventas, error } = await supabase
         .from('ventas')
@@ -914,9 +1080,9 @@ $('formEntrada').addEventListener('submit',async e=>{
       }).join('');
     }
 
-    // -------- REPORTE ----------
+    // REPORTE
     $('btnCargarReporte')?.addEventListener('click',cargarReporte);
-    $('btnSimularCierre')?.addEventListener('click',()=>alert('Esto solo es una simulación visual; el corte real sería parte de otra lógica de cierre de turno.'));
+    $('btnSimularCierre')?.addEventListener('click',()=>alert('Esto es solo una simulación visual de cierre.'));
 
     async function cargarReporte(){
       if(currentRole!=='Administrador') return;
@@ -968,8 +1134,8 @@ $('formEntrada').addEventListener('submit',async e=>{
           .lt('fecha',fin.toISOString());
         let entradas=0,salidas=0;
         for(const m of (caja||[])){
-          if(m.tipo==='entrada') entradas+=Number(m.monto||0);
-          else if(m.tipo==='salida') salidas+=Number(m.monto||0);
+          if(m.tipo===TIPO_ENTRADA) entradas+=Number(m.monto||0);
+          else if(m.tipo===TIPO_SALIDA) salidas+=Number(m.monto||0);
         }
 
         const kpi = $('reporteResumen');
