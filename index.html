@@ -633,9 +633,12 @@
       }
       const ya=carrito.find(x=>x.id===p.id);
       if(ya) ya.cantidad+=cantidad;
-      else carrito.push({id:p.id,nombre:p.nombre,cantidad,precio:Number(p.precio ?? 0)});
-      renderCarrito();
-    }
+      else carrito.push({
+  id: Number(producto.id),          // <- ARREGLA EL ERROR
+  nombre: String(producto.nombre),
+  precio: Number(producto.precio),
+  cantidad: Number(cantidad),
+});
 
     function renderCarrito(){
       $('tablaCarrito').innerHTML = carrito.map(c=>`
