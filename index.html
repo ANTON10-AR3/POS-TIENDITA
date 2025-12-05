@@ -416,11 +416,18 @@
     let currentRole = null;
     let currentNombre = null;
 
-    function beep(){
-      try {
-        new Audio('https://actions.google.com/sounds/v1/alarms/beep_short.ogg').play();
-      } catch {}
+    let beepSound = null;
+
+function beep(){
+  try {
+    if (!beepSound){
+      beepSound = new Audio('https://actions.google.com/sounds/v1/cartoon/wood_plank_flicks.ogg');
     }
+    beepSound.currentTime = 0;
+    beepSound.play();
+  } catch {}
+}
+
 
     // LOGIN
     $('btnLogin').addEventListener('click', async () => {
