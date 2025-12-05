@@ -81,6 +81,11 @@
       gap:8px;
       margin:14px 0 4px;
     }
+    .menu button{
+      background:var(--blue);
+      color:#fff;
+      border-radius:999px;
+    }
 
     table {
       width:100%;
@@ -116,6 +121,9 @@
     }
 
     .low { background:#fff1f1 }
+
+    .ok{color:var(--greenD);font-weight:600}
+    .warn{color:var(--red);font-weight:600}
 
     /* KPIs */
     .kpi-row {
@@ -466,7 +474,7 @@
 
       $('loginBox').classList.add('hidden');
       $('dashboard').classList.remove('hidden');
-      $('userTitle').textContent = '👤 ' + currentNombre;
+      $('userTitle').textContent = '👤 ' + (currentNombre || 'Usuario');
       $('userRole').textContent  = 'Rol: ' + currentRole;
 
       const menu = $('menuOpciones');
@@ -750,31 +758,31 @@
       e.target.reset();
     });
 
-function addToCartFromProduct(p, cantidad){
-  if (!p || !cantidad || cantidad <= 0) return;
+    function addToCartFromProduct(p, cantidad){
+      if (!p || !cantidad || cantidad <= 0) return;
 
-  const enCarrito = carrito.find(x => x.id === p.id)?.cantidad ?? 0;
+      const enCarrito = carrito.find(x => x.id === p.id)?.cantidad ?? 0;
 
-  if (p.stock != null && (cantidad + enCarrito) > p.stock){
-    alert(`Solo hay ${p.stock} unidades de "${p.nombre}" en stock`);
-    return;
-  }
+      if (p.stock != null && (cantidad + enCarrito) > p.stock){
+        alert(`Solo hay ${p.stock} unidades de "${p.nombre}" en stock`);
+        return;
+      }
 
-  const ya = carrito.find(x=>x.id === p.id);
+      const ya = carrito.find(x=>x.id === p.id);
 
-  if (ya){
-    ya.cantidad += cantidad;
-  } else {
-    carrito.push({
-      id: Number(p.id),
-      nombre: String(p.nombre),
-      precio: Number(p.precio),
-      cantidad: Number(cantidad)
-    });
-  }
+      if (ya){
+        ya.cantidad += cantidad;
+      } else {
+        carrito.push({
+          id: Number(p.id),
+          nombre: String(p.nombre),
+          precio: Number(p.precio),
+          cantidad: Number(cantidad)
+        });
+      }
 
-  renderCarrito();
-}
+      renderCarrito();
+    }
 
     function renderCarrito(){
       $('tablaCarrito').innerHTML = carrito.map(c=>`
@@ -796,73 +804,97 @@ function addToCartFromProduct(p, cantidad){
 
     $('efectivoRecibido').addEventListener('input',renderCarrito);
 
-// FINALIZAR VENTA usando RPC registrar_venta
-$('btnFinalizarVenta').addEventListener('click', async ()=>{
-  console.log("FINALIZAR PRESIONADO");
-  console.log("Carrito:", JSON.parse(JSON.stringify(carrito)));
+    // FINALIZAR VENTA usando RPC registrar_venta
+    $('btnFinalizarVenta').addEventListener('click', async ()=>{
+      console.log("FINALIZAR PRESIONADO");
+      console.log("Carrito:", JSON.parse(JSON.stringify(carrito)));
 
-  if (!carrito.length){
-    alert("Carrito vacío");
-    return;
-  }
+      if (!carrito.length){
+        alert("Carrito vacío");
+        return;
+      }
 
-  const efectivo = parseFloat($('efectivoRecibido').value||'0');
-  if (isNaN(efectivo) || efectivo <= 0){
-    alert("Captura el efectivo recibido");
-    return;
-  }
+      const efectivo = parseFloat($('efectivoRecibido').value||'0');
+      if (isNaN(efectivo) || efectivo <= 0){
+        alert("Captura el efectivo recibido");
+        return;
+      }
 
-  const itemsLimpios = carrito.map(c => ({
-    id: c.id,
-    cantidad: c.cantidad,
-    precio: c.precio
-  }));
+      // Total y cambio calculados en frontend
+      const total = carrito.reduce((s,c)=>s + c.cantidad * c.precio, 0);
+      const cambio = Math.max(efectivo - total, 0);
 
-  console.log("Mandando a RPC:", itemsLimpios);
+      // Se envía producto_id como espera la función en Postgres
+      const itemsLimpios = carrito.map(c => ({
+        producto_id: c.id,
+        cantidad: c.cantidad,
+        precio: c.precio
+      }));
 
-  const { data, error } = await supabase.rpc('registrar_venta', {
-    p_items: itemsLimpios,
-    p_efectivo: efectivo
-  });
+      console.log("Mandando a RPC registrar_venta:", itemsLimpios);
 
-  console.log("Respuesta RPC:", data, error);
+      const { data, error } = await supabase.rpc('registrar_venta', {
+        p_items: itemsLimpios,
+        p_efectivo: efectivo
+      });
 
-  if (error){
-    alert("Error registrando venta: " + error.message);
-    console.error(error);
-    return;
-  }
+      console.log("Respuesta RPC:", data, error);
 
-  if (!data){
-    alert("La función registrar_venta no regresó nada.");
-    return;
-  }
+      if (error){
+        alert("Error registrando venta: " + error.message);
+        console.error(error);
+        return;
+      }
 
-  const ventaId = data.id;
-  const total = Number(data.total || 0);
-  const cambio = Math.max(efectivo - total, 0);
+      if (!data){
+        alert("La función registrar_venta no regresó nada.");
+        return;
+      }
 
-  const deseaTicket = confirm(
-    `Venta #${ventaId} registrada.\n\nTotal: $${total}\nEfectivo: $${efectivo}\nCambio: $${cambio}\n\n¿Deseas imprimir ticket?`
-  );
+      const ventaId = data.venta_id || data.id || null;
 
-  if (deseaTicket){
-    mostrarTicket(ventaId, new Date().toISOString(), carrito, total, efectivo, cambio);
-  }
+      // Registrar movimientos en caja desde frontend
+      try{
+        await supabase.from('caja_movimientos').insert([
+          {
+            tipo: TIPO_ENTRADA,
+            monto: total,
+            motivo: ventaId ? `Venta #${ventaId}` : 'Venta'
+          },
+          {
+            tipo: TIPO_SALIDA,
+            monto: cambio,
+            motivo: ventaId ? `Cambio venta #${ventaId}` : 'Cambio venta'
+          }
+        ]);
+      }catch(e){
+        console.error('Error registrando movimientos de caja:', e);
+      }
 
-  carrito = [];
-  $('efectivoRecibido').value = '';
-  renderCarrito();
+      const deseaTicket = confirm(
+        `Venta${ventaId ? ' #' + ventaId : ''} registrada.\n\n` +
+        `Total:  $${peso(total)}\n` +
+        `Efectivo: $${peso(efectivo)}\n` +
+        `Cambio: $${peso(cambio)}\n\n` +
+        `¿Deseas imprimir ticket?`
+      );
 
-  await Promise.all([
-    cargarProductosVenta(),
-    cargarInventario(),
-    cargarCaja(),
-    cargarHistorial(),
-    currentRole==='Administrador'?cargarReporte():Promise.resolve()
-  ]);
-});
+      if (deseaTicket){
+        mostrarTicket(ventaId ?? '-', new Date().toISOString(), carrito, total, efectivo, cambio);
+      }
 
+      carrito = [];
+      $('efectivoRecibido').value = '';
+      renderCarrito();
+
+      await Promise.all([
+        cargarProductosVenta(),
+        cargarInventario(),
+        cargarCaja(),
+        cargarHistorial(),
+        currentRole==='Administrador'?cargarReporte():Promise.resolve()
+      ]);
+    });
 
     // TICKET
     function mostrarTicket(folio, fechaISO, items, total, efectivo, cambio){
