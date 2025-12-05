@@ -795,17 +795,6 @@ function addToCartFromProduct(p, cantidad){
     }
 
     $('efectivoRecibido').addEventListener('input',renderCarrito);
-    
-    const itemsLimpios = carrito.map(c => ({
-  id: c.id,
-  cantidad: c.cantidad,
-  precio: c.precio
-}));
-
-const { data, error } = await supabase.rpc('registrar_venta', {
-  p_items: itemsLimpios,
-  p_efectivo: efectivo
-});
 
 // FINALIZAR VENTA usando RPC registrar_venta
 $('btnFinalizarVenta').addEventListener('click', async ()=>{
