@@ -621,11 +621,11 @@
           if(codes && codes.length){
             const code=String(codes[0].rawValue || '');
             if(code){
-    $('prodCodigo').value = code;
-    beep();
-    stopScanProd();
-    return;
-}
+            $('prodCodigo').value = code;
+            beep();
+            stopScanProd();
+            return;
+            }
           }
         } catch(e){ console.error(e); }
         await sleep(200);
