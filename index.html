@@ -620,12 +620,12 @@
 
           if(codes && codes.length){
             const code=String(codes[0].rawValue || '');
-            if(code){
-            $('prodCodigo').value = code;
-            beep();
-            stopScanProd();
-            return;
-            }
+if(code){
+    $('prodCodigo').value = code;  // ← IMPORTANTE
+    beep();
+    stopScanProd();
+    return; // evita doble lectura
+}
           }
         } catch(e){ console.error(e); }
         await sleep(200);
@@ -728,12 +728,14 @@
 
           if(codes && codes.length){
             const code=String(codes[0].rawValue || '');
-            if(code){
-            beep();
-            stopScanVenta();
-            await $('btnBuscarCodigo').click();
-            return; // evita que escanee otro frame
-            }
+if(code){
+    $('codigoBarras').value = code; // ← SIN ESTO NO AGREGA AL CARRITO
+    beep();
+    stopScanVenta();
+    await $('btnBuscarCodigo').click();
+    return; // evita doble lectura
+}
+
           }
         } catch(e){ console.error(e); }
         await sleep(200);
