@@ -808,71 +808,70 @@ const { data, error } = await supabase.rpc('registrar_venta', {
 });
 
 // FINALIZAR VENTA usando RPC registrar_venta
-$('btnFinalizarVenta').addEventListener('click', async () => {
+$('btnFinalizarVenta').addEventListener('click', async ()=>{
   console.log("FINALIZAR PRESIONADO");
-console.log("Carrito:", JSON.parse(JSON.stringify(carrito)));
-  if (!carrito.length) {
-    alert('Carrito vacío');
+  console.log("Carrito:", JSON.parse(JSON.stringify(carrito)));
+
+  if (!carrito.length){
+    alert("Carrito vacío");
     return;
   }
 
-  const efectivo = parseFloat($('efectivoRecibido').value || '0');
-  if (isNaN(efectivo) || efectivo <= 0) {
-    alert('Captura el efectivo recibido');
+  const efectivo = parseFloat($('efectivoRecibido').value||'0');
+  if (isNaN(efectivo) || efectivo <= 0){
+    alert("Captura el efectivo recibido");
     return;
   }
 
-  // Validación extra de carrito
-  for (const item of carrito) {
-    if (!item.id || isNaN(item.id)) {
-      alert("Error: producto inválido en el carrito.");
-      return;
-    }
+  const itemsLimpios = carrito.map(c => ({
+    id: c.id,
+    cantidad: c.cantidad,
+    precio: c.precio
+  }));
+
+  console.log("Mandando a RPC:", itemsLimpios);
+
+  const { data, error } = await supabase.rpc('registrar_venta', {
+    p_items: itemsLimpios,
+    p_efectivo: efectivo
+  });
+
+  console.log("Respuesta RPC:", data, error);
+
+  if (error){
+    alert("Error registrando venta: " + error.message);
+    console.error(error);
+    return;
   }
 
-  try {
-    const { data, error } = await supabase.rpc("registrar_venta", {
-      p_items: carrito,
-      p_efectivo: efectivo
-    });
-
-    if (error) throw error;
-
-    const ventaId = data.id;
-    const total   = Number(data.total || 0);
-    const cambio  = Math.max(efectivo - total, 0);
-
-    const deseaTicket = confirm(
-      `Venta #${ventaId} registrada.\n\nTotal: $${peso(total)}\nEfectivo: $${peso(efectivo)}\nCambio: $${peso(cambio)}\n\n¿Deseas imprimir el ticket?`
-    );
-
-    if (deseaTicket) {
-      mostrarTicket(
-        ventaId,
-        new Date().toISOString(),
-        carrito,
-        total,
-        efectivo,
-        cambio
-      );
-    }
-
-    carrito = [];
-    $('efectivoRecibido').value = '';
-    renderCarrito();
-
-    await Promise.all([
-      cargarProductosVenta(),
-      cargarInventario(),
-      cargarCaja(),
-      cargarHistorial(),
-      currentRole === 'Administrador' ? cargarReporte() : Promise.resolve()
-    ]);
-
-  } catch (e) {
-    console.error(e);
-    alert('Error registrando venta: ' + e.message);
+  if (!data){
+    alert("La función registrar_venta no regresó nada.");
+    return;
   }
+
+  const ventaId = data.id;
+  const total = Number(data.total || 0);
+  const cambio = Math.max(efectivo - total, 0);
+
+  const deseaTicket = confirm(
+    `Venta #${ventaId} registrada.\n\nTotal: $${total}\nEfectivo: $${efectivo}\nCambio: $${cambio}\n\n¿Deseas imprimir ticket?`
+  );
+
+  if (deseaTicket){
+    mostrarTicket(ventaId, new Date().toISOString(), carrito, total, efectivo, cambio);
+  }
+
+  carrito = [];
+  $('efectivoRecibido').value = '';
+  renderCarrito();
+
+  await Promise.all([
+    cargarProductosVenta(),
+    cargarInventario(),
+    cargarCaja(),
+    cargarHistorial(),
+    currentRole==='Administrador'?cargarReporte():Promise.resolve()
+  ]);
 });
 
 
