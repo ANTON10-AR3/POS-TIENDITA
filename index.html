@@ -81,11 +81,6 @@
       gap:8px;
       margin:14px 0 4px;
     }
-    .menu button{
-      background:var(--blue);
-      color:#fff;
-      border-radius:999px;
-    }
 
     table {
       width:100%;
@@ -121,9 +116,6 @@
     }
 
     .low { background:#fff1f1 }
-
-    .ok{color:var(--greenD);font-weight:600}
-    .warn{color:var(--red);font-weight:600}
 
     /* KPIs */
     .kpi-row {
@@ -415,11 +407,16 @@
     let currentUser = null;
     let currentRole = null;
     let currentNombre = null;
+    let isAdmin = false;
 
+    /* BEEP TIPO SÚPER – AUDIO GLOBAL PARA EVITAR DOBLE SONIDO */
+    const beepAudio = new Audio('https://actions.google.com/sounds/v1/alarms/beep_short.ogg');
+    beepAudio.volume = 0.7;
     function beep(){
-      try {
-        new Audio('https://actions.google.com/sounds/v1/cartoon/wood_plank_flicks.ogg').play();
-      } catch {}
+      try{
+        beepAudio.currentTime = 0;
+        beepAudio.play();
+      }catch(e){}
     }
 
     // LOGIN
@@ -452,6 +449,7 @@
       currentUser = null;
       currentRole = null;
       currentNombre = null;
+      isAdmin = false;
       $('dashboard').classList.add('hidden');
       $('loginBox').classList.remove('hidden');
       $('resultado').textContent = '👋 Sesión cerrada.';
@@ -460,7 +458,7 @@
     async function cargarPerfil(uid){
       const { data, error } = await supabase
         .from('profiles')
-        .select('nombre, rol_id, rol:rol_id(nombre)')
+        .select('nombre, rol_id, role, rol:rol_id(nombre)')
         .eq('user_id', uid)
         .single();
 
@@ -469,12 +467,16 @@
         return;
       }
 
-      currentRole  = data.rol?.nombre ?? '—';
+      // rol.nombre viene de la tabla roles ('admin' / 'cajero')
+      currentRole  = data.rol?.nombre ?? data.role ?? '—';
       currentNombre = data.nombre ?? '';
+
+      // Consideramos admin si el valor es 'admin' o 'Administrador'
+      isAdmin = (currentRole === 'admin' || currentRole === 'Administrador');
 
       $('loginBox').classList.add('hidden');
       $('dashboard').classList.remove('hidden');
-      $('userTitle').textContent = '👤 ' + (currentNombre || 'Usuario');
+      $('userTitle').textContent = '👤 ' + currentNombre;
       $('userRole').textContent  = 'Rol: ' + currentRole;
 
       const menu = $('menuOpciones');
@@ -485,7 +487,7 @@
       menu.innerHTML += `<button class="secondary" data-v="vistaCaja">💵 Caja</button>`;
       menu.innerHTML += `<button class="secondary" data-v="vistaHistorial">🧾 Historial</button>`;
 
-      if(currentRole === 'Administrador'){
+      if(isAdmin){
         menu.innerHTML += `<button class="secondary" data-v="vistaProductos">📦 Productos</button>`;
         menu.innerHTML += `<button class="secondary" data-v="vistaReportes">📈 Reporte</button>`;
       }
@@ -501,7 +503,7 @@
         cargarInventario(),
         cargarCaja(),
         cargarHistorial(),
-        currentRole === 'Administrador' ? cargarReporte() : Promise.resolve()
+        isAdmin ? cargarReporte() : Promise.resolve()
       ]);
     }
 
@@ -514,7 +516,7 @@
       if(id==='vistaInventario') cargarInventario();
       if(id==='vistaCaja') cargarCaja();
       if(id==='vistaHistorial') cargarHistorial();
-      if(id==='vistaReportes' && currentRole==='Administrador') cargarReporte();
+      if(id==='vistaReportes' && isAdmin) cargarReporte();
     }
 
     // PRODUCTOS
@@ -820,18 +822,13 @@
         return;
       }
 
-      // Total y cambio calculados en frontend
-      const total = carrito.reduce((s,c)=>s + c.cantidad * c.precio, 0);
-      const cambio = Math.max(efectivo - total, 0);
-
-      // Se envía producto_id como espera la función en Postgres
       const itemsLimpios = carrito.map(c => ({
-        producto_id: c.id,
+        id: c.id,
         cantidad: c.cantidad,
         precio: c.precio
       }));
 
-      console.log("Mandando a RPC registrar_venta:", itemsLimpios);
+      console.log("Mandando a RPC:", itemsLimpios);
 
       const { data, error } = await supabase.rpc('registrar_venta', {
         p_items: itemsLimpios,
@@ -851,36 +848,16 @@
         return;
       }
 
-      const ventaId = data.venta_id || data.id || null;
-
-      // Registrar movimientos en caja desde frontend
-      try{
-        await supabase.from('caja_movimientos').insert([
-          {
-            tipo: TIPO_ENTRADA,
-            monto: total,
-            motivo: ventaId ? `Venta #${ventaId}` : 'Venta'
-          },
-          {
-            tipo: TIPO_SALIDA,
-            monto: cambio,
-            motivo: ventaId ? `Cambio venta #${ventaId}` : 'Cambio venta'
-          }
-        ]);
-      }catch(e){
-        console.error('Error registrando movimientos de caja:', e);
-      }
+      const ventaId = data.id;
+      const total = Number(data.total || 0);
+      const cambio = Math.max(efectivo - total, 0);
 
       const deseaTicket = confirm(
-        `Venta${ventaId ? ' #' + ventaId : ''} registrada.\n\n` +
-        `Total:  $${peso(total)}\n` +
-        `Efectivo: $${peso(efectivo)}\n` +
-        `Cambio: $${peso(cambio)}\n\n` +
-        `¿Deseas imprimir ticket?`
+        `Venta #${ventaId} registrada.\n\nTotal: $${total}\nEfectivo: $${efectivo}\nCambio: $${cambio}\n\n¿Deseas imprimir ticket?`
       );
 
       if (deseaTicket){
-        mostrarTicket(ventaId ?? '-', new Date().toISOString(), carrito, total, efectivo, cambio);
+        mostrarTicket(ventaId, new Date().toISOString(), carrito, total, efectivo, cambio);
       }
 
       carrito = [];
@@ -892,7 +869,7 @@
         cargarInventario(),
         cargarCaja(),
         cargarHistorial(),
-        currentRole==='Administrador'?cargarReporte():Promise.resolve()
+        isAdmin ? cargarReporte() : Promise.resolve()
       ]);
     });
 
@@ -1120,7 +1097,7 @@
     $('btnSimularCierre')?.addEventListener('click',()=>alert('Esto es solo una simulación visual de cierre.'));
 
     async function cargarReporte(){
-      if(currentRole!=='Administrador') return;
+      if(!isAdmin) return;
       try{
         const hoy = new Date();
         const inicio = new Date(hoy.getFullYear(),hoy.getMonth(),hoy.getDate());
