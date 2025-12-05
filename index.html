@@ -750,24 +750,24 @@
       e.target.reset();
     });
 
-function addToCartFromProduct(p, cantidad) {
+function addToCartFromProduct(p, cantidad){
   if (!p || !cantidad || cantidad <= 0) return;
 
   const enCarrito = carrito.find(x => x.id === p.id)?.cantidad ?? 0;
 
-  if (p.stock != null && (cantidad + enCarrito) > p.stock) {
+  if (p.stock != null && (cantidad + enCarrito) > p.stock){
     alert(`Solo hay ${p.stock} unidades de "${p.nombre}" en stock`);
     return;
   }
 
-  const existente = carrito.find(x => x.id === p.id);
+  const ya = carrito.find(x=>x.id === p.id);
 
-  if (existente) {
-    existente.cantidad += cantidad;
+  if (ya){
+    ya.cantidad += cantidad;
   } else {
     carrito.push({
       id: Number(p.id),
-      nombre: p.nombre,
+      nombre: String(p.nombre),
       precio: Number(p.precio),
       cantidad: Number(cantidad)
     });
