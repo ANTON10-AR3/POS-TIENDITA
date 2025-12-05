@@ -998,11 +998,13 @@ if(code){
         return;
       }
 
-      const { data:p, error } = await supabase
-        .from('productos')
-        .select('id,stock')
-        .eq('codigo_barras', codigo)
-        .maybeSingle();
+const { data:p, error } = await supabase
+  .from('productos')
+  .select('id,stock')
+  .eq('codigo_barras', codigo)
+  .order('id', { ascending: true })
+  .limit(1)
+  .single();
 
       if (error || !p) {
         alert('No se encontró producto con ese código');
