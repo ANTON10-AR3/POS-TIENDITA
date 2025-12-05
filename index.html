@@ -809,6 +809,8 @@ const { data, error } = await supabase.rpc('registrar_venta', {
 
 // FINALIZAR VENTA usando RPC registrar_venta
 $('btnFinalizarVenta').addEventListener('click', async () => {
+  console.log("FINALIZAR PRESIONADO");
+console.log("Carrito:", JSON.parse(JSON.stringify(carrito)));
   if (!carrito.length) {
     alert('Carrito vacío');
     return;
