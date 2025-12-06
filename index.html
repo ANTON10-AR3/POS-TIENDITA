@@ -395,134 +395,134 @@
     </div>
   </div>
 
-  <script type="module">
-    import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
+ <!-- Cargar Supabase UMD (global) -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.48.0/dist/umd/supabase.min.js"></script>
 
-    const SUPABASE_URL = 'https://gnguvdqdhqrupkkrtdmp.supabase.co';
-    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImduZ3V2ZHFkaHFydXBra3J0ZG1wIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTk3NjEwNTIsImV4cCI6MjA3NTMzNzA1Mn0.a5XbjmM5eyREKI1j0HrZe36Gz52SAz0_3_jzjW8bYo0';
+<!-- Código del POS -->
+<script>
+  // ====== SUPABASE CLIENTE ======
+  const SUPABASE_URL = 'https://gnguvdqdhqrupkkrtdmp.supabase.co';
+  const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImduZ3V2ZHFkaHFydXBra3J0ZG1wIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTk3NjEwNTIsImV4cCI6MjA3NTMzNzA1Mn0.a5XbjmM5eyREKI1j0HrZe36Gz52SAz0_3_jzjW8bYo0';
 
-    const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+  // window.supabase viene del script UMD
+  const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-    const TIPO_ENTRADA = 'entrada';
-    const TIPO_SALIDA  = 'salida';
+  // ====== CONSTANTES Y HELPERS ======
+  const TIPO_ENTRADA = 'entrada';
+  const TIPO_SALIDA  = 'salida';
 
-    const $ = id => document.getElementById(id);
-    const peso = n => Number(n ?? 0).toFixed(2);
-    const sleep = ms => new Promise(r => setTimeout(r, ms));
+  const $    = id => document.getElementById(id);
+  const peso = n  => Number(n ?? 0).toFixed(2);
+  const sleep = ms => new Promise(r => setTimeout(r, ms));
 
-    let carrito = [];
-    let productosCache = new Map();
-    let currentUser = null;
-    let currentRole = null;
-    let currentNombre = null;
+  let carrito = [];
+  let productosCache = new Map();
+  let currentUser = null;
+  let currentRole = null;
+  let currentNombre = null;
 
-    let beepSound = null;
+  function beep(){
+    try {
+      new Audio('https://actions.google.com/sounds/v1/cartoon/wood_plank_flicks.ogg').play();
+    } catch {}
+  }
 
-function beep(){
-  try {
-    if (!beepSound){
-      beepSound = new Audio('https://actions.google.com/sounds/v1/alarms/beep_short.ogg');
+  // ================= LOGIN =================
+  $('btnLogin').addEventListener('click', async () => {
+    const email = $('email').value.trim();
+    const password = $('password').value.trim();
+    const out = $('resultado');
+
+    if(!email || !password){
+      out.innerHTML = '<span class="warn">Ingresa correo y contraseña</span>';
+      return;
     }
-    beepSound.currentTime = 0;
-    beepSound.play();
-  } catch {}
-}
 
+    out.textContent = 'Iniciando…';
 
-    // LOGIN
-    $('btnLogin').addEventListener('click', async () => {
-      const email = $('email').value.trim();
-      const password = $('password').value.trim();
-      const out = $('resultado');
+    const { data, error } = await supabase.auth.signInWithPassword({ email, password });
 
-      if(!email || !password){
-        out.innerHTML = '<span class="warn">Ingresa correo y contraseña</span>';
-        return;
-      }
+    if(error){
+      out.innerHTML = '<span class="warn">'+error.message+'</span>';
+      return;
+    }
 
-      out.textContent = 'Iniciando…';
+    currentUser = data.user;
+    out.innerHTML = '<span class="ok">Login correcto</span>';
+    await cargarPerfil(currentUser.id);
+  });
 
-      const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+  $('btnLogout').addEventListener('click', async () => {
+    await supabase.auth.signOut();
+    currentUser = null;
+    currentRole = null;
+    currentNombre = null;
+    $('dashboard').classList.add('hidden');
+    $('loginBox').classList.remove('hidden');
+    $('resultado').textContent = '👋 Sesión cerrada.';
+  });
 
-      if(error){
-        out.innerHTML = '<span class="warn">'+error.message+'</span>';
-        return;
-      }
+  // ================= PERFIL Y MENÚ =================
+  async function cargarPerfil(uid){
+    const { data, error } = await supabase
+      .from('profiles')
+      .select('nombre, rol_id, rol:rol_id(nombre)')
+      .eq('user_id', uid)
+      .single();
 
-      currentUser = data.user;
-      out.innerHTML = '<span class="ok">Login correcto</span>';
-      await cargarPerfil(currentUser.id);
+    if(error || !data){
+      $('resultado').innerHTML = '<span class="warn">No se encontró perfil</span>';
+      return;
+    }
+
+    currentRole   = data.rol?.nombre ?? '—';
+    currentNombre = data.nombre ?? '';
+
+    $('loginBox').classList.add('hidden');
+    $('dashboard').classList.remove('hidden');
+    $('userTitle').textContent = '👤 ' + currentNombre;
+    $('userRole').textContent  = 'Rol: ' + currentRole;
+
+    const menu = $('menuOpciones');
+    menu.innerHTML = '';
+
+    menu.innerHTML += `<button class="secondary" data-v="vistaVentas">🛒 Ventas</button>`;
+    menu.innerHTML += `<button class="secondary" data-v="vistaInventario">📊 Inventario</button>`;
+    menu.innerHTML += `<button class="secondary" data-v="vistaCaja">💵 Caja</button>`;
+    menu.innerHTML += `<button class="secondary" data-v="vistaHistorial">🧾 Historial</button>`;
+
+    if(currentRole === 'admin' || currentRole === 'Administrador'){
+      menu.innerHTML += `<button class="secondary" data-v="vistaProductos">📦 Productos</button>`;
+      menu.innerHTML += `<button class="secondary" data-v="vistaReportes">📈 Reporte</button>`;
+    }
+
+    menu.querySelectorAll('button').forEach(b=>{
+      b.addEventListener('click',()=>abrirVista(b.dataset.v));
     });
 
-    $('btnLogout').addEventListener('click', async () => {
-      await supabase.auth.signOut();
-      currentUser = null;
-      currentRole = null;
-      currentNombre = null;
-      $('dashboard').classList.add('hidden');
-      $('loginBox').classList.remove('hidden');
-      $('resultado').textContent = '👋 Sesión cerrada.';
-    });
+    abrirVista('vistaVentas');
 
-    async function cargarPerfil(uid){
-      const { data, error } = await supabase
-        .from('profiles')
-        .select('nombre, rol_id, rol:rol_id(nombre)')
-        .eq('user_id', uid)
-        .single();
+    await Promise.all([
+      cargarProductosVenta(),
+      cargarInventario(),
+      cargarCaja(),
+      cargarHistorial(),
+      (currentRole === 'admin' || currentRole === 'Administrador') ? cargarReporte() : Promise.resolve()
+    ]);
+  }
 
-      if(error || !data){
-        $('resultado').innerHTML = '<span class="warn">No se encontró perfil</span>';
-        return;
-      }
+  function abrirVista(id){
+    document.querySelectorAll('#vistas > div').forEach(d=>d.classList.add('hidden'));
+    const el = $(id);
+    if(el) el.classList.remove('hidden');
 
-      currentRole  = data.rol?.nombre ?? '—';
-      currentNombre = data.nombre ?? '';
+    if(id==='vistaProductos')  cargarProductos();
+    if(id==='vistaInventario') cargarInventario();
+    if(id==='vistaCaja')       cargarCaja();
+    if(id==='vistaHistorial')  cargarHistorial();
+    if(id==='vistaReportes' && (currentRole==='admin' || currentRole==='Administrador')) cargarReporte();
+  }
 
-      $('loginBox').classList.add('hidden');
-      $('dashboard').classList.remove('hidden');
-      $('userTitle').textContent = '👤 ' + (currentNombre || 'Usuario');
-      $('userRole').textContent  = 'Rol: ' + currentRole;
-
-      const menu = $('menuOpciones');
-      menu.innerHTML = '';
-
-      menu.innerHTML += `<button class="secondary" data-v="vistaVentas">🛒 Ventas</button>`;
-      menu.innerHTML += `<button class="secondary" data-v="vistaInventario">📊 Inventario</button>`;
-      menu.innerHTML += `<button class="secondary" data-v="vistaCaja">💵 Caja</button>`;
-      menu.innerHTML += `<button class="secondary" data-v="vistaHistorial">🧾 Historial</button>`;
-
-      if(currentRole === 'Administrador'){
-        menu.innerHTML += `<button class="secondary" data-v="vistaProductos">📦 Productos</button>`;
-        menu.innerHTML += `<button class="secondary" data-v="vistaReportes">📈 Reporte</button>`;
-      }
-
-      menu.querySelectorAll('button').forEach(b=>{
-        b.addEventListener('click',()=>abrirVista(b.dataset.v));
-      });
-
-      abrirVista('vistaVentas');
-
-      await Promise.all([
-        cargarProductosVenta(),
-        cargarInventario(),
-        cargarCaja(),
-        cargarHistorial(),
-        currentRole === 'Administrador' ? cargarReporte() : Promise.resolve()
-      ]);
-    }
-
-    function abrirVista(id){
-      document.querySelectorAll('#vistas > div').forEach(d=>d.classList.add('hidden'));
-      const el = $(id);
-      if(el) el.classList.remove('hidden');
-
-      if(id==='vistaProductos') cargarProductos();
-      if(id==='vistaInventario') cargarInventario();
-      if(id==='vistaCaja') cargarCaja();
-      if(id==='vistaHistorial') cargarHistorial();
-      if(id==='vistaReportes' && currentRole==='Administrador') cargarReporte();
-    }
 
     // PRODUCTOS
     async function cargarProductos(){
